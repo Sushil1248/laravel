@@ -1,0 +1,19 @@
+/* reports-listing-css */
+.list-content span img {
+    max-width: 14px;
+    height: 14px;
+    margin-right: 13px;
+}
+.shipment-inner-content .list-title {
+    padding-bottom: 15px;
+}
+.shipment-inner-content .list-header {
+    padding-top: 0px;
+}
+
+.list-items.shipment-table .table thead th:first-child, .list-items.shipment-table .table thead td:first-child {
+    width: 20px;
+}
+.shipment-table td {
+    padding: 22px 24px;
+}

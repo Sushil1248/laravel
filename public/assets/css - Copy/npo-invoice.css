@@ -1,0 +1,136 @@
+.profile-text .mail-text {
+    margin-bottom: 0px;
+    font-family: 'Inter';
+    font-size: 14px;
+    line-height: 20px;
+    color: #667085;
+}
+.user-image-text {
+    display: flex;
+    align-items: center;
+    grid-gap: 14px;
+    justify-content: flex-end;
+}
+.profile-text {
+    text-align: end;
+}
+.profile-text h6 span {
+    padding-left: 10px;
+}
+.profile-text h6 {
+    font-family: 'Inter-Medium';
+    font-size: 14px;
+    line-height: 20px;
+    color: #344054;
+    margin-bottom: 0px;
+}
+.po-invoice-details .invoice-details-inner {
+    align-items: center;
+}
+.description-box textarea {
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 2px rgb(16 24 40 / 5%);
+    border-radius: 8px;
+    resize: none;
+    min-height: 110px;
+    max-width: 577px;
+    width: 100%;
+    padding: 8px 14px;
+    font-family: 'Inter';
+    font-size: 16px;
+    line-height: 24px;
+    color: #667085;
+}
+.attatchmentw-pricing {
+    justify-content: space-between;
+    align-items: center;
+}
+.description-box {
+    width: 40%;
+}
+.npo-invoice-details .invoice-details-inner {
+    padding: 0px 20px;
+}
+.npo-invoice-details .invoice-details-inner .shipmemnt-details-item.item2 {
+    padding-left: 20px;
+}
+.npo-invoice-details .invoice-value input {
+    color: #667085;
+}
+/* responsive */
+@media screen and (max-width:1199px) {
+.npo-invoice-details .invoice-details-inner .shipmemnt-details-item.item2 {
+    padding-left: 0px;
+}
+.npo-invoice-details .invoice-details-inner {
+    padding: 0px;
+}
+.invoice-feild ul {
+    grid-template-columns: 1fr 1fr 1fr !important;
+    margin-bottom: 0px;
+}
+.attatchmentw-pricing {
+    padding-left: 0px;
+}
+.invoice-feild li .form-group select {
+    max-width: 100%;
+}
+}
+@media screen and (max-width:1024px) {
+.user-image-text {
+    justify-content: flex-start;
+}
+.profile-text {
+    text-align: left;
+}
+.invoice-feild {
+    margin-top: 20px;
+}
+
+}
+@media screen and (max-width:991px) {
+ .invoice-details-inner .detail-item-1, .invoice-details-inner .detail-item-2 {
+        flex-wrap: wrap;
+    }
+.invoice-details-inner .shipmemnt-details-item.item1, .invoice-details-inner .shipmemnt-details-item.item2 {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.description-box {
+    width: 100%;
+}
+
+.invoice-details-inner .detail-item-2 {
+    margin-top: 15px;
+}
+
+}
+@media screen and (max-width:767px) {
+.invoice-list.po-invoice-list, .npo-invoice-details .invoice-details-inner {
+    padding: 0px 16px;
+}
+.container, .ptc-comment {
+    padding: 0px;
+}
+.attatchmentw-pricing {
+   padding-right: 0px;
+}
+.invoice-list.po-invoice-list .submit-btns ul {
+    display: flex;
+}
+}
+@media screen and (max-width:575px) {
+.description-box textarea {
+    font-size: 14px;
+}
+.invoice-list ul li a {
+    font-size: 13px;
+}
+.submit-btns li a {
+    padding: 7px;
+    width: 100%;
+    min-width: 95px;
+    }
+}

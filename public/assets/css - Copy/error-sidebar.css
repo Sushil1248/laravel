@@ -1,0 +1,45 @@
+.error-side-drawer.open .filter-cross {
+    left: unset;
+    right: 25px;
+}
+.error-side-drawer.open .filter-listing {
+    height: calc(100% - 60px);
+}
+.error-image {
+    width: 100%;
+    text-align: center;
+}
+.error-image p {
+    font-family: 'Inter-Medium';
+    font-size: 12px;
+    line-height: 18px;
+    color: #667085;
+    text-align: center;
+}
+.error-content h3 {
+    font-family: 'Inter-SemiBold';
+    font-size: 18px;
+    line-height: 28px;
+    color: #1D2939;
+}
+.error-content h3 span {
+    color: #F04438;
+}
+.error-content ul li a {
+    font-family: 'Inter';
+    font-size: 14px;
+    line-height: 20px;
+    text-decoration-line: underline;
+    color: #065986;
+}
+.error-content ul li {
+    padding-left: 0px;
+    margin-top: 20px;
+    list-style: none;
+}
+.error-content ul {
+    padding-left: 0px;
+}
+.error-content ul li img {
+    padding-right: 10px;
+}

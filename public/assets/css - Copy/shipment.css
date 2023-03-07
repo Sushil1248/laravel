@@ -1,0 +1,253 @@
+/*====Advance Shipment Notices css Start here =========*/
+.advance-shipment-notice {
+    max-width: 1445px;
+    margin: auto;
+    padding-bottom: 60px;
+}
+.footer-content h5 {
+    font-family: 'Lato-bold';
+    font-size: 12px;
+    line-height: 20px;
+    color: #464E5F;
+}
+.shipmemnt-details {
+    background: #FFFFFF;
+    box-shadow: 0px 1px 3px rgb(16 24 40 / 10%), 0px 1px 2px rgb(16 24 40 / 6%);
+    border-radius: 6px;
+    padding: 16px;
+}
+.left-detail-content h2 {
+    font-family: 'Lato-bold';
+    font-size: 20px;
+    line-height: 28px;
+    color: #1B283F;
+    margin-bottom: 0px;
+}
+.shipmemnt-details-inner {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+}
+.detail-item-1 {
+    max-width: 85%;
+    flex: 0 0 85%;
+}
+.detail-item-2 {
+    max-width: 15%;
+    flex: 0 0 15%;
+    margin-top: -10px;
+}
+.shipmemnt-details-item.item1 {
+    max-width: 63%;
+    flex: 0 0 63%;
+}
+.shipmemnt-details-item.item2 {
+    max-width: 37%;
+    flex: 0 0 37%;
+}
+.building-text h3 {
+    font-family: 'Lato';
+    font-size: 18px;
+    line-height: 28px;
+    color: #464E5F;
+    margin-bottom: 0px;
+    margin-left: 8px;
+}
+p.address-text {
+    font-family: 'Lato-Medium';
+    font-size: 13px;
+    line-height: 18px;
+    color: #80808F;
+}
+span.date-text {
+    font-family: 'Lato-Medium';
+    font-size: 14px;
+    line-height: 20px;
+    color: #464E5F;
+}
+.expected-date {
+    display: flex;
+    align-items: center;
+}
+.expected-date p {
+    margin-bottom: 0px;
+}
+.Contract-details {
+    background: #F5F8FA;
+    border-radius: 6px;
+    padding: 12px;
+}
+.Contract-details ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 0.5fr;
+    grid-gap: 30px;
+    padding-left: 0px;
+    margin-bottom: 0px;
+}
+.Contract-details ul li {
+    list-style: none;
+}
+.shipmemnt-details-item p.grey-text {
+    margin-bottom: 0px;
+}
+.Contract-details span.name-text {
+    font-family: 'Lato-Medium';
+    font-size: 12px;
+    line-height: 18px;
+    color: #80808F;
+}
+.Contract-details ul li p {
+    font-family: 'Lato-bold';
+    font-size: 14px;
+    line-height: 20px;
+    color: #464E5F;
+    margin-bottom: 0px;
+}
+.shipment-inner-content .list-title {
+    padding-bottom: 15px;
+}
+.shipmemnt-details-item .left-detail-content h2 {
+    font-size: 18px;
+}
+.shipmemnt-details-item.item1 .purchase-address p.grey-text {
+    padding-top: 10px;
+}
+.purchase-address .building-text {
+    padding-bottom: 3px;
+}
+.purchase-address .expected-date p.grey-text {
+    min-width: 140px;
+}
+.advance-shipment-notice .subtotal-price {
+    max-width: 100%;
+    padding-right: 10px;
+}
+.footer-content h5 {
+     margin-bottom: 0px;
+}
+.advance-shipment-notice .footer-content {
+    font-size: 14px;
+}
+.shipment-text p.address-text {
+    margin-bottom: 2px;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color: transparent;
+}
+.advance-shipment-notice .footer-content {
+    font-size: 14px;
+}
+.advance-shipment-notice td {
+    padding: 8px 24px;
+}
+.list-content h2 {
+    font-family: 'Lato-bold';
+    font-size: 18px;
+    line-height: 28px;
+    color: #1B283F;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+}
+.list-content span img {
+    max-width: 14px;
+    height: 14px;
+    margin-right: 13px;
+}
+.shipmemnt-details-item.item1 .purchase-address p.grey-text {
+    padding-top: 10px;
+}
+.shipmemnt-details-item p.grey-text {
+    margin-bottom: 0px;
+}
+.adress-1 {
+    padding-bottom: 10px;
+}
+.advance-shipment-notice .subtotal-price {
+    padding-top: 10px;
+}
+/*==== Advance Shipment Notices css End here =========*/
+
+/* Responsive */
+@media screen and (max-width: 1024px) {
+    .shipmemnt-details .detail-item-1 {
+        max-width: 80%;
+        flex: 0 0 80%;
+    }
+    .shipmemnt-details .detail-item-2 {
+    max-width: 20%;
+    flex: 0 0 20%;
+}
+}
+@media screen and (max-width: 991px) {
+.shipmemnt-details .detail-item-1, .shipmemnt-details-inner {
+    flex-wrap: wrap;
+}
+.shipmemnt-details .detail-item-1, .shipmemnt-details .detail-item-2, .shipmemnt-details .shipmemnt-details-item {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.shipmemnt-details .detail-item-2 {
+    padding: 10px 0px;
+}
+.Contract-details ul {
+    grid-gap: 10px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.advance-shipment-notice .table-responsive {
+    display: block !important;
+}
+.shipmemnt-details .detail-item-2 {
+    margin-top: 0px;
+}
+}
+@media screen and (max-width: 767px) {
+.shipmemnt-details-item.item1 {
+    margin-bottom: 15px;
+}
+.shipmemnt-details-item {
+    border-bottom: 1px solid #E4E7EC;
+}
+.expected-date, .shipmemnt-details .detail-item-2 .adress-2 {
+    padding-bottom: 15px;
+}
+.shipmemnt-details-item.item3 {
+    border-bottom: 0px;
+}
+p.address-text {
+    line-height: 20px;
+}
+}
+@media screen and (max-width: 575px) {
+.shipmemnt-details {
+    border-radius: 0px;
+}
+.Contract-details ul {
+    grid-template-columns: 1fr;
+}
+.advance-shipment-notice .table-responsive {
+    border-radius: 0px;
+    display: table !important;
+}
+.detail-table h6 {
+    padding: 0px 16px;
+}
+.advance-shipment-notice .subtotal-price {
+    justify-content: space-between;
+    padding: 10px 16px;
+}
+.advance-shipment-notice .footer-content  {
+    padding: 0px 16px;
+}
+.shipment-inner-content table td:not(.order-line, .status-text, .purchase-order-date), .shipment-inner-content table th:not(.order-line, .status-text, .purchase-order-date)  {
+    display: none;
+}
+}
+@media screen and (max-width: 480px) {
+p.description-text {
+    white-space: pre-wrap;
+}
+.detail-table th, .detail-table td {
+    padding: 12px 19px;
+}
+}

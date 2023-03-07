@@ -1,0 +1,40 @@
+/**Purchase order Listing**/
+/* Responsive */
+
+@media screen and (max-width: 575px) {
+  
+    .list-items span.open-text {
+        margin-left: auto;
+    }
+    .list-items span.open-text {
+        min-width: 70px !important;
+    }
+    ul.tabs {
+        padding: 0px 2px;
+    }
+    ul.tabs li {
+        margin-right: 12px;
+    }
+    ul.tabs li:last-child {
+        margin-right: 0px;
+    }
+    ul.tabs a {
+        padding: 0px 2px 16px;
+    }
+    .error-text {
+        padding: 0 6px;
+    }
+    
+}
+
+@media screen and (max-width: 360px) {
+.list-items span.open-text {
+    max-width: 75px;
+}
+.open-text, .error-text, .user-text {
+    padding: 0 6px;
+}
+ul.tabs a {
+    font-size: 12.5px;
+}
+}

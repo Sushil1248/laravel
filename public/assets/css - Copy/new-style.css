@@ -1,0 +1,7 @@
+/* New style CSS */
+a.navbar-brand img{
+    max-width:100px;
+}
+a.navbar-brand{
+    padding-left:0
+}

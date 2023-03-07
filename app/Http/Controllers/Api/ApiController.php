@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Traits\{AutoResponderTrait, SendResponseTrait};
+use Illuminate\Support\Facades\{Validator,Auth,DB};
+use App\Models\{Country,UserProgress,User, Device};
+
+class ApiController extends Controller
+{
+    use SendResponseTrait, AutoResponderTrait;
+
+
+    public function activateDevice(Request $request){
+        $device_code = $request->activation_code;
+        $device_exist = Device::where('device_activation_code',$device_code)->get();
+        if(count($device_exist)>0){
+            $is_activated = Device::where('device_activation_code',$device_code)->pluck('is_activate')->first();
+            $user_id = Device::where('device_activation_code',$device_code)->pluck('user_id')->first();
+            $user_data = User::where('id', $user_id)->get()->toArray();
+            if($is_activated){
+                return $this->apiResponse('success', '200', 'Device Already activated', $user_data);
+            }
+
+            $activation_sent = Device::where('device_activation_code',$device_code)->update(['activation_request_sent'=>1]);
+            return $this->apiResponse('success', '200', 'Activation Request Sent successfully.', $user_data);
+        }else{
+            return $this->apiResponse('error', '404', "Incorrect Activation Code");
+        }
+    }
+}
