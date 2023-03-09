@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\{AutoResponderTrait, SendResponseTrait};
 use Illuminate\Support\Facades\{Validator,Auth,DB};
-use App\Models\{Country,UserProgress,User, Device};
+use App\Models\{Country,User, Device};
 
 class ApiController extends Controller
 {
@@ -15,10 +15,10 @@ class ApiController extends Controller
 
     public function activateDevice(Request $request){
         $device_code = $request->activation_code;
-        $device_exist = Device::where('device_activation_code',$device_code)->get();
-        if(count($device_exist)>0){
+        $device_exist = Device::where('device_activation_code',$device_code)->first();
+        if(($device_exist)){
             $is_activated = Device::where('device_activation_code',$device_code)->pluck('is_activate')->first();
-            $user_id = Device::where('device_activation_code',$device_code)->pluck('user_id')->first();
+            $user_id = $device_exist->user_id;
             $user_data = User::where('id', $user_id)->get()->toArray();
             if($is_activated){
                 return $this->apiResponse('success', '200', 'Device Already activated', $user_data);
