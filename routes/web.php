@@ -92,10 +92,10 @@ Route::group([ ], function () use ($router) {
 
     });
 
-   /*  Route::get('/test-email', function () {
+    Route::get('/test-email', function () {
         Mail::send('emails.verify', [], function ($message) {
             $message->to('sushil.kumar@infostride.com');
             $message->subject('Test Email');
         });
-    }); */
+    });
 });

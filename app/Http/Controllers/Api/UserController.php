@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\{AutoResponderTrait, SendResponseTrait};
-use Illuminate\Support\Facades\{Validator,Auth,DB}; 
+use Illuminate\Support\Facades\{Validator,Auth,DB};
 use App\Models\{Country,UserProgress,QuestionnaireType};
 class UserController extends Controller
 {
@@ -16,7 +16,7 @@ class UserController extends Controller
     Created Date:   2022-09-23 (yyyy-mm-dd)
     Purpose:        Complete profile
     Params:         [gender,metric_values,height,weight,body_measurements,current_photos]
-    */ 
+    */
     public function completeProfile( Request $request ){
 
         $validator = Validator::make($request->all(), [
@@ -25,10 +25,10 @@ class UserController extends Controller
             'side'              =>  'file|mimetypes:image/*|max:' . config('constants.MAXIMUM_UPLOAD') * 1024,
             'back'              =>  'file|mimetypes:image/*|max:' . config('constants.MAXIMUM_UPLOAD') * 1024,
         ]);
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             return $this->apiResponse('error', '422', $validator->errors()->all()[0] , $validator->errors() );
-        } 
-        try { 
+        }
+        try {
             $details = [];
             if( $request->filled('step_number') ){
                 $details['step_number'] = $request->step_number;
@@ -73,7 +73,7 @@ class UserController extends Controller
         }
     }
 
-    
+
 
     /*
     Method Name:    getUser
@@ -145,12 +145,12 @@ class UserController extends Controller
         ];
         if( $request->from_profile )
             unset( $validations['name'] , $validations['profile_image'] , $validations['dob'] );
-        
+
         $validator = Validator::make($request->all(), $validations );
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             return $this->apiResponse('error', '422', $validator->errors()->all()[0] , $validator->errors() );
-        } 
-        try { 
+        }
+        try {
             $inputs = removeEmptyElements( $request->all() );
             if( $request->has('notification') )
                 $inputs['notification'] = $request->notification;
@@ -164,10 +164,10 @@ class UserController extends Controller
                 $inputs['country_id'] = jsdecode_userdata($request->country);
             if( $request->hasFile('profile_image') )
                 $inputs['profile_picture'] = str_replace("public/","",$request->profile_image->store('public/user-profile-picture'));
-            
+
             if( $request->hasFile('cover_image') )
                 $inputs['cover_image'] = str_replace("public/","",$request->cover_image->store('public/user-cover-image'));
-            
+
             Auth::user()->user_detail->update( $inputs );
             return $this->apiResponse('success', '200', 'User profile updated successfully.', (array)$this->getUser($request)->getData()->data );
         } catch(\Exception $e) {
@@ -195,7 +195,7 @@ class UserController extends Controller
             foreach( $getuser->notifications()->limit(10)->get() as $key => $singleNotification ){
                 $notification = [
                     'type'  =>  'admin',
-                    'name'  =>  'LIFTIT',
+                    'name'  =>  'IoT',
                     'image' =>  asset("assets/images/notification.png"),
                     'name_text' =>  '',
                     'message'   =>  config("constants.NOTIFICATION_MESSAGE.{$singleNotification->data['message']}") ? config("constants.NOTIFICATION_MESSAGE.{$singleNotification->data['message']}") : $singleNotification->data['message'],
@@ -230,5 +230,5 @@ class UserController extends Controller
         }
     }
 
-    
+
 }
