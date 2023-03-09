@@ -1,0 +1,160 @@
+.turn-pike-item {
+    display: flex;
+    align-items: center;
+    grid-gap: 24px;
+}
+.invoice-creation .footer-menus-with-button {
+    position: fixed;
+    bottom: 30px;
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+.invoice-creation .submit-btns ul {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0px;
+}
+.invoice-creation .submit-btns ul li {
+    list-style: none;
+}
+.footer-menus_button  {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0px;
+    background: #F4F5F7;
+}
+.invoice-list ul {
+    margin-bottom: 0px;
+}
+
+.ptc-comment .custom-control {
+    padding-bottom: 0px  !important;
+}
+/* ====responsive==== */
+@media screen and (max-width: 1480px) {
+    .invoice-creation .invoice-details-inner .detail-item-1 {
+        max-width: 75%;
+        flex: 0 0 75%;
+        grid-gap: 20px;
+    }
+
+    .invoice-creation .invoice-details-inner .detail-item-2 {
+        max-width: 25%;
+        flex: 0 0 25%;
+    }
+    .invoice-creation .submit-btns {
+        max-width: 40%;
+        flex: 0 0 40%;
+    }
+    .invoice-creation .footer-menus_button .invoice-list {
+        max-width: 60%;
+        flex: 0 0 60%;
+    }
+    .invoice-value p.balance-difference {
+
+        font-size: 12px;
+    }   
+    .invoice-creation .submit-btns {
+        margin-top: 0px;
+    }
+}
+@media screen and (max-width: 1199px) {
+    .invoice-creation .invoice-details-inner .detail-item-1 {
+    max-width: 70%;
+    flex: 0 0 70%;
+}
+.invoice-creation .invoice-details-inner .detail-item-2 {
+    max-width: 30%;
+    flex: 0 0 30%;
+}
+.invoice-creation .invoice-details-inner {
+    grid-gap: 20px;
+}
+.turn-pike-image img {
+    width: 100%;
+    max-width: 40px;
+}
+.turn-pike-item {
+    grid-gap: 15px;
+}
+.invoice-creation .footer-menus_button .invoice-list, .invoice-creation .submit-btns {
+    max-width: 50%;
+    flex: 0 0 50%;
+}
+.invoice-value p.balance-difference {
+    font-size: 11px;
+}
+.invoice-creation .invoice-details-inner .shipmemnt-details-item.item1 {
+    max-width: 40%;
+    flex: 0 0 40%;
+}
+.invoice-creation .invoice-details-inner .shipmemnt-details-item.item2  {
+    max-width: 60%;
+    flex: 0 0 60%;
+}
+}
+@media screen and (max-width: 1024px) {
+    .invoice-creation .po-invoice-details .submit-btns ul {
+        margin-top: 0px;
+    }
+}
+@media screen and (max-width: 991px) {
+    .invoice-creation .invoice-details-inner .detail-item-1, .invoice-creation .invoice-details-inner .detail-item-2 {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.invoice-creation .po-invoice-details .invoice-list ul {
+    padding-right: 0px;
+}
+.invoice-creation .footer-menus_button .invoice-list {
+    max-width: 40%;
+    flex: 0 0 40%;
+}
+.invoice-creation .submit-btns {
+    max-width: 60%;
+    flex: 0 0 60%;
+}
+section.po-invoice-details .invoice-list table {
+    display: block !important;
+
+}
+}
+@media screen and (max-width: 767px) {
+.invoice-creation .submit-btns {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.invoice-creation .submit-btns ul {
+    justify-content: center;
+}
+.invoice-creation .ptc-comment-box {
+    padding: 0px 16px;
+    margin-bottom: 40px;
+}
+}
+@media screen and (max-width: 575px) {
+.invoice-creation .po-invoice-details .shipmemnt-details-item.item1 {
+    margin-bottom: 0px;
+}
+.invoice-creation .invoice-details-inner .shipmemnt-details-item.item1, .invoice-creation .invoice-details-inner .shipmemnt-details-item.item2 {
+    max-width: 100%;
+    flex: 0 0 100%;
+    margin-bottom: 0px;
+}
+.invoice-creation .invoice-detail .po-invoice-list table {
+    display: table !important;
+}
+.invoice-creation .ptc-comment-box {
+    padding: 0px;
+}
+}
+@media screen and (max-width: 480px) {
+p.description-text {
+    white-space: pre-wrap;
+}
+.invoice-creation .footer-menus_button .submit-btns li a {
+    min-width: 80px;
+}
+}

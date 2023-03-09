@@ -1,0 +1,93 @@
+.create-order .Contract-details ul {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+}
+.create-order .Contract-details ul li:last-child {
+    width: 100%;
+    max-width: 100%;
+}
+.create-order td .input-group {
+    display: flex;
+    align-items: center;
+    background: #FFFFFF;
+    border: 1px solid #E4E7EC;
+    box-sizing: border-box;
+    border-radius: 8px;
+    max-width: 154px;
+    min-height: 36px;
+    margin-bottom: 0px;
+    overflow: hidden;
+}
+
+.date-picker .input-group-prepend {
+    padding: 0px 10px;
+}
+.date-picker .input-group-prepend img {
+    max-width: 19px;
+    width: 100%;
+    height: 16px;
+}
+.create-order td .input-group input.form-control {
+    font-family: 'Inter';
+    font-size: 14px;
+    line-height: 20px;
+    text-align: right;
+    color: #667085;
+    border: 0px;
+}
+.blue-text {
+    color: #026AA2;
+    font-size: 14px;
+    font-family: 'Lato';
+}
+.detaied-tab-context td p {
+    margin-bottom: 0px;
+}
+.advance-shipment-notice .subtotal-price {
+    max-width: 96%;
+}
+@media screen and (max-width: 1199px) {
+table.table {
+    display: block !important;
+    white-space: nowrap;
+}
+}
+@media screen and (max-width: 991px) {
+.detail-item-1, .detail-item-2 {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.shipmemnt-details-inner {
+    flex-wrap: wrap;
+}
+.create-order .Contract-details ul {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.create-asn .ptc-comment-box {
+    flex-wrap: wrap;
+}
+.create-asn .ptc-comment, .create-asn .submit-btns {
+    margin-top: 30px;
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+}
+@media screen and (max-width: 767px) {
+.create-order .advance-shipment-notice {
+    padding-bottom: 30px;
+}
+.create-order .Contract-details ul {
+    grid-template-columns: 1fr;
+    grid-gap: 10px;
+}
+}
+@media screen and (max-width: 575px) {
+.advance-shipment-notice th:not(.order-line, .status-text), .advance-shipment-notice td:not(.order-line, .status-text) {
+    display: none;
+    }
+    .price-text {
+        font-family: 'Lato-bold';
+        font-size: 14px;
+        line-height: 20px;
+        color: #1B283F;
+    }
+}

@@ -1,0 +1,346 @@
+.terms-text span {
+	font-family: 'Lato';
+	font-size: 12px;
+	line-height: 18px;
+	color: #80808F;
+}
+
+.terms-text p {
+	font-family: 'Lato-Medium';
+	font-size: 14px;
+	line-height: 20px;
+	color: #464E5F;
+	margin-bottom: 8px;
+}
+
+.detail-item-1 {
+	max-width: 65%;
+	flex: 0 0 65%;
+}
+
+.detail-item-2 {
+	max-width: 35%;
+	flex: 0 0 35%;
+}
+
+.create-asn .shipmemnt-details-item ul {
+	margin-bottom: 0px;
+	padding-left: 0px;
+	display: flex;
+	grid-gap: 16px;
+	justify-content: flex-end;
+}
+
+.create-asn ul li {
+	list-style: none;
+}
+
+.create-asn-details li p {
+	font-family: 'Inter-Medium';
+	font-size: 12px;
+	line-height: 18px;
+	color: #344054;
+	margin-bottom: 6px;
+	display: flex;
+	align-items: center;
+	grid-gap: 8px;
+}
+
+.create-asn ul li .form-group select,
+.asn-input {
+	background: #FFFFFF;
+	border: 1px solid #E4E7EC;
+	box-sizing: border-box;
+	box-shadow: 0px 1px 2px rgb(16 24 40 / 5%);
+	border-radius: 8px;
+	height: 40px !important;
+	padding: 10px 14px;
+	font-family: 'Inter';
+	font-size: 14px;
+	line-height: 20px;
+	color: #344054;
+	width: 100% !important;
+}
+
+.asn-input::-webkit-input-placeholder {
+	color: #667085;
+}
+
+.asn-input::-moz-placeholder {
+	color: #667085;
+}
+
+.asn-input:-ms-input-placeholder {
+	color: #667085;
+}
+
+.asn-input:-moz-placeholder {
+	color: #667085;
+}
+
+.asn-contract-details li:last-child {
+	width: 100%;
+	max-width: 150px;
+}
+
+.value-item input {
+	padding: 10px 14px;
+	max-width: 98px;
+	height: 36px;
+	background: #FFFFFF;
+	border: 1px solid #E4E7EC;
+	box-sizing: border-box;
+	border-radius: 8px;
+	margin-right: 4px;
+	font-family: 'Inter';
+	font-size: 14px;
+	line-height: 20px;
+	text-align: right;
+	color: #667085;
+}
+
+.value-item {
+	font-size: 14px;
+	line-height: 20px;
+	color: #464E5F;
+	font-family: Lato;
+}
+
+.advance-shipment-notice {
+	max-width: 100%;
+}
+
+.advance-shipment-notice .custom-control-label::before {
+	width: 20px;
+	height: 20px;
+}
+
+.advance-shipment-notice .custom-control-label::after {
+	top: 6px;
+	left: 2px;
+}
+
+.create-asn .comment-box {
+	min-height: 108px;
+	background: #FFFFFF;
+	border: 1px solid #D0D5DD;
+	box-sizing: border-box;
+	box-shadow: 0px 1px 2px rgb(16 24 40 / 5%);
+	border-radius: 8px;
+	width: 100%;
+	resize: none;
+	padding: 10px 14px;
+	font-family: 'Inter';
+	font-size: 16px;
+	line-height: 24px;
+	color: #667085;
+}
+
+.create-asn .ptc-comment {
+	margin-top: 30px;
+	max-width: 70%;
+	flex: 0 0 70%;
+	padding-right: 30px;
+}
+
+.create-asn .ptc-comment .custom-control {
+	padding-bottom: 20px;
+}
+
+.create-asn .ptc-comment .custom-control-label {
+	font-family: 'Inter-Medium';
+	font-size: 14px;
+	line-height: 20px;
+	color: #344054;
+}
+
+.create-asn .submit-btns {
+	max-width: 30%;
+	flex: 0 0 30%;
+}
+
+.create-asn .po-invoice-details .submit-btns ul {
+	padding-right: 0px;
+	padding-left: 0px;
+	display: flex;
+	align-items: center;
+}
+
+.create-asn .submit-btns ul li {
+	border-right: 0px !important;
+	list-style: none;
+	justify-content: flex-start;
+}
+
+.create-asn .submit-btns li a {
+	background: #FFFFFF;
+	border: 1px solid #D0D5DD;
+	box-sizing: border-box;
+	box-shadow: 0px 1px 3px rgb(16 24 40 / 10%), 0px 1px 2px rgb(16 24 40 / 6%);
+	border-radius: 8px;
+	padding: 7px 16px;
+	color: #344054 !important;
+	width: 100%;
+	min-width: 105px;
+	text-align: center;
+	justify-content: center;
+	display: inline-block;
+	font-size: 14px;
+	line-height: 20px;
+	font-family: 'Lato-bold';
+}
+
+.create-asn .detail-item-2 li {
+	width: 100%;
+}
+
+.create-asn .submit-btns li a.submit-button {
+	background: #026AA2;
+	color: #fff !important;
+	display: flex;
+	align-items: center;
+	grid-gap: 12px;
+}
+
+.create-asn .ptc-comment-box {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	padding-bottom: 40px;
+}
+
+.create-asn .po-text-icon {
+	margin-bottom: 10px;
+}
+
+.create-asn .navy-blue-btn {
+	display: inline-block;
+}
+
+.create-asn .submit-btns ul {
+	display: flex;
+	grid-gap: 10px;
+	align-items: center;
+	justify-content: flex-end;
+	margin-bottom: 0px;
+}
+
+.create-asn .advance-shipment-notice .subtotal-price {
+	max-width: 96%;
+}
+
+
+
+@media screen and (max-width: 1199px) {
+	.create-asn .detail-item-1,
+	.create-asn .detail-item-2,
+	.create-asn .ptc-comment,
+	.create-asn .submit-btns {
+		max-width: 100%;
+		flex: 0 0 100%;
+	}
+	.create-asn .shipmemnt-details-inner {
+		flex-wrap: wrap;
+	}
+	.create-asn .ptc-comment-box {
+		flex-wrap: wrap;
+	}
+	.create-asn .ptc-comment {
+		padding-right: 0px;
+	}
+}
+
+@media screen and (max-width: 991px) {
+	.create-asn .Contract-details ul {
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-gap: 20px;
+	}
+	.detail-table table {
+		display: block;
+		white-space: nowrap;
+	}
+	.shipmemnt-details-item .left-detail-content h2 {
+		font-size: 16px;
+	}
+	.create-asn-details .detail-item-1 {
+		flex-wrap: wrap;
+	}
+	.create-asn-details .shipmemnt-details-item.item1,
+	.create-asn-details .shipmemnt-details-item.item2 {
+		max-width: 100%;
+		flex: 0 0 100%;
+	}
+	.detail-item-2 {
+		margin-top: 15px;
+	}
+}
+
+@media screen and (max-width: 575px) {
+	.detail-table table.table {
+		display: inline-table !important;
+	}
+	.advance-shipment-notice .scope-item p {
+		display: block !important;
+	}
+	.create-asn .advance-shipment-notice .subtotal-price {
+		max-width: 100%;
+		justify-content: space-between;
+		padding: 10px 16px;
+	}
+	.attatchmentw-pricing {
+		padding: 0px 16px;
+	}
+	.create-asn .ptc-comment .custom-control-label {
+		font-size: 12px;
+		line-height: 18px;
+	}
+	.create-asn .Contract-details ul {
+		grid-template-columns: 1fr;
+	}
+	.Contract-details {
+		margin-top: 20px;
+	}
+	.detail-table h6,
+	.shipmemnt-details-inner {
+		padding: 0px 16px;
+	}
+	.shipmemnt-details,
+	.Contract-details {
+		padding: 16px 0px;
+		border-radius: 0px;
+	}
+	.Contract-details {
+		padding: 16px;
+	}
+	.create-asn .po-text-icon {
+		max-width: 100%;
+	}
+	.create-asn .submit-btns ul {
+		padding-left: 0px;
+	}
+	.create-asn .comment-box {
+		font-size: 14px;
+	}
+	.create-asn .submit-btns li a {
+		padding: 7px 5px;
+		min-width: 85px;
+		font-size: 12px;
+	}
+	.submit-button img {
+		width: 100%;
+		max-width: 12px;
+		height: 12px;
+	}
+	.create-asn .ptc-comment .custom-control {
+		padding-bottom: 0px;
+	}
+    .create-asn-details .shipmemnt-details-item.item2 {
+        padding-bottom: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+	.create-asn .shipmemnt-details-item ul {
+		flex-wrap: wrap;
+	}
+}

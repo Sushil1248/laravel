@@ -1,0 +1,1 @@
+<x-media-files :select-id="jsdecode_userdata(request('selected'))" :input-name="request('input_name')"/>
