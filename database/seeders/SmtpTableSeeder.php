@@ -22,7 +22,7 @@ class SmtpTableSeeder extends Seeder
 				'port' => 587,
 				'username' => 'jasjit.shinedezign@gmail.com',
 				'from_email' => 'jasjit.shinedezign@gmail.com',
-				'from_name' => 'LiftIt',
+				'from_name' => 'IoT',
 				'password' => 'xwdfrbjhszezuebv',
 				'encryption' => 'tls',
 				'status' => 1,
