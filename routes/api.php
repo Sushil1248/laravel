@@ -21,7 +21,7 @@ Route::post('forgot/password', [AuthController::class,'passwordResetLink']);
 Route::post('verify/otp', [AuthController::class,'verifyOtp']);
 Route::post('reset/password', [AuthController::class,'updateNewPassword']);
 Route::get('get-countries',[UserController::class,'getCountries']);
-Route::get('activate/device',[ApiController::class,'activateDevice']);
+Route::post('activate/device',[ApiController::class,'activateDevice']);
 
 Route::middleware(['auth:api','validateUser'])->group(function(){
     Route::get('logout', [AuthController::class,'logout']);

@@ -19,9 +19,12 @@
             </div>
             @can('user-add')
             <div class="right-btns">
-                <div class="">
+                <div class="d-flex">
                     <a class="nav-link btn navy-blue-btn open-section" data-target="create-user-popup" href="javascript:void(0)"  aria-expanded="false">
                     Create User
+                    </a>
+                    <a title="Send Notification to All Users" onclick="event.stopPropagation()" class="btn btn-sm open-section"  data-attribute="all_users" data-pass-id="users" data-target="push-notification-popup" href="javascript:void(0)" >
+                        <i class="fas fa-bell" style="color:#33383a"></i>
                     </a>
                 </div>
             </div>
@@ -246,6 +249,7 @@
 
 @section('footer-html')
 @include('admin.user.popups')
+@include('admin.user.device-popup')
 @endsection
 
 @section('page-js')
@@ -436,5 +440,94 @@
             $("#update-user-password form").attr( "action" , $(this).data("update-password") );
         });
     });
+
+    $("#notify-device").validate({
+            ignoore: '',
+            rules:{
+                title:{
+                    required:true,
+                    maxlength:100
+                },
+                message:{
+                    required:true
+                }
+            },
+            messages:{
+                title:{
+                    required:"Please add a notification title"
+                },
+                message:{
+                    required:"Please add a message"
+                },
+            },
+            errorPlacement: function(error, element) {
+                console.log( element.closest("li") );
+                error.appendTo( element.closest("li") );
+            },
+            submitHandler: function(form) {
+                var formData = jQuery(form);
+                if( !formData.find(".ajax-response").length )
+                    formData.prepend("<div class='ajax-response'></div>");
+                var response_ajax = formData.find(".ajax-response"),
+                urls = formData.prop('action'),
+                submit_button = formData.find(".ajax-submit-button");
+                response_ajax.html(''),
+                btnText = submit_button.html();
+                submit_button.html(btnText + '<i class="fa fa-spinner fa-spin"></i>');
+                submit_button.attr("disabled", true);
+                jQuery.ajax({
+                    type: "POST",
+                    url: urls,
+                    data: formData.serialize(),
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log( data );
+                        if (data.success == true) {
+
+                            response_ajax.html('<div class="alert alert-success  alert-dismissible "><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+ data.msg + '</div>');
+                            response_ajax.removeClass("hidden");
+                            submit_button.html(btnText);
+                            submit_button.attr("disabled", false);
+                            setTimeout(function() {
+                                location.reload(true);
+                            }, 1000);
+
+                        } else if(data.success == false){
+                            response_ajax.html('<div class="alert alert-danger  alert-dismissible "><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+ data.msg + '</div>');
+                            submit_button.html(btnText);
+                            submit_button.attr("disabled", false);
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        var msg = '';
+                        if (jqXHR.status === 0) {
+                            msg = 'Not connect.\n Verify Network.';
+                        } else if (jqXHR.status == 404) {
+                            msg = 'Requested page not found. [404]';
+                        } else if (jqXHR.status == 500) {
+                            msg = 'Internal Server Error [500].';
+                        } else if (exception === 'parsererror') {
+                            msg = 'Requested JSON parse failed.';
+                        } else if (exception === 'timeout') {
+                            msg = 'Time out error.';
+                        } else if (exception === 'abort') {
+                            msg = 'Ajax request aborted.';
+                        } else {
+                            var errors = jQuery.parseJSON(jqXHR.responseText);
+                            var erro = '';
+                            jQuery.each(errors['errors'], function(n, v) {
+                                erro += '<p class="inputerror">' + v + '</p>';
+                            });
+                            response_ajax.html('<div class="alert alert-danger  alert-dismissible "><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'+ erro + '</div>');
+
+                            submit_button.html(btnText);
+                            submit_button.attr("disabled", false);
+                            msg = 'Uncaught Error.\n' + jqXHR.responseText;
+                        }
+                        //window.location.reload();
+                    }
+                });
+            }
+        });
 </script>
 @endsection

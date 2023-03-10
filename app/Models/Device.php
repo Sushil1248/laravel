@@ -15,7 +15,10 @@ class Device extends Model
         'device_name',
         'device_activation_code',
         'status',
-        'user_id'
+        'user_id',
+        'device_token',
+        'device_id',
+        'device_platform',
     ];
 
     public function user(): BelongsTo
