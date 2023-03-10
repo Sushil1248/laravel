@@ -416,4 +416,79 @@ class UserController extends Controller
         }
     }
 
+    public function sendPushNotification(Request $request)
+    {
+        $tokens=[];
+        if($request->has('device_id')){
+            $deviceId = jsdecode_userdata($request->device_id);
+            $token = Device::where('id',$deviceId)->pluck('device_token')->first();
+            if($token!=null){
+                $tokens[]=$token;
+            }
+        }else if($request->has('user_id')){
+            $userId = jsdecode_userdata($request->user_id);
+            $token = Device::where('user_id',$userId)->get('device_token')->toArray();
+            if($token!=null){
+               foreach ($token as $key => $item) {
+                if(is_array($token)){
+                    if($token[0]['device_token'][0]!=null){
+                        $tokens[]=$token[0]['device_token'];
+                    }
+                }
+               }
+            }
+        }else{
+            $tokenx = Device::get('device_token')->toArray();
+            if($tokenx!=null){
+                foreach ($tokenx as $key => $token) {
+                    foreach ($token as $key => $item) {
+                        if(is_array($token)){
+                            if($token['device_token']!=null){
+                                $tokens[]=$token['device_token'];
+                            }
+                        }
+                       }
+                }
+            }
+        }
+
+        $firebaseToken = $tokens;
+        $SERVER_API_KEY = env('FCM_SERVER_KEY');
+
+        $data = [
+            "registration_ids" => $firebaseToken,
+            "notification" => [
+                "title" => $request->title,
+                "body" => $request->message,
+            ]
+        ];
+        $dataString = json_encode($data);
+
+        $headers = [
+            'Authorization: key=' . $SERVER_API_KEY,
+            'Content-Type: application/json',
+        ];
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
+
+        $response = curl_exec($ch);
+        if(json_decode($response)->success){
+        return [
+            'success'    =>  true,
+            'msg'       =>  'Notification Sent Succesfully.'
+        ];}else{
+            return [
+                'success'    =>  false,
+                'msg'       =>  Config::get('constants.ERROR.OOPS_ERROR')
+            ];
+        }
+    }
+
 }

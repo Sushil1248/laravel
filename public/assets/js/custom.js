@@ -245,7 +245,14 @@ $(document).ready(function(){
     $('.open-section').click(function (e) {
         if( $('.filter-side-drawer#' + $(this).data("target") ).length ){
             e.preventDefault();
+            let popup_data= false;
             $('.filter-side-drawer#' + $(this).data("target") ).toggleClass('open');
+            if($(this).data('attribute')!==undefined) {popup_data=$(this).data('attribute')}
+            if(popup_data){
+                $('.filter-side-drawer').find('.dynamic_name').attr('name',popup_data)
+                $('.filter-side-drawer').find('input[name="'+popup_data+'"]').val($(this).data('pass-id'));
+                $(this).data('pass-title')!=undefined ? $('.filter-side-drawer').find('.device_name').text("  to "+$(this).data('pass-title')):$('.filter-side-drawer').find('.device_name').text("");
+            }
             $('body').toggleClass('side-drawer-open');
             $(".workout-type").change();
         }

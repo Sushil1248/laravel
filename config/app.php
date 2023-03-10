@@ -182,8 +182,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        
-
+        LaravelFCM\FCMServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -216,6 +215,8 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'FCM'      => LaravelFCM\Facades\FCM::class,
+	    'FCMGroup' => LaravelFCM\Facades\FCMGroup::class, // Optional
     ])->toArray(),
 
 ];
