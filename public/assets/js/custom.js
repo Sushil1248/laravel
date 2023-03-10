@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    $('[data-toggle="popover"]').popover({ trigger: "hover" });
     /** Remove query string **/
     function removeURLParameter(url, parameter) {
         //prefer to use l.search if you have a location/link object
