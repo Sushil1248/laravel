@@ -18,6 +18,7 @@ class Device extends Model
         'user_id',
         'device_token',
         'device_id',
+        'is_activate',
         'device_platform',
     ];
 

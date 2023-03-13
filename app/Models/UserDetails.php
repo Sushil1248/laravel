@@ -31,16 +31,16 @@ class UserDetails extends Model
 	 'updated_at',
 	];
 
-	protected function profilePicture()
-	{
-		return Attribute::make(
-			get: function($value){
-				if( $value )
-					return asset("storage/$value");
-				return "";
-			}
-		);
-	}
+    protected $appends = ['profile_picture'];
+
+    public function getProfilePictureAttribute($value)
+    {
+        if ($value) {
+            return asset('storage/' . $value);
+        } else {
+            return asset('images/default-profile-picture.png');
+        }
+    }
 
     // gets automatically invoked :Attribute / hasOne
 	protected function coverImage()

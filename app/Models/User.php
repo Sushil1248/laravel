@@ -60,14 +60,6 @@ class User extends Authenticatable
         return $this->belongsToMany(Company::class,'companies')->withTimestamps();
     }
 
-    public function user_rm(){
-	    return $this->hasMany(UserRm::class);
-    }
-
-    public function questionnaires(){
-        return $this->hasMany(UserQuestionnaireAnswer::class);
-    }
-
     public function userProgress(){
         return $this->hasMany(UserProgress::class);
     }
@@ -78,53 +70,47 @@ class User extends Authenticatable
     public function activePrograms(){
         return $this->belongsToMany(Program::class,'user_programs')->withPivot('start_date')->wherePivotNull('end_date')->using(UserProgram::class)->withTimestamps();
     }
-
-    public function user_workout_sets()
-    {
-        return $this->hasMany(UserWorkoutSets::class);
-    }
-
-    public function notifications()
-    {
-        return $this->morphMany(Notification::class, 'notifiable')
-        ->whereNull('action_type')
-        ->orWhere(function ($query) {
-            $query->where(function( $query ){
-                $query->where('data','like','%answered_forum%')
-                ->orWhere('data','like','%replied_answer%');
-            })
-            ->whereHasMorph('action',[ForumAnswer::class],function( $query ){
-                $query->active()
-                ->whereHas("forumQuestion",function($query){
-                    $query->active();
-                })
-                ->whereHas("user",function($query){
-                    $query->active();
-                })
-                ->where(function($query){
-                    $query->whereNull('reply_id')
-                    ->orWhereHas("forumAnswer",function($query){
-                        $query->active();
-                    });
-                });
-            });
-        })
-        ->orWhere(function ($query) {
-            $query->where('data','like','%liked_answer%')
-            ->whereHasMorph('action',[ForumAnswerLike::class],function( $query ){
-                $query->whereHas("forumAnswer",function( $query ){
-                    $query->active()
-                    ->whereHas("forumQuestion",function($query){
-                        $query->active();
-                    })
-                    ->whereHas("user",function($query){
-                        $query->active();
-                    });
-                })->active();
-            });
-        })
-        ->orderBy('created_at', 'desc');
-    }
+    // public function notifications()
+    // {
+    //     return $this->morphMany(Notification::class, 'notifiable')
+    //     ->whereNull('action_type')
+    //     ->orWhere(function ($query) {
+    //         $query->where(function( $query ){
+    //             $query->where('data','like','%answered_forum%')
+    //             ->orWhere('data','like','%replied_answer%');
+    //         })
+    //         ->whereHasMorph('action',[ForumAnswer::class],function( $query ){
+    //             $query->active()
+    //             ->whereHas("forumQuestion",function($query){
+    //                 $query->active();
+    //             })
+    //             ->whereHas("user",function($query){
+    //                 $query->active();
+    //             })
+    //             ->where(function($query){
+    //                 $query->whereNull('reply_id')
+    //                 ->orWhereHas("forumAnswer",function($query){
+    //                     $query->active();
+    //                 });
+    //             });
+    //         });
+    //     })
+    //     ->orWhere(function ($query) {
+    //         $query->where('data','like','%liked_answer%')
+    //         ->whereHasMorph('action',[ForumAnswerLike::class],function( $query ){
+    //             $query->whereHas("forumAnswer",function( $query ){
+    //                 $query->active()
+    //                 ->whereHas("forumQuestion",function($query){
+    //                     $query->active();
+    //                 })
+    //                 ->whereHas("user",function($query){
+    //                     $query->active();
+    //                 });
+    //             })->active();
+    //         });
+    //     })
+    //     ->orderBy('created_at', 'desc');
+    // }
 
     /* Scopes */
     public function scopeActive($query)

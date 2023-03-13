@@ -1,5 +1,5 @@
 <?php
- 
+
 namespace App\Traits;
 
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -7,8 +7,8 @@ use Auth;
 use Illuminate\Support\MessageBag;
 
 trait SendResponseTrait {
-    
-    public function apiResponse($apiResponse, $statusCode = '404', $message = 'No records Found', $data = []) {
+
+    public function apiResponse($apiResponse, $statusCode = '404', $message = 'No records Found', $data = [], $want_status=true) {
         $responseArray = [];
         $otherDetail = [];
         if( $data instanceof MessageBag )
@@ -19,11 +19,11 @@ trait SendResponseTrait {
         if($apiResponse == 'success') {
             $responseArray['status'] = true;
             $responseArray['message'] = $message;
-            $responseArray['data'] = array_merge($data,$otherDetail);
+            $responseArray['data'] = $want_status ? array_merge($data,$otherDetail) : $data;
         } else {
             $responseArray['status'] = false;
             $responseArray['message'] = $message;
-            $responseArray['data'] = array_merge($data,$otherDetail);    
+            $responseArray['data'] = $want_status ? array_merge($data,$otherDetail) : $data;
         }
         return response()->json($responseArray);
     }

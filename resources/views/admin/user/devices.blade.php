@@ -74,7 +74,7 @@
                                     @forelse ($data as $singleDevice)
                                     <tr>
                                         <td class="purchase-order-date">
-                                            <a href="#" class="open-section get-user-detail" data-user-id="{{ jsencode_userdata($singleDevice->id) }}" data-toggle="tooltip" data-placement="bottom" title="{{$singleDevice->device_token}}">
+                                            <a href="#" class="open-section get-user-detail" data-user-id="{{ jsencode_userdata($singleDevice->id) }}" data-toggle="popover" title="Device Token" data-content="{{$singleDevice->device_token}}" >
                                                 {{ $singleDevice->device_name }}
                                             </a>
                                         </td>

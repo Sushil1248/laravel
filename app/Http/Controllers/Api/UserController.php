@@ -230,4 +230,35 @@ class UserController extends Controller
         }
     }
 
+    public function profile()
+    {
+        try {
+            $user = Auth::user();
+            $userData = $user->toArray();
+            if($user->hasRole( config('constants.ROLES.COMPANY') ) ) {
+                $userDetail = $user->company;
+                $userData['thanks_message'] =  $userDetail ? $userDetail->thanks_message : NULL;
+                $userData['notification']   =  $userDetail ? $userDetail->notification : '';
+                $userData['logo']           =  $userDetail ? $userDetail->logo : '';
+                $userData['company_name']   =  $userDetail ? $userDetail->company_name : '';
+                $userData['slug']           =  $userDetail ? $userDetail->slug : '';
+            } else {
+                $userDetail         = $user->userdetail;
+                $userData[ 'dob']   = $userDetail ?  $userDetail->dob : '';
+            }
+
+            $userData['phone_number']   = $userDetail ? $userDetail->phone_number : '';
+            $userData['address']        = $userDetail ?  $userDetail->address : '';
+            $userData['city']           = $userDetail ?  $userDetail->city : '';
+            $userData['fax']            = $userDetail ?  $userDetail->fax : '';
+            $userData['zip_code']       = $userDetail ?  $userDetail->zip_code : '';
+            $userData['state_id']       = $userDetail ? encryptData($userDetail->state_id) : NULL;
+            $userData['country_id']     = $userDetail ? encryptData($userDetail->country_id) : NULL;
+
+            return $this->apiResponse('success', '200', 'User profile ', $userData);
+        } catch ( \Exception $e ) {
+            return $this->apiResponse('error', '404', $e->getMessage());
+        }
+    }
+
 }
