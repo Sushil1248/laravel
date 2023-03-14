@@ -21,13 +21,14 @@ Route::post('resend-verification-link',[AuthController::class,'resendVerificatio
 // API controller
 Route::post('login', [ApiController::class,'login']);
 Route::post('activate/device',[ApiController::class,'activateDevice']);
-
-Route::post('forgot/password', [AuthController::class,'passwordResetLink']);
-Route::post('verify/otp', [AuthController::class,'verifyOtp']);
-Route::post('reset/password', [AuthController::class,'updateNewPassword']);
+Route::post('forgot/password', [ApiController::class,'passwordResetLink']);
+Route::post('reset/password', [ApiController::class,'updateNewPassword']);
 Route::get('get-countries',[ApiController::class,'getCountries']);
 Route::get('get-states/{country}',[ApiController::class,'getStates']);
 Route::get('get-cities/{state}',[ApiController::class,'getCities']);
+
+
+Route::post('verify/otp', [AuthController::class,'verifyOtp']);
 
 Route::middleware(['auth:api','validateUser'])->group(function(){
     Route::get('logout', [ApiController::class,'logout']);

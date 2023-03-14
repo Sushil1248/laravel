@@ -15,15 +15,15 @@ class SmtpTableSeeder extends Seeder
      */
     public function run()
     {
-        $usercount = SmtpInformation::where('from_email', 'jasjit.shinedezign@gmail.com')->count();
+        $usercount = SmtpInformation::where('from_email', 'developer.infostride@gmail.com')->count();
         if($usercount == 0){
 			SmtpInformation::updateOrCreate(['id' => 1],[
 				'host' => 'smtp.gmail.com',
 				'port' => 587,
-				'username' => 'jasjit.shinedezign@gmail.com',
-				'from_email' => 'jasjit.shinedezign@gmail.com',
+				'username' => 'developer.infostride@gmail.com',
+				'from_email' => 'developer.infostride@gmail.com',
 				'from_name' => 'IoT',
-				'password' => 'xwdfrbjhszezuebv',
+				'password' => 'mpmpesspoxoxvmke',
 				'encryption' => 'tls',
 				'status' => 1,
 				// 'created_at' => date('Y-m-d H:i:s'),

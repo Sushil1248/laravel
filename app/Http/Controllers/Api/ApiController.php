@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Validator, Hash, Auth, Event};
 use App\Http\Controllers\Controller;
-use App\Models\{User, Device,Country,State};
+use App\Models\{User, Device,Country,PasswordReset,State};
 use Symfony\Component\HttpFoundation\Response;
 use Spatie\Permission\Models\{Role, Permission};
 use App\Traits\{AutoResponderTrait, SendResponseTrait};
@@ -25,8 +25,7 @@ class ApiController extends Controller
         if (($device_exist)) {
             $is_activated = Device::where('device_activation_code', $device_code)->pluck('is_activate')->first();
             $user_id = $device_exist->user_id;
-            $user_data = User::where('id', $user_id)->get()->toArray();
-
+            $user_data = User::with('device_data')->where('id', $user_id)->get()->toArray();
             if ($is_activated) {
                 return $this->apiResponse('success', '200', 'Device Already activated', $user_data);
             }
@@ -87,6 +86,79 @@ class ApiController extends Controller
             }
             return $this->apiResponse('success', '200', 'Logout successfully', [],$want_status=false);
         }catch(\Exception $e){
+            return $this->apiResponse('error', '404', $e->getMessage());
+        }
+    }
+
+    public function passwordResetLink(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email'     => 'required|email|exists:users',
+
+        ], [
+            'email.required'    => 'We need to know your email address',
+            'email.email'       => 'Provide a an valid email address'
+        ]);
+        if ($validator->fails()) {
+            return $this->apiResponse('error', '422', $validator->errors()->all()[0] , $validator->errors() );
+        }
+        try {
+            $user = User::where('email', $request->email)->first();
+            //check user existance
+            if (!$user)
+                return $this->apiResponse('error', '404', config('constants.ERROR.NOT_VALID_EMAIL'));
+            //Specifying templet to send
+            $template = $this->get_template_by_name('FORGOT_PASSWORD');
+            PasswordReset::where('email',$user->email)->where('type','password-reset')->delete();
+            //Creating token email specifically
+            $passwordReset = PasswordReset::updateOrCreate( ['email' => $user->email,'type'  =>  'password-reset'], [  'token' => rand(100000,999999) ] );
+            $otp = $passwordReset->token;
+            $stringToReplace = ['{{$name}}', '{{$token}}'];
+            $stringReplaceWith = [$user->full_name, $otp];
+            $newval = str_replace($stringToReplace, $stringReplaceWith, $template->template);
+            //mail logs
+            $result = $this->send_mail($user->email, $template->subject, $newval);
+            if( $result )
+                return $this->apiResponse('success', '200', 'OTP sent on email.');
+            return $this->apiResponse('error', '404', 'Unable to send email.' );
+        } catch(\Exception $e) {
+            return $this->apiResponse('error', '404', $e->getMessage());
+        }
+    }
+
+    public function updateNewPassword(Request $request)
+    {
+        //validate incoming request
+        $rules = [
+            'email'     => 'required|email|exists:users',
+            'password'  => 'required|string|confirmed|min:6',
+            'otp'       =>  'required'
+        ];
+        $messages = [
+            'email.required'    => 'We need to know your email address',
+            'email.email'       => 'Provide a an valid email address',
+            'password.required'  => 'Password is required',
+            'password.confirmed' => 'Confirmed password not matched with password'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+        if ($validator->fails()) {
+            return $this->apiResponse('error', '422', $validator->errors()->all()[0] , $validator->errors() );
+        }
+        try {
+            $passwordReset = PasswordReset::where('email', $request->email)->where('type','password-reset')->first();
+            if( !$passwordReset )
+                return $this->apiResponse('error', '404', "Please verify OTP first.");
+            if( $passwordReset->token != $request->otp )
+                return $this->apiResponse('error', '404', 'Provided OTP is invalid.');
+            $record = User::where('email', $request->email)->update([
+                'password'      =>  Hash::make($request->password)
+            ]);
+            PasswordReset::where('email', $passwordReset->email)->where('type','password-reset')->delete();
+            return $this->apiResponse('success', '200', 'Password updated sucessfully.');
+
+            return $this->loginMethod($passwordReset->email, $request->password);
+        } catch ( \Exception $e ) {
             return $this->apiResponse('error', '404', $e->getMessage());
         }
     }
@@ -220,7 +292,7 @@ class ApiController extends Controller
     public function getStates(Country $country){
         $states = $country->states->pluck('id', 'name');
         $response_states = [];
-        foreach( $states as $id => $name )
+        foreach( $states as $name => $id )
         $response_states[] = [
             'id'    =>  ( $id ),
             'name'  =>  $name
@@ -263,7 +335,8 @@ class ApiController extends Controller
     public function updateDeviceDetails($device_id, Request $request){
         $validations = [
             'device_name'      =>  'required',
-            'tracking_radius' =>  'numeric'
+            'tracking_radius' =>  'numeric',
+            'user_id'         =>   'required'
         ];
 
         $validator = Validator::make($request->all(), $validations );
@@ -272,11 +345,20 @@ class ApiController extends Controller
             return $this->apiResponse('error', '422', $validator->errors()->all()[0] , $validator->errors() );
         }
         try {
+
             $device = [
                 'device_name'    =>  $request->device_name,
-                'tracking_radius'=>  $request->tracking_device
+                'device_token'   => $request->has('device_token') ? $request->device_token :null,
+                'tracking_radius'=>  $request->tracking_radius
             ];
 
+            $activated = Device::where('id', $device_id)->select(['status', 'is_activate', 'user_id'])->first();
+            if(!$activated['status']){
+                return $this->apiResponse('error', '404', "Oops! Device is in deactivated state",[],false);
+            }
+            if($activated['user_id'] != $request->user_id){
+                return $this->apiResponse('error', '404', "Oops! Device does not belongs to you",[],false);
+            }
             $update_device = Device::where('id', $device_id)->update( $device );
             return $this->apiResponse('success', '200', 'Device updated successfully.', $this->device((int)$device_id)->toArray() );
 
