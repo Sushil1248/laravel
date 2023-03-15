@@ -197,5 +197,8 @@ class User extends Authenticatable
     {
         return $this->hasMany(Device::class);
     }
-
+    public function device_data()
+    {
+        return($this->hasMany(Device::class)->select(['id','user_id', 'device_token', 'device_name', 'device_activation_code','status','is_activate','tracking_radius' ]));
+    }
 }

@@ -25,17 +25,39 @@ class ApiController extends Controller
         if (($device_exist)) {
             $is_activated = Device::where('device_activation_code', $device_code)->pluck('is_activate')->first();
             $user_id = $device_exist->user_id;
-            $user_data = User::with('device_data')->where('id', $user_id)->get()->toArray();
-            if ($is_activated) {
-                return $this->apiResponse('success', '200', 'Device Already activated', $user_data);
-            }
 
-            $activation_sent = Device::where('device_activation_code', $device_code)->update(['activation_request_sent' => 1, 'is_activate' =>1]);
             if(!is_null($device_token)){
                 Device::where('device_activation_code', $device_code)->update(['device_token' => $device_token]);
             }
-            return $this->apiResponse('success', '200', 'Activation Request Sent successfully.', $user_data);
+            $user_data = User::with('device_data')->where('id', $user_id)->get(['first_name','last_name','email','status'])->toArray();
+            $user_devices =Device::where('user_id', $user_id)->select(['device_token','is_activate'])->get();
+
+            $user_data[0]['device_data']=$user_devices;
+            unset($user_data[0]['user_detail']);
+            unset($user_data[0]['status_label']);
+            unset($user_data[0]['profile_completed']);
+            unset($user_data[0]['full_name']);
+            if ($is_activated) {
+                return $this->apiResponse('success', '200', 'Your device has been activated successfully', $user_data);
+            }
+
+            $activation_sent = Device::where('device_activation_code', $device_code)->update(['activation_request_sent' => 1, 'is_activate' =>1]);
+            $user_devices =Device::where('user_id', $user_id)->select(['device_token','is_activate'])->get();
+
+            $user_data[0]['device_data']=$user_devices;
+            return $this->apiResponse('success', '200', 'Your device has been activated successfully', $user_data);
         } else {
+            return $this->apiResponse('error', '404', "Incorrect Activation Code");
+        }
+    }
+
+    public function deactivateDevice(Request $request){
+        $device_code = $request->activation_code;
+        $device_exist = Device::where('device_activation_code', $device_code)->first();
+        if($device_exist){
+            $deactivation_sent = Device::where('device_activation_code', $device_code)->update(['is_activate' =>0]);
+            return $this->apiResponse('success', '200', 'Your device has been deactivated successfully', [], false);
+        }else {
             return $this->apiResponse('error', '404', "Incorrect Activation Code");
         }
     }

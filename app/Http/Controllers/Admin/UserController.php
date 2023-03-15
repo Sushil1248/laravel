@@ -483,9 +483,13 @@ class UserController extends Controller
 
         $data = [
             "registration_ids" => $firebaseToken,
-            "notification" => [
-                "title" => $request->title,
-                "body" => $request->message,
+            "data" => [
+                "title" => "IoT Tracking",
+                "body" => "IoT Tracking Applcation",
+                "custom_data" => [
+                    "title"=>$request->title,
+                    "message"=> $request->message
+                ]
             ],
         ];
         $dataString = json_encode($data);

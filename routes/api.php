@@ -21,6 +21,8 @@ Route::post('resend-verification-link',[AuthController::class,'resendVerificatio
 // API controller
 Route::post('login', [ApiController::class,'login']);
 Route::post('activate/device',[ApiController::class,'activateDevice']);
+Route::post('deactivate/device',[ApiController::class,'deactivateDevice']);
+
 Route::post('forgot/password', [ApiController::class,'passwordResetLink']);
 Route::post('reset/password', [ApiController::class,'updateNewPassword']);
 Route::get('get-countries',[ApiController::class,'getCountries']);
