@@ -1,0 +1,9 @@
+/*rfx-listing*/
+@media screen and (max-width: 480px) {
+.order-list-inner ul.tabs a, .open-text, .error-text, .user-text {
+    white-space: nowrap;
+}
+.order-list-inner ul.tabs {
+    overflow-x: scroll;
+}
+}

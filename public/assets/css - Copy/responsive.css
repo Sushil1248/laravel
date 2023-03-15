@@ -1,0 +1,667 @@
+
+/*==responsive===*/
+@media screen and (max-width: 1620px) {
+    ul.navbar-nav {
+        width: 60%;
+    }
+    ul.navbar-nav {
+        grid-gap: 15px;
+    }
+    .detail-tabs {
+        max-width: 20%;
+        flex: 0 0 20%;
+    }
+    .tab-content {
+        max-width: 80%;
+        flex: 0 0 80%;
+    }
+    .details-content {
+        grid-template-columns: 1.5fr 0.8fr 1fr;
+    }
+    .left-text h3 {
+        font-size: 16px;
+        line-height: 20px;
+    }
+  .right-text p.grey-text {
+        min-width: 100px;
+    }
+    .detailed-screen-tabs table th, .detailed-screen-tabs table td {
+        padding: 13px 18px !important;
+    }
+ 
+    .tabs-screen-tiltes {
+        flex-wrap: wrap;
+        min-height: 50px;
+    }
+    .icon-text {
+        padding-left: 0px;
+    }
+    .details-content.detailed-screen-content {
+        grid-template-columns: 1.5fr 2fr 0.8fr 0.8fr ;
+    }
+    .detailed-screen-content span.name-text {
+        min-width: 100px;
+    }
+    .order-listing .tab-content {
+        max-width: 100%;
+        flex: 0 0 100%;
+     
+    }
+}
+@media screen and (max-width: 1480px) {
+    a.navbar-brand {
+        padding-left: 10px;
+        padding-right: 0px;
+    }
+    form.form-inline input, form.form-inline {
+        max-width: 180px;
+    }
+    ul.navbar-nav {
+        width: 65%;
+    }
+    ul.navbar-nav li a {
+        font-size: 12px;
+    }
+    a.navbar-brand img {
+        max-width: 115px;
+    }
+    ul.navbar-nav {
+        grid-gap: 10px;
+    }
+    .left-detail-content {
+        flex-wrap: wrap;
+    }
+    .right-btns li button {
+        font-size: 12px;
+    }
+    .tab-content-inner h2 {
+        font-size: 17px;
+    }
+    span.item-number {
+        font-size: 12px;
+    }
+    .tab-content-inner {
+        padding-bottom: 50px;
+    }
+    .right-btns li button img {
+        margin-left: 5px;
+        max-width: 15px;
+    }
+    .details-content {
+        display: flex;
+        grid-template-columns: inherit;
+        flex-wrap: wrap;
+        grid-gap: 20px;
+    }
+    .detail-item.item-1 {
+        width: 100%;
+    }
+    .detail-item.item-2, .detail-item.item-3 {
+        width: 48.5%;
+    }
+    .rfx-detail-content .item-3 {
+        position: unset;
+        width: 48.5%;
+    }
+    .detailed-screen-content .item-3 {
+        position: unset;
+        width: 25%;
+        text-align: end;
+    }
+    .auction-starts {
+        width: 21%;
+    }
+    .table-left table {
+        white-space: nowrap;
+        display: block;
+    }
+    .table-left, .table-right {
+        max-width: 50%;
+        flex: 0 0 50%;
+    }
+    .shipmemnt-details-item.item1 {
+        max-width: 60%;
+        flex: 0 0 60%;
+    }
+    .shipmemnt-details-item.item2 {
+        max-width: 40%;
+        flex: 0 0 40%;
+    }
+}
+
+@media screen and (max-width: 1199px) {
+ 
+    .navbar-collapse::after {
+        position: absolute;
+        content: '';
+        width: 14px;
+        height: 14px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url(../images/cross.svg);
+        top: 18px;
+        right: 18px;
+    }
+    .navbar-collapse.collapse.show {
+        transform: translateX(0);
+    }
+    .navbar-collapse {
+        position: fixed;
+        left: 0;
+        width: 100%;
+        max-width: 400px;
+        top: 0;
+        padding: 40px;
+        z-index: 9999;
+        background: #fff;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: all .3s ease;
+        bottom: 0;
+        box-shadow: 0px 1px 3px rgb(16 24 40 / 10%), 0px 1px 2px rgb(16 24 40 / 6%);
+    }
+    .collapse.show .form-inline, .collapse.show form.form-inline input {
+        max-width: 100%;
+    }
+    
+    .collapse.show ul.right-icons {
+        padding-left: 0px;
+        padding-top: 10px;
+    }
+    .slider-image img {
+        width: 100%;
+    }
+    .vendor-slider::before {
+        width: 194px;
+        height: 258px;
+    }
+    .vendor-slider::after {
+        width: 210px;
+    }
+    .login-inner-content figure {
+        margin-bottom: 30px;
+    }
+    a.navbar-brand {
+        padding-left: 0px;
+        padding-right: 0px;
+        margin: 0px;
+    }
+    .list-items .table thead th, .list-items td {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.show a.nav-link {
+        padding: 10px 15px;
+        color:rgba(0, 0, 0, 0.54) !important;
+    }
+    .collapse.show ul.navbar-nav {
+        width: 100%;
+    }
+    li.nav-item.active a.nav-link {
+        color: #fff !important;
+    }
+    .detail-tabs {
+        max-width: 22%;
+        flex: 0 0 22%;
+    }
+    .tab-content {
+        max-width: 78%;
+        flex: 0 0 78%;
+    }
+    .tab-content-inner {
+        flex-wrap: wrap;
+    }
+     .right-btns ul {
+        padding: 10px 0 0 0;
+    }
+    .detail-table table {
+        display: block;
+    }
+    .table-responsive {
+        white-space: nowrap;
+    }
+    .rfx-details .right-btns ul {
+        padding: 0px;
+    }
+    .detailed-screen-content .item-3, .auction-starts {
+        width: 22%;
+    }
+    .detailed-screen-tabs .tab-context {
+        flex-wrap: wrap;
+    }
+    .table-left, .table-right {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .tab-context .detaied-tab-context:first-child {
+        margin-right: 0px;
+    }
+    .table-left table {
+        display: table !important;
+    }
+    .advance-shipment-notice table {
+        display: inline-table;
+    }
+}
+
+@media screen and (max-width: 991px) {
+    .login-header {
+        font-size: 30px;
+    } 
+    .custom-control label.custom-control-label, .login-inner-content .border-link {
+        font-size: 12px;
+    }
+    .btn, .login-inner-content .form-group .form-control{
+        font-size: 14px;
+    }
+    .google-btn img {
+        max-width: 20px;
+    }
+    .copyright-text {
+        flex-wrap: wrap;
+        width: 100%;
+        justify-content: center !important;
+        padding: 8px 27px;
+    }
+    .copyright-text-right ul li {
+        padding: 0px 10px;
+    }
+    .copyright-text-right li a {
+        font-size: 12px;
+    }
+    .vendor-slider {
+        padding: 70px 30px;
+    }
+    .Login-form, .vendor-slider {
+        min-height: calc(100vh - 40px);
+        padding-bottom: 40px;
+    }
+   
+    .list-header form.form-inline, .list-header form.form-inline input {
+        max-width: 260px;
+        margin: 0px !important;
+    }
+    main {
+        padding-bottom: 65px;
+    }
+    .detail-item-content {
+        flex-wrap: wrap;
+    }
+    .left-text {
+        border-right: 0;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .right-text {
+        padding-left: 0;
+    }
+    .detail-item.item-2, .detail-item.item-3 {
+        width: 100%;
+    }
+    .detail-tabs {
+        max-width: 30%;
+        flex: 0 0 30%;
+    }
+    .tab-content {
+        max-width: 70%;
+        flex: 0 0 70%;
+    }
+    .rfx-detail-content .item-3 {
+        width: 100%;
+        text-align: center;
+    }
+    .detail-table {
+        padding-top: 30px;
+    }
+    .table-left table {
+        display: block !important;
+    }
+    .detailed-screen-content .item-3, .auction-starts {
+        width: 47%;
+    }
+    .auction-starts {
+        justify-content: flex-start;
+    }
+    .table-left .detailed-screen {
+        width: 100%;
+    }
+    
+    .tabs-screen-tiltes {
+        min-height: unset;
+    }
+    .table-left {
+    padding-bottom: 20px;
+    }
+   .icon-text {
+        flex-wrap: wrap;
+    }
+    .Contract-details ul {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr;
+        grid-gap: 10px;
+    }
+    .detail-item-1, .detail-item-2 {
+        max-width: 100%;
+        flex: 0 0 100%;
+        margin-top: 0px;
+    }
+    .shipmemnt-details-inner {
+        flex-wrap: wrap;
+    }
+    .shipmemnt-details-item.item1 {
+        max-width: 65%;
+        flex: 0 0 65%;
+    }
+    .shipmemnt-details-item.item2 {
+        max-width: 35%;
+        flex: 0 0 35%;
+    }
+   
+}
+@media screen and (max-width: 767px) {
+.advance-shipment-notice table {
+    display: block;
+    white-space: nowrap;
+}
+}
+@media screen and (max-width: 767px) {
+    .vendor-slider {
+        display: none;
+    }
+    .Login-form {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+  
+.copyright-text-left {
+    width: 100%;
+    text-align: center;
+}
+.Login-form {
+    min-height: calc(100vh - 62px);
+    padding-bottom: 60px;
+}
+.list-header {
+    flex-wrap: wrap;
+    justify-content: flex-start !important;
+}
+.list-header button.form-control-feedback {
+    padding: 0px;
+    margin: 0px;
+    /* height: unset; */
+    box-shadow: none;
+    line-height: 20px;
+}
+.list-header form.form-inline, .list-header form.form-inline input {
+    max-width: 100%;
+    margin-bottom: 12px !important;
+}
+.list-header {
+    padding: 15px 0px 0px;
+}
+.list-filters ul {
+    padding-left: 0px;
+}
+.filter-sidebar {
+    width: 90%;
+}
+.filter-listing {
+    margin-right: 10px;
+}
+.input-group-text, .input-group input {
+    font-size: 14px;
+}
+.subtotal-price price {
+    font-size: 16px;
+}
+.tab-content-inner {
+    padding-bottom: 30px  !important;
+}
+.detail-tabs a.nav-link {
+    font-size: 12px;
+}
+.detail-text p {
+    font-size: 14px;
+}
+.detail-tabs .nav-tabs li.nav-item {
+    margin-bottom: 2px;
+}
+.tab-content {
+    padding-top: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.right-btns ul {
+    flex-wrap: wrap;
+}
+.right-btns li {
+    margin-bottom: 10px;
+}
+.list-title {
+    padding: 12px 0px 15px;
+}
+.right-text h5 {
+    font-size: 13px;
+}
+.left-text {
+    margin-bottom: 12px;
+}
+.shipmemnt-details-item.item1, .shipmemnt-details-item.item2 {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+.detail-item-1 {
+    flex-wrap: wrap;
+}
+.shipmemnt-details-item.item2 {
+    margin-bottom: 16px;
+}
+}
+@media screen and (max-width: 649px){
+.rfx-details .right-btns ul {
+    padding: 10px 0px 0px 0px;
+}
+.left-detail-content {
+    padding-right: 20px;
+}
+}
+@media screen and (max-width: 575px){
+  
+    .collapse.show .form-inline button {
+        margin: 0px;
+        height: unset;
+        padding: 0px;
+        box-shadow: none;
+        top: -3px;
+    }
+    .list-header button.form-control-feedback {
+        height: unset;
+    }
+    .rfx-detail-content .detail-text ul li {
+        flex-wrap: wrap;
+    }
+    span.name-text {
+        min-width: 100%;
+    }
+    span.contact-detail {
+        padding-left: 0;
+    }
+    .left-detail-content, .right-text ul li {
+        flex-wrap: wrap;
+    }
+    .detail-tabs {
+        max-width: 30%;
+        flex: 0 0 30%;
+        position: absolute;
+        top: 0px;
+        left: 0;
+        background: #fff;
+        width: 100%;
+        max-width: 230px;
+        z-index: 99;
+        padding: 20px;
+        height: 100%;
+        box-shadow: 0px 1px 3px rgb(16 24 40 / 10%), 0px 1px 2px rgb(16 24 40 / 6%);
+    }
+    .tab-content {
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .detail-table {
+        padding-top: 30px;
+    }
+ 
+}
+@media screen and (max-width: 480px) {
+    .list-filters, .list-filters ul {
+        width: 100%;
+    } 
+    .login-header {
+        font-size: 28px;
+    }
+    .login-inner-content h6 {
+        font-size: 14px;
+        line-height: 20px;
+    }
+    .copyright-text-left p {
+        padding-right: 0px;
+        text-align: center;
+        font-size: 10px;
+    }
+    .copyright-text-right ul li {
+        padding: 0px 5px;
+    }
+    .copyright-text-right li a {
+        font-size: 10px;
+    }
+    .copyright-text {
+        padding: 8px 20px;
+    }
+    .remember-text {
+        margin-bottom: 0.5rem!important;
+        margin-top: 0.5rem!important;
+    }
+    .sign-in {
+        padding-top: 0px !important;
+    }
+    .dont-account {
+        margin: 0px 0 10px;
+    }
+    .dont-account {
+        font-size: 13px;
+    }
+    nav.navbar {
+        padding: 0px 15px;
+    }
+    .navbar-toggler {
+        padding: 0.25rem;
+        font-size: 1rem;
+    }
+    ul.tabs {
+        flex-wrap: wrap;
+    }
+
+    ul.tabs li {
+        width: 100%;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+    }
+    .list-filters ul {
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+    }
+    .list-filters ul li.filters-btn {
+        width: 100%;
+        margin-top: 15px;
+    }
+    .filter-listing {
+        padding: 0 20px 0 30px;
+    }
+    .input-label, .input-group-text, .input-group input {
+        font-size: 12px;
+        line-height: 20px;
+    }
+    .input-group-text, .input-group input {
+        padding: 6px 14px;
+    }
+
+    .input-group {
+        min-height: 32px;
+    }
+    .filter-listing-item {
+        margin-bottom: 30px;
+    }
+    .btn, .login-inner-content .form-group .form-control {
+        font-size: 12px;
+    }.label-flex svg {
+        width: 14px;
+    }
+    .purchase-group-result li {
+        font-size: 11px;
+        line-height: 20px;
+        padding: 4px 12px;
+        margin-bottom: 10px;
+    }
+    .custom-control.custom-checkbox {
+        margin-bottom: 0rem!important;
+    }
+    form.form-inline input {
+        font-size: 13px;
+    }
+    
+    .right-btns ul{
+        flex-wrap: wrap;
+    }
+    .right-btns li {
+        margin-bottom: 10px;
+    }
+    .tab-content-inner h2 {
+        font-size: 16px;
+        line-height: 20px;
+    }
+    .navbar-collapse.collapse.show {
+        padding-left: 25px;
+        max-width: 370px;
+    }
+    .list-filters ul li {
+        padding-right: 6px;
+    }
+    .filter-sidebar {
+        width: 88%;
+    }
+    .subtotal-price {
+        margin-bottom: 25px;
+        max-width: 100%;
+    }
+    .footer-content {
+        margin-bottom: 45px;
+    }
+    .rfx-detail-content .detail-text ul li {
+        grid-gap: 3px;
+    }
+}
+@media screen and (max-width: 380px) {
+    .copyright-text-right ul {
+        flex-wrap: wrap;
+    }
+    .copyright-text-right ul li {
+        width: 50%;
+        border: 0px;
+    }
+    .copyright-text-right ul li:last-child {
+     border-right: 0px;
+    }
+    .list-content h2 {
+        font-size: 16px;
+    }
+    .list-filters li h6 {
+        font-size: 13px;
+    }
+    .tab-content {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .tab-content-inner h2 {
+        padding-top: 10px;
+    }
+}

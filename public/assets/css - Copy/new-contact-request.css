@@ -1,0 +1,88 @@
+/* New Contact Request CSS*/
+.custom-select-1 {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+    background-image: url(../images/dropdown-select.svg) !important;
+    background-repeat: no-repeat !important;
+    background-position: right 20px center !important;
+    padding: 10px 14px;
+    border-bottom-right-radius: 8px;
+    border-top-right-radius: 8px;
+    border: 1px solid #D0D5DD;
+    box-sizing: border-box;
+    box-shadow: 0px 1px 2px rgb(16 24 40 / 5%);
+    font-family: 'Inter';
+    font-size: 16px;
+    line-height: 24px;
+    color: #344054;
+    background: #F9FAFB;
+}
+.new-contact-request .input-group label {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    font-family: 'Inter';
+    font-size: 16px;
+    line-height: 24px;
+    color: #667085 !important;
+}
+.new-contact-request form input::placeholder {
+    opacity: 1;
+    color: #344054;
+}
+.fax-dropdown::before {
+    position: absolute;
+    content: '';
+    width: 11px;
+    height: 6px;
+    background-image: url(../images/us-d.svg);
+    top: 20px;
+    right: 5px;
+    background-repeat: no-repeat;
+    background-position: center;
+ 
+}
+.fax-dropdown {
+    background: #F9FAFB;
+    border: 1px solid #D0D5DD;
+    box-sizing: border-box;
+    font-family: 'Inter';
+    color: #101828;
+    padding: 10px 25px 10px 14px;
+    border-right: 0px;
+}
+.email-checkbox {
+    padding: 0px;
+    border: 0px;
+    margin-top: 5px;
+}
+.email-checkbox .custom-mail-text, .email-checkbox .custom-mail-text b {
+    font-family: 'Inter';
+    font-size: 14px;
+    line-height: 20px;
+    color: #667085;
+}
+.custom-mail-text {
+    padding-left: 23px;
+}
+ .custom-checkbox.email-checkbox .custom-control-label::before {
+    background: #F2F4F7;
+}
+.fax-dropdown-menu .dropdown-item {
+    padding: 6px 3px;
+}
+/* responsive */
+@media screen and (max-width: 480px) {
+.new-contact-request .input-group label, .custom-select-1 {
+    font-size: 14px;
+}
+.custom-select-1 {
+padding: 10px 30px 10px 14px;
+background-position: right 10px center !important;
+}
+}

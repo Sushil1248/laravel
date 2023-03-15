@@ -1,0 +1,126 @@
+/* CSS Start Here */
+
+.left-content {
+    align-items: center;
+    justify-content: space-between;
+}
+.right-btns {
+    padding-left: 20px;
+}
+.Invoice-tabs ul.tabs li {
+    padding-bottom: 0px !important;
+}
+
+.Invoice-tabs ul.tabs li a {
+    padding-bottom: 1rem;
+    background-color: transparent !important;
+    border: 0px;
+}
+.right-btns .custom-dropdown a.nav-link img {
+    margin-left: 10px;
+}
+/*========== Invoice-table-css start here ===========*/
+.invoice-tab-content {
+    max-width: 100% !important;
+    flex: 0 0 100% !important;
+    border: 0px;
+    padding: 0px;
+    background: transparent;
+}
+.created-title {
+    display: flex;
+    align-items: center;
+    grid-gap: 7px;
+    color: #464E5F !important;
+    color: #464E5F !important;
+    font-family: 'Lato-Bold' !important;
+    font-weight: inherit !important;
+}
+.invoice-tab-content .list-items span.open-text {
+    min-width: 120px;
+    display: inline-block;
+    margin: auto;
+}
+span.open-text.collaborated {
+    background: #F0F9FF;
+    color: #026AA2;
+}
+.open-text.collaborated  .dot {
+    background: #0BA5EC;
+}
+th.created-title {
+    border-bottom: 0px !important;
+}
+.invoice-tab-content td:nth-child(6) {
+    text-align: center;
+}
+.invoice-tab-content td:nth-child(6) price {
+    font-family: 'Lato-bold';
+}
+/* ===============Invoice-table-css End here============= */
+
+/* responsive css */
+
+@media screen and (max-width: 767px) {
+    .list-header {
+    flex-wrap: wrap;
+}
+.list-header ul {
+    padding-left: 0px;
+}
+}
+
+@media screen and (max-width: 575px) {
+    .status-text {
+        padding-left: 10px !important;
+    }
+    .purchase-order-date {
+        padding-right: 12px !important;
+    }
+    th.status-text {
+        text-align: center !important;
+    }
+.left-content {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding-bottom: 10px;
+}
+.right-btns {
+    padding-left: 0px;
+    padding-right: 16px;
+}
+.Invoice-tabs ul.tabs li a {
+    margin-bottom: 0px;
+    padding-bottom: 16px;
+}
+.heading-text {
+    display: none !important;
+}
+ul.tabs {
+    padding: 0px 2px;
+}
+/* mobile-table */
+.tag-text {
+    background: #F2F4F7;
+    border-radius: 16px;
+    padding: 2px 8px 2px 6px;
+    display: inline-block;
+    min-width: 49px;
+    font-family: 'Inter-Medium';
+    font-size: 12px;
+    line-height: 18px;
+    text-align: center;
+    color: #344054;
+    margin-left: 6px;
+}
+.tag-text img {
+    max-width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
+
+.invoice-desktop-text {
+    display: none;
+}
+}

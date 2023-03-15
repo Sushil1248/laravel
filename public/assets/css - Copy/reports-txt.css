@@ -1,0 +1,67 @@
+/* reports css */
+.white-sectionbox {
+    text-align: center;
+    padding: 16px 30px 20px;
+    background-color: #fff;
+    box-shadow: 0px 1px 3px rgb(16 24 40 / 10%), 0px 1px 2px rgb(16 24 40 / 6%);
+    border-radius: 0px 0px 8px 8px;
+    margin-bottom: 35px;
+}
+.sectionbox-title {
+    font-family: "Lato-bold";
+    font-size: 18px;
+    line-height: 28px;
+    color: #1B283F;
+    margin-bottom: 3px;
+}
+.sectionbox-desc {
+    font-family: "Lato";
+    font-size: 14px;
+    line-height: 18px;
+    color: #80808F;
+    max-width: 700px;
+    margin: 0 auto;
+}
+.boxes-listing {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.box-item {
+    display: block;
+    background: #FFFFFF;
+    box-shadow: 0px 2px 2px rgb(36 37 38 / 8%);
+    border-radius: 5px;
+    text-align: center;
+    padding: 25px 12px;
+    max-width: 150px;
+    flex: 0 0 150%;
+    margin: 0 12px;
+    height: 100%;
+    transition: .7s ease all;
+}
+.box-img {
+    margin-bottom: 12px;
+}
+.box-item h5 {
+    font-family: "Lato";
+    font-size: 14px;
+    line-height: 16px;
+    color: rgba(9, 30, 66, 0.87);
+    margin-bottom: 0;
+}
+.box-img img {
+    transition: .4s ease all;
+    transform-origin: left;
+}
+.box-item:hover {
+    box-shadow: 5px 12px 20px rgb(36 37 38 / 13%);
+}
+.box-item:hover img {
+    transform: rotate(10deg);
+}
+@media screen and (max-width: 360px) {
+.box-item {
+    max-width: 130px;
+}
+}
