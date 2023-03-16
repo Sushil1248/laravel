@@ -16,13 +16,16 @@
                     </p>
                 </div>
             </div>
+            @php
+                $is_notify = checkDeviceTokenExists() ? "hide" : "show";
+            @endphp
             @can('user-add')
             <div class="right-btns">
                 <div class="d-flex">
                     <a class="nav-link btn navy-blue-btn open-section " data-target="create-device-popup" href="javascript:void(0)">
                     Add Device
                     </a>
-                    <a title="Send Notification to all Devices" onclick="event.stopPropagation()" class="btn btn-sm open-section"  data-attribute="user_id" data-pass-id={{jsencode_userdata($userData->id)}}  data-target="push-notification-popup" href="javascript:void(0)" >
+                    <a title="Send Notification to all Devices" onclick="event.stopPropagation()" class="btn btn-sm open-section"  data-attribute="user_id" data-pass-id={{jsencode_userdata($userData->id)}} data-notify={{$is_notify}} data-target="push-notification-popup" href="javascript:void(0)" >
                         <i class="fas fa-bell" style="color:#33383a"></i>
                     </a>
                 </div>
@@ -72,6 +75,13 @@
                                 </thead>
                                 <tbody>
                                     @forelse ($data as $singleDevice)
+                                    @php
+                                        if($singleDevice->device_token == null){
+                                            $is_notify = "show";
+                                        }else{
+                                            $is_notify = "hide";
+                                        }
+                                    @endphp
                                     <tr>
                                         <td class="purchase-order-date">
                                             <a href="#" class="open-section get-user-detail" data-user-id="{{ jsencode_userdata($singleDevice->id) }}" data-toggle="popover" title="Device Token" data-content="{{$singleDevice->device_token}}" >
@@ -91,7 +101,9 @@
                                             <input data-id="{{ jsencode_userdata($singleDevice->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleDevice->status ? 'checked' : '' }}>
                                         </td>
                                         <td class="text-center purchase-order-date">
-                                            <a title="Send Notification" onclick="event.stopPropagation()" class="send-push-notification open-section"   data-attribute="device_id" data-pass-id={{jsencode_userdata($singleDevice->id)}}  data-pass-title ="{{$singleDevice->device_name}}" data-target="push-notification-popup" href="javascript:void(0)" >
+                                            <a title="Send Notification" onclick="event.stopPropagation()" class="send-push-notification open-section"   data-attribute="device_id" data-pass-id={{jsencode_userdata($singleDevice->id)}}  data-pass-title ="{{$singleDevice->device_name}}"
+                                                data-notify = {{$is_notify}}
+                                                data-target="push-notification-popup" href="javascript:void(0)" >
                                                 <i class="fas fa-bell" style="color:#33383a"></i>
                                             </a>
                                             @can('user-delete')

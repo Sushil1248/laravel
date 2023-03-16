@@ -14,6 +14,11 @@ if (!function_exists('changeDateFormat')) {
         return \Carbon\Carbon::parse($date)->format($format);
     }
 }
+if (!function_exists('checkDeviceTokenExists')) {
+    function checkDeviceTokenExists() {
+        return DB::table('devices')->whereNotNull('device_token')->exists();
+    }
+}
 
 if (!function_exists('SendSMS')) {
     function SendSMS($number = null, $message = null){
@@ -208,7 +213,7 @@ if (!function_exists('pluralUserType')) {
 if (!function_exists('getParentCompany')) {
     /**
     * Get parent company of current login user
-    * @return user id 
+    * @return user id
     */
     function getParentCompany(){
         if( Auth::user()->hasRole('Company') )
@@ -275,7 +280,7 @@ if (!function_exists('isUserStatusActive')) {
     Created Date:   2022-08-15 (yyyy-mm-dd)
     Purpose:        empty inputs from request which are empty
     Params:         [userid]
-*/  
+*/
 if( !function_exists('removeEmptyElements') ){
     function removeEmptyElements( array $array ){
         return array_filter( $array , function( $value ){
