@@ -230,7 +230,7 @@
                         </li>
 
                         <li>
-                            <p>Company</p>
+                            <p>Company<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
                                 <select class="custom-select select-company" name="company">
                                     <option value="">Select company</option>
