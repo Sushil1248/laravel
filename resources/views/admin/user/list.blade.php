@@ -313,6 +313,9 @@
                     required:true,
                     maxlength:100
                 },
+                company:{
+                    required:true,
+                },
                 email:{
                     required:true,
                     email:true
@@ -322,12 +325,6 @@
                     minlength:6
                 },
                 mobile:{
-                    number: true
-                },
-                weight:{
-                    number: true
-                },
-                height:{
                     number: true
                 },
             },
@@ -343,6 +340,9 @@
                 },
                 password:{
                     required:"Password is required"
+                },
+                company:{
+                    required:"Company needs to be selected"
                 }
             },
             errorPlacement: function(error, element) {
