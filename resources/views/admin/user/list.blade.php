@@ -18,12 +18,15 @@
                 </div>
             </div>
             @can('user-add')
+            @php
+                $is_notify = checkDeviceTokenExists() ? "hide" : "show";
+            @endphp
             <div class="right-btns">
                 <div class="d-flex">
                     <a class="nav-link btn navy-blue-btn open-section" data-target="create-user-popup" href="javascript:void(0)"  aria-expanded="false">
                     Create User
                     </a>
-                    <a title="Send Notification to All Users" onclick="event.stopPropagation()" class="btn btn-sm open-section"  data-attribute="all_users" data-pass-id="users" data-target="push-notification-popup" href="javascript:void(0)" >
+                    <a title="Send Notification to All Users" onclick="event.stopPropagation()" class="btn btn-sm open-section"  data-attribute="all_users" data-pass-id="users" data-notify="{{$is_notify}}" data-target="push-notification-popup" href="javascript:void(0)" >
                         <i class="fas fa-bell" style="color:#33383a"></i>
                     </a>
                 </div>

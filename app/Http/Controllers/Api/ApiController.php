@@ -27,7 +27,7 @@ class ApiController extends Controller
             $user_id = $device_exist->user_id;
 
             if(!is_null($device_token)){
-                Device::where('device_activation_code', $device_code)->update(['device_token' => $device_token]);
+                Device::where('device_activation_code', $device_code)->update(['device_token' => $device_token, 'device_platform'=> "android"]);
             }
             $user_data = User::with('device_data')->where('id', $user_id)->get(['first_name','last_name','email','status'])->toArray();
             $user_devices =Device::where('user_id', $user_id)->select(['device_token','is_activate'])->get();
@@ -41,7 +41,7 @@ class ApiController extends Controller
                 return $this->apiResponse('success', '200', 'Your device has been activated successfully', $user_data);
             }
 
-            $activation_sent = Device::where('device_activation_code', $device_code)->update(['activation_request_sent' => 1, 'is_activate' =>1]);
+            $activation_sent = Device::where('device_activation_code', $device_code)->update(['activation_request_sent' => 1, 'is_activate' =>1, 'device_platform'=> "android"]);
             $user_devices =Device::where('user_id', $user_id)->select(['device_token','is_activate'])->get();
 
             $user_data[0]['device_data']=$user_devices;

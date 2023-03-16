@@ -246,6 +246,27 @@ $(document).ready(function(){
     $('.open-section').click(function (e) {
         if( $('.filter-side-drawer#' + $(this).data("target") ).length ){
             e.preventDefault();
+
+            let show_toast = "hide";
+            let toast_message = "Oops! seems like the device is not activate yet."
+
+            if($(this).data('notify')!==undefined) {
+                show_toast=$(this).data('notify')
+            }
+            console.log(show_toast)
+            if(show_toast=="show"){
+                var Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+                    Toast.fire({
+                        icon: 'success',
+                        title: toast_message,
+                    })
+                return;
+            }
             let popup_data= false;
             $('.filter-side-drawer#' + $(this).data("target") ).toggleClass('open');
             if($(this).data('attribute')!==undefined) {popup_data=$(this).data('attribute')}
