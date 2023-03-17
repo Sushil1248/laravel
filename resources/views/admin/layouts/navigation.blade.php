@@ -31,6 +31,15 @@
 @endcan
 
 
+@can('user-list')
+<li class="nav-item">
+    <div class="dropdown main-menu">
+            <a class="nav-link  {{ Route::is('roles.*') ? 'active' : '' }}" href="{{ route('roles.list') }}">Manage Roles</a>
+    </div>
+</li>
+@endcan
+
+
 
 {{-- @can('media-list')
  <li class=" @empty($for_mobile) nav-item @endempty  {{ Route::is('media.*') ? 'active' : '' }}">

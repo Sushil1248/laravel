@@ -2,8 +2,10 @@
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use GuzzleHttp\Client;
-use App\Models\{Customer,User,Service,Program,QuestionnaireType,Category, Company};
+use App\Models\{Customer,User,Service,Program,CompanyDetail,QuestionnaireType,Category, Company};
 use App\Notifications\CommonNotification;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 // use SendinBlue;
 
 if (!function_exists('changeDateFormat')) {
@@ -12,11 +14,6 @@ if (!function_exists('changeDateFormat')) {
         if( empty($date) )
             return "";
         return \Carbon\Carbon::parse($date)->format($format);
-    }
-}
-if (!function_exists('checkDeviceTokenExists')) {
-    function checkDeviceTokenExists() {
-        return DB::table('devices')->whereNotNull('device_token')->exists();
     }
 }
 
@@ -63,6 +60,22 @@ if (!function_exists('get_timestamp'))
 
     }
 }
+if (!function_exists('get_user_name'))
+{
+    function get_user_name($user_id) {
+        $user = User::find($user_id);
+        return $user ? $user->first_name : '';
+    }
+}
+
+if (!function_exists('get_permission_by_user_group'))
+{
+    function get_permission_by_user_group($groupName)
+    {
+        return Permission::where('group_name', $groupName)->get();
+    }
+}
+
 if (!function_exists('getDifferenceInSecond'))
 {
     function getDifferenceInSecond($startTime, $finishTime)
@@ -348,7 +361,7 @@ function getCategoriesOfType( $parent=null , $ignoreCategory = null ){
 }
 
 function get_company_name($company_id){
-    return Company::where('id', $company_id)->pluck('company_name')->first();
+    return CompanyDetail::where('user_id', $company_id)->pluck('company_name')->first();
 }
 
 function getMinutes($interval)
@@ -402,6 +415,21 @@ function set_default_value( $pairs, $atts ) {
 		}
 	}
 	return $out;
+}
+
+if (!function_exists('checkDeviceTokenExists')) {
+    function checkDeviceTokenExists() {
+        return DB::table('devices')->whereNotNull('device_token')->exists();
+    }
+}
+
+if (!function_exists('hasGroupPermission')) {
+    function hasGroupPermission($groupName)
+    {
+        $user = Auth::user();
+        $groupPermissions = Permission::where('group_name', $groupName)->pluck('name')->toArray();
+        return $user->hasAnyPermission($groupPermissions);
+    }
 }
 
 

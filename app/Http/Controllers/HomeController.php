@@ -9,6 +9,7 @@ use App\Traits\AutoResponderTrait;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use DB, Session;
+use Spatie\Permission\Models\{Role, Permission};
 
 
 class HomeController extends Controller
@@ -24,12 +25,16 @@ class HomeController extends Controller
             $start = $daterang[0].' 00:05:00';
             $end = $daterang[1].' 23:05:59';
         }
-        $totalUsers = User::where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
+        $totalUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'User');
+        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+           $query->whereBetween( 'created_at' , [$start , $end] );
         } )->count();
 
-        $activeUsers = User::where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
+        $activeUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'User');
+        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+           $query->whereBetween( 'created_at' , [$start , $end] );
         } )->active()->count();
 
         $activeCompanies = Company::when($start && $end ,function($query, $role) use ($start , $end) {
@@ -40,8 +45,10 @@ class HomeController extends Controller
             $query->whereBetween( 'created_at' , [$start , $end] );
         } )->active()->count();
 
-        $totalCompanies = Company::when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
+        $totalCompanies = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'Company');
+        })->when($start && $end ,function($query, $role) use ($start , $end) {
+           $query->whereBetween( 'created_at' , [$start , $end] );
         } )->count();
 
         $totalPlans = SubscriptionPlan::when($start && $end ,function($query) use ($start , $end) {
@@ -50,12 +57,40 @@ class HomeController extends Controller
         $activePlans = SubscriptionPlan::active()->when($start && $end ,function($query) use ($start , $end) {
             $query->whereBetween( 'created_at' , [$start , $end] );
         } )->count();
-        $recentUsers = User::active()->role('Customer')->latest()->get();
+        // $recentUsers = User::active()->role('Customer')->latest()->get();
 
         $recentCompanies = Company::active()->latest()->get();
 
-        return view('admin.home', compact('totalUsers','totalPlans','activeDevices','activeUsers','activePlans', 'recentCompanies','totalCompanies','activeCompanies','recentUsers') );
+        return view('admin.home', compact('totalUsers','totalPlans','activeUsers','activeDevices','activePlans', 'recentCompanies','totalCompanies','activeCompanies') );
     }
+
+    public function company_index( Request $request )
+    {
+        // $role = Role::find(3);
+        // $permission = Permission::findByName('user-add');
+        // $role->givePermissionTo($permission);
+
+        $start = $end = "";
+        if( $request->filled('daterange_filter') ) {
+            $daterange = $request->daterange_filter;
+            $daterang = explode(' - ',$daterange);
+            $start = $daterang[0].' 00:05:00';
+            $end = $daterang[1].' 23:05:59';
+        }
+        $totalUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'User');
+        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+            $query->whereBetween( 'created_at' , [$start , $end] );
+        } )->count();
+
+        $activeUsers = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'User');
+        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+            $query->whereBetween( 'created_at' , [$start , $end] );
+        } )->active()->count();
+
+        return view('company.home', compact('totalUsers','activeUsers') );
+   }
 
     public function addUserSubscription( User $user ){
 

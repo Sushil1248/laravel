@@ -30,6 +30,8 @@ class User extends Authenticatable
         'company_id',
         'status',
         'password',
+        'contact_person',
+        'contact_number',
         'updated_at'
     ];
     protected $appends = ['full_name','status_label','profile_completed'];
@@ -56,8 +58,8 @@ class User extends Authenticatable
 	    return $this->hasOne(UserDetails::class);
     }
 
-    public function companyUsers(){
-        return $this->belongsToMany(Company::class,'companies')->withTimestamps();
+    public function company_detail(){
+	    return $this->hasOne(CompanyDetail::class);
     }
 
     public function userProgress(){
@@ -69,6 +71,11 @@ class User extends Authenticatable
 
     public function activePrograms(){
         return $this->belongsToMany(Program::class,'user_programs')->withPivot('start_date')->wherePivotNull('end_date')->using(UserProgram::class)->withTimestamps();
+    }
+
+    public function companyUsers()
+    {
+        return $this->hasMany(CompanyUsers::class);
     }
     // public function notifications()
     // {
@@ -188,6 +195,11 @@ class User extends Authenticatable
         return $this->activePrograms->first();
     }
 
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_users', 'user_id', 'company_id');
+    }
+
     public function company_id(){
         $company_id = CompanyUsers::where('user_id', $this->id)->pluck('company_id')->first();
         return $company_id;
@@ -197,8 +209,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Device::class);
     }
-    public function device_data()
+
+    public function vehicles()
     {
-        return($this->hasMany(Device::class)->select(['id','user_id', 'device_token', 'device_name', 'device_activation_code','status','is_activate','tracking_radius' ]));
+        return $this->hasMany(Vehicle::class);
     }
+
 }

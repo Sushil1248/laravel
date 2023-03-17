@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Users')
 
 
@@ -117,7 +117,12 @@
                                         {{ $singleUser->email }}
                                     </td>
                                     <td class="purchase-order-date">
-                                        <a title="view company" href="{{ route('company.list',['search'=>get_company_name($singleUser->company_id())]) }}" onclick="event.stopPropagation()">{{ $singleUser && $singleUser->company_id() ? ucfirst(get_company_name($singleUser->company_id())) : 'NA' }}</a>
+                                        @if(Auth::check() && Auth::user()->hasRole('Company'))
+                                         <a title="view company" href="{{ route('company.list',['search'=>get_company_name($singleUser->company_id())]) }}" onclick="event.stopPropagation()">{{ $singleUser && $singleUser->company_id() ? ucfirst(get_company_name($singleUser->company_id())) : 'NA' }}</a>
+                                        @else
+                                        {{get_company_name($singleUser->company_id())}}
+                                        @endif
+
                                     </td>
 
                                     <td>

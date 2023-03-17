@@ -195,7 +195,7 @@ class UserController extends Controller
             foreach( $getuser->notifications()->limit(10)->get() as $key => $singleNotification ){
                 $notification = [
                     'type'  =>  'admin',
-                    'name'  =>  'IoT',
+                    'name'  =>  'FREIGHT MANAGEMENT',
                     'image' =>  asset("assets/images/notification.png"),
                     'name_text' =>  '',
                     'message'   =>  config("constants.NOTIFICATION_MESSAGE.{$singleNotification->data['message']}") ? config("constants.NOTIFICATION_MESSAGE.{$singleNotification->data['message']}") : $singleNotification->data['message'],

@@ -10,7 +10,7 @@ use Illuminate\Support\{Collection, Str};
 use Carbon\Carbon;
 use App\Models\{User, UserDetails, PasswordReset};
 use App\Traits\AutoResponderTrait;
-use Spatie\Permission\Models\{Role, Permission}; 
+use Spatie\Permission\Models\{Role, Permission};
 use Image,DB,Session;
 
 
@@ -28,7 +28,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $start = $end = $daterange = '';
-  
+
         if($request->has('daterange_filter') && $request->daterange_filter != '') {
             $daterange = $request->daterange_filter;
             $daterang = explode(' / ',$daterange);
@@ -48,19 +48,19 @@ class DashboardController extends Controller
             $query->whereBetween('created_at', [$start, $end]);
 
         })->count();
-    
+
         $childrenChart = [];
-        
+
         if (!is_null($usersDetails)) {
             Session::put('userdetails', $usersDetails);
         }
-        
+
         $roles = Role::where('name', '<>', 'Company')->get('name');
         foreach($roles as $key => $role)
         {
             $userroles[$key] = $role->name;
         }
-    	$users = User::role($userroles)->count(); 
+    	$users = User::role($userroles)->count();
         return view('admin.home', compact('daterange','parentCount','childrenChart','users'));
     }
     /* End Method index */
@@ -74,20 +74,20 @@ class DashboardController extends Controller
     */
 
     public function login(Request $request)
-    { 
+    {
         if (auth::check()) {
             return redirect()->route('home');
-        } 
+        }
         try{
             if ($request->isMethod('get')){
                 return view('auth.login');
             }else{
-               
+
                 $this->validate($request, [
                     'email' => 'required',
                     'password' => 'required',
                 ]);
-                
+
                 $fieldType = 'email';
                 $attempt = [
                     $fieldType => $request->email,
@@ -95,15 +95,22 @@ class DashboardController extends Controller
                 ];
 
                 if (auth()->attempt($attempt, $request->remember) ) {
-                    if( isUserStatusActive() )
-                        return redirect()->route('home');
-                    Auth::logout();
-                    return redirect()
-                        ->back()
-                        ->withInput()
-                        ->with('status', 'Error')
-                        ->with('message', Config::get('constants.ERROR.ACCOUNT_ISSUE')); 
-                } else {
+                    if( isUserStatusActive() ){
+                        if(auth()->user()->hasRole('Company')){
+                            return redirect()->route('company_home');
+                        }else{
+                            return redirect()->route('home');
+                        }
+                    }else{
+                        Auth::logout();
+                        return redirect()
+                            ->back()
+                            ->withInput()
+                            ->with('status', 'Error')
+                            ->with('message', Config::get('constants.ERROR.ACCOUNT_ISSUE'));
+                    }
+
+               } else {
                     return redirect()
                         ->back()
                         ->withInput()
@@ -144,7 +151,7 @@ class DashboardController extends Controller
         if (auth::check()) {
             return redirect()->route('login');
         }
-        
+
         try{
             if ($request->isMethod('get')){
                 return view('auth.passwordreset');
@@ -153,24 +160,24 @@ class DashboardController extends Controller
                     'email' => 'required|email'
                 ]);
                 $checkEmail = User::where('email', $request->email)->first();
-            
+
                 if(empty($checkEmail)){
                     return redirect()->back()
                     ->with('status', 'Error')
                     ->with('message', 'Email does not exist in database');
                 }
-    
-                $user = User::role("Administrator")->where('email', $request->email)->first();
+
+                $user = User::where('email', $request->email)->first();
                 $template = $this->get_template_by_name('FORGOT_PASSWORD');
-    
+
                 if (is_null($user)) {
                     return redirect()->back()
                     ->with('status', 'Error')
                     ->with('message', Config::get('constants.ERROR.WRONG_CREDENTIAL'));
                 }
-    
+
                 $passwordReset = PasswordReset::updateOrCreate(['email' => $user->email], ['email' => $user->email, 'token' => Str::random(12)]);
-    
+
                 $link = route('token-check', $passwordReset->token);
                 $string_to_replace = [
                     '{{$name}}',
@@ -183,12 +190,12 @@ class DashboardController extends Controller
                 $newval = str_replace($string_to_replace, $string_replace_with, $template->template);
                 $logId = $this->email_log_create($user->email, $template->id, 'FORGOT_PASSWORD');
                 $result = $this->send_mail($user->email, $template->subject, $newval);
-    
+
                 if ($result) {
                     $this->email_log_update($logId);
                     return redirect()
                         ->route('reset-password')
-                        ->with('status', 'Success')
+                        ->with('status', 'success')
                         ->with('message', Config::get('constants.SUCCESS.RESET_LINK_MAIL'));
                 } else {
                     return redirect()
@@ -202,7 +209,7 @@ class DashboardController extends Controller
             ->back()
             ->with('status', 'Error')
             ->with('message', $e->getMessage());
-        } 
+        }
     }
     /* End Method resetPassword */
 
@@ -251,13 +258,13 @@ class DashboardController extends Controller
 	    if (auth::check()) {
             return redirect()->route('admindashboard');
         }
-    
+
         if (!Session::has('forgotemail')) {
             return redirect()
                 ->route('reset-password')
                 ->with('status', 'Error')
                 ->with('message', Config::get('constants.ERROR.OOPS_ERROR'));
-        } 
+        }
         if ($request->isMethod('get')){
             return view('auth.setnewpassword');
         }else{
@@ -284,7 +291,7 @@ class DashboardController extends Controller
                     ->with('status', 'Error')
                     ->with('message', $e->getMessage());
             }
-        }   
+        }
     }
     /* End Method setNewPassword */
 
@@ -309,7 +316,7 @@ class DashboardController extends Controller
                 ->toArray() ], 422);
         }
 
-        try { 
+        try {
             $data = [
                 'email' => $request->adminemail,
                 'first_name' => $request->first_name,
@@ -391,7 +398,7 @@ class DashboardController extends Controller
         } else {
             return response()
                 ->json(["success" => false, "msg" => 'Old password doesnt matched'], 200);
-        } 
+        }
     }
     /* End Method updatePassword */
 
@@ -438,5 +445,4 @@ class DashboardController extends Controller
 
 }
 
-                                            
- 
+

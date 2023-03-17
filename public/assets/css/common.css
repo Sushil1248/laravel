@@ -82,6 +82,10 @@ main {
     min-height: calc(100vh - 64px);
     padding-bottom: 40px;
 }
+.page-header-text{
+    font-size: 20px !important;
+    font-weight: bold !important;
+}
 
 /*========HEADER CSS START HERE=======*/
 header {
@@ -329,12 +333,12 @@ a.dropdown-item.active,a.dropdown-item:hover {
 .available-status {
     display: inline-block;
     width: 10px;
-    height: 10px; 
+    height: 10px;
     border: 1.5px solid #FFFFFF;
     border-radius: 5px;
 }
 .available-status.online {
-    background: #12B76A;   
+    background: #12B76A;
 }
 .profile-detail .button-group{
     margin-top: 15px;
@@ -649,7 +653,7 @@ button {
     font-family: "Segoe UI semibold";
     font-size: 14px;
     padding: 6px 12px;
-    color: #FFFFFF; 
+    color: #FFFFFF;
     border: 1px solid #33383a;
 }
 .filter-cross {

@@ -1,5 +1,5 @@
-@extends(Auth::check() && Auth::user()->role == 'Company' ? 'company.layouts.app' : 'admin.layouts.app')
-@section('title', '- Company')
+@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@section('title', '- Vehicles')
 
 
 @section('content')
@@ -8,10 +8,10 @@
     <div class="container">
         <div class="left-content d-flex">
             <div class="list-title d-flex">
-                <i class="fas fa-cubes" style="font-size: 30px;"></i>
+                <i class="fas fa-truck" style="font-size: 30px;"></i>
                 <div class="list-content">
-                    <h2 class="heading-text">Manage Companies</h2>
-                    <h2 class="mobile-text d-none">Manage Companies</h2>
+                    <h2 class="heading-text">Manage Vehicles</h2>
+                    <h2 class="mobile-text d-none">Manage Vehicles</h2>
                     <p>
                         Add , View and Edit the details
                     </p>
@@ -20,8 +20,8 @@
             @can('user-add')
             <div class="right-btns">
                 <div class="">
-                    <a class="nav-link btn navy-blue-btn open-section" data-target="create-company-popup" href="javascript:void(0)"  aria-expanded="false">
-                    Create Comapny
+                    <a class="nav-link btn navy-blue-btn open-section" data-target="create-vehicle-popup" href="javascript:void(0)"  aria-expanded="false">
+                    Create Vehicle
                     </a>
                 </div>
             </div>
@@ -32,10 +32,10 @@
             <!-- tabs Start here -->
             <ul class="tabs nav nav-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">All Companies</a>
+                    <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">All Vehicles</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="delete-user-tab" data-toggle="tab" href="#tabs-2" role="tab">Deleted Companies</a>
+                    <a class="nav-link" id="delete-user-tab" data-toggle="tab" href="#tabs-2" role="tab">Deleted Vehicles</a>
                 </li>
             </ul>
             <!-- Search section Start here -->
@@ -76,18 +76,11 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="purchase-order-date">
-                                        @sortablelink('company_name', 'Company Name')
-                                    </th>
-                                    <th scope="col" class="purchase-order-date">
-                                        @sortablelink('company_email', 'Email')
+                                        @sortablelink('name', 'Vehicle Name')
                                     </th>
                                     <th scope="col">
-                                        Contact Person
+                                        @sortablelink('vehicle_num', 'Vehicle Number')
                                     </th>
-                                    <th scope="col">
-                                        Contact Number
-                                    </th>
-
                                     <th scope="col">@sortablelink('created_at', 'Created Date')</th>
                                     <th scope="col" class="text-center status-text purchase-order-date" style="display:table-cell">@sortablelink('status', 'Status')</th>
                                     @if( auth()->user()->can('user-edit') || auth()->user()->can('user-delete') )
@@ -100,19 +93,13 @@
                                 <tr>
                                     <td class="purchase-order-date">
                                         @can('user-view')
-                                        <a href="#" class="open-section get-company-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">{{ $singleCompany->company_detail->company_name }}</a>
+                                        <a href="#" class="open-section get-vehicle-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">{{ $singleCompany->name }}</a>
                                         @else
-                                        {{ $singleCompany->company_detail->company_name }}
+                                        {{ $singleCompany->name }}
                                         @endcan
                                     </td>
-                                    <td class="purchase-order-date">
-                                        {{ $singleCompany->email }}
-                                    </td>
-                                    <td class="purchase-order-date">
-                                        {{ $singleCompany && $singleCompany->company_detail->contact_person ? ucfirst($singleCompany->company_detail->contact_person) : 'NA' }}
-                                    </td>
                                     <td>
-                                        {{ $singleCompany && $singleCompany->company_detail->contact_number ? $singleCompany->company_detail->contact_number : 'NA' }}
+                                        {{ $singleCompany && $singleCompany->vehicle_num ? $singleCompany->vehicle_num : 'NA' }}
                                     </td>
 
                                     <td>
@@ -123,10 +110,10 @@
                                     </td>
                                     <td class="text-center purchase-order-date">
                                         @can('user-edit')
-                                        <a title="Edit" href="{{ route('company.edit',['id'=>jsencode_userdata($singleCompany->id)]) }}" onclick="event.stopPropagation()"><i class="fas fa-pencil-alt" style="color:#33383a"></i></a>&nbsp;&nbsp;
+                                        <a title="Edit" href="{{ route('c.vehicle.edit',['id'=>jsencode_userdata($singleCompany->id)]) }}" onclick="event.stopPropagation()"><i class="fas fa-pencil-alt" style="color:#33383a"></i></a>&nbsp;&nbsp;
                                         @endcan
                                         @can('user-delete')
-                                        <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('company.delete',['id'=>jsencode_userdata($singleCompany->id)]) }}">
+                                        <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('c.vehicle.delete',['id'=>jsencode_userdata($singleCompany->id)]) }}">
                                             <i class="fas fa-trash" style="color:#FF0000"></i>
                                         </a>
                                         @endcan
@@ -160,16 +147,10 @@
                             <thead>
                                 <tr>
                                     <th scope="col" class="purchase-order-date">
-                                        @sortablelink('company_name', 'Company Name')
-                                    </th>
-                                    <th scope="col" class="purchase-order-date">
-                                        @sortablelink('email', 'Company Email')
+                                        @sortablelink('name', 'Vehicle Name')
                                     </th>
                                     <th scope="col">
-                                        Contact Person
-                                    </th>
-                                    <th scope="col">
-                                        Contact Number
+                                        Vehicle Number
                                     </th>
 
                                     <th scope="col">@sortablelink('created_at', 'Created Date')</th>
@@ -178,22 +159,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @isset($deletedCompanies)
-                                    @forelse ($deletedCompanies as $singleCompany)
+                                @isset($deletedVehicle)
+                                    @forelse ($deletedVehicle as $singleCompany)
                                     <tr>
                                         <td class="purchase-order-date">
-                                            <a href="#" class="open-section get-company-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">
-                                                {{ $singleCompany->company_detail->company_name }}
+                                            <a href="#" class="open-section get-vehicle-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">
+                                                {{ $singleCompany->name }}
                                             </a>
                                         </td>
-                                        <td class="purchase-order-date">
-                                            {{ $singleCompany->email }}
-                                        </td>
+
                                         <td>
-                                            {{ $singleCompany && $singleCompany->contact_person ? $singleCompany->company_detail->contact_person : 'NA' }}
-                                        </td>
-                                        <td>
-                                            {{ $singleCompany && $singleCompany->contact_number ? $singleCompany->company_detail->contact_number : 'NA' }}
+                                            {{ $singleCompany && $singleCompany->vehicle_num ? $singleCompany->vehicle_num : 'NA' }}
                                         </td>
                                         <td>
                                             {{ changeDateFormat($singleCompany->created_at) }}
@@ -202,7 +178,7 @@
                                             <input data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
                                         </td>
                                         <td class="text-center" class="purchase-order-date">
-                                            <a onclick="event.stopPropagation()" title="Restore" href="{{ route('company.restore',['id'=>jsencode_userdata($singleCompany->id)]) }}">
+                                            <a onclick="event.stopPropagation()" title="Restore" href="{{ route('c.vehicle.restore',['id'=>jsencode_userdata($singleCompany->id)]) }}">
                                                 <i class="fas fa-trash-restore"></i>
                                             </a>
                                         </td>
@@ -240,7 +216,7 @@
 @endsection
 
 @section('footer-html')
-@include('admin.company.popups')
+@include('company.vehicle.popups')
 @endsection
 
 @section('page-js')
@@ -255,7 +231,7 @@
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: '/company/changeStatus',
+                url: '/c/vehicle/changeStatus',
                 data: {'status': status, 'id': id},
                 success: function(data){
                     //swal("Success!",data.message, "success");
@@ -293,50 +269,24 @@
                 }
             }
         });
-        $("#create-company").validate({
+        $("#create-vehicle").validate({
             ignoore: '',
             rules:{
-                company_name:{
+                name:{
                     required:true,
                     maxlength:100
                 },
-                contact_person:{
+                vehicle_num:{
                     required:true,
-                    maxlength:100
-                },
-                company_email:{
-                    required:true,
-                    email:true
-                },
-                contact_person_email:{
-                    required:true,
-                    email:true
-                },
-                password:{
-                    required:true,
-                    minlength:6
-                },
-                contact_number:{
-                    required:true,
-                    number: true
                 },
             },
             messages:{
-                company_name:{
-                    required:"Company name is required"
-                },
-                contact_person:{
-                    required:"Contact person name is required"
+                name:{
+                    required:"Vehicle name is required"
                 },
                 contact_number:{
-                    required:"Contact number is required"
-                },
-                company_email:{
-                    required:"Email is required"
-                },
-                password:{
-                    required:"Password is required"
-                },
+                    required:"Vehicle number is required"
+                }
             },
             errorPlacement: function(error, element) {
                 console.log( element.closest("li") );
@@ -408,8 +358,8 @@
             }
         });
         /** Get user details **/
-        $(".get-company-detail").on("click",function(){
-            $.get("/company/details/"+$(this).data("user-id"), function(data, status){
+        $(".get-vehicle-detail").on("click",function(){
+            $.get("/c/vehicle/details/"+$(this).data("user-id"), function(data, status){
                 console.log(data)
                 if( data.status ){
                     for (let input_name in data.data)
@@ -419,8 +369,8 @@
             });
         });
         @if( request('user_id') )
-        if( $(".table tr .get-company-detail").length ){
-            $(".table tr .get-company-detail").click();
+        if( $(".table tr .get-vehicle-detail").length ){
+            $(".table tr .get-vehicle-detail").click();
         }
         @endif
         @if( request('dpage') )

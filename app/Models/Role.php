@@ -9,12 +9,12 @@ class Role extends SpatiRole
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'name',
-    //     'guard_name',
-    //     'email',
-    //     'status',
-    //     'created_at',
-    //     'updated_at'
-    // ];
+    protected $fillable = [
+        'created_by',
+    ];
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

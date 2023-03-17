@@ -43,6 +43,20 @@
                     </div> --}}
                     <input type="text" class="form-control multi-date-rangepicker" value="{{ request('daterange_filter') }}" name="daterange_filter" autocomplete="off"  placeholder="From date">
                 </div>
+            </div>
+            <div class="filter-listing-item">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="role_filter" id="flexRadioDefault1" value="company" {{ request('role_filter')=="company" ? "checked" : '' }}>
+                    <label class="form-check-label" for="flexRadioDefault1">
+                        Company
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="role_filter" id="flexRadioDefault2" value="propertymanager" {{ request('role_filter')=="propertymanager" ? "checked" : '' }}>
+                    <label class="form-check-label" for="flexRadioDefault2">
+                      Property Manager
+                    </label>
+                  </div>
 
             </div>
             <div class="filter-listing-item">
@@ -162,9 +176,9 @@
 </div>
 <!-- End Detail popup  -->
 <!-- Create popup  -->
-<div class="filter-sidebar filter-side-drawer order-sidebar create-module" id="create-company-popup">
+<div class="filter-sidebar filter-side-drawer order-sidebar create-module" id="create-role-popup">
     <div class="">
-        <form method="post" action="{{ route('company.add') }}" id="create-company">
+        <form method="post" action="{{ route('roles.add') }}" id="create-role">
         @csrf
             <div class="invoice-detail invoice-creation">
 
@@ -181,81 +195,13 @@
                     <div class='ajax-response'></div>
                     <ul>
                         <li>
-                            <p>Company Name<span class="required-field">*</span></p>
+                            <p>Role Name<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Company name" name="company_name">
-                            </div>
-                        </li>
-                        <li>
-                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#1847a2; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Email" name="company_email">
-                            </div>
-                        </li>
-                        <li>
-                            <p>Contact Person<span class="required-field">*</span></p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Person Name" name="contact_person">
-                            </div>
-                        </li>
-                        <li>
-                            <p>Contact Person Email<span class="required-field">*</span></p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="email" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Number" name="contact_person_email">
-                                <input type="hidden" name="role" value="Company">
-                            </div>
-                        </li>
-                        <li>
-                            <p>Contact Number<span class="required-field">*</span></p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Number" name="contact_number">
-                            </div>
-                        </li>
-                        <li>
-                            <p>Password<span class="required-field">*</span></p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="password" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Password" name="password">
-                            </div>
-                        </li>
-
-                        <li>
-                            <p>Country</p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <select class="custom-select select-country" name="country">
-                                    <option value="">Select Country</option>
-                                    @foreach( $country as $countryId => $countryName )
-                                    <option value="{{ jsencode_userdata($countryId) }}">{{ $countryName }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <p>State</p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <select class="custom-select select-state" name="state">
-                                    <option value="">Select State</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <p>City</p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <select class="custom-select select-city" name="city">
-                                    <option value="">Select City</option>
-                                </select>
-                            </div>
-                        </li>
-                        <li>
-                            <p>Address</p>
-                            <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
+                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Role name" name="name">
                             </div>
                         </li>
                     </ul>
                     <div class="footer-menus_button">
-                        <div class="invoice-list">
-
-                        </div>
                         <div class="submit-btns">
                             <ul>
                                 <li class="close-section"><a href="#">Cancel</a></li>

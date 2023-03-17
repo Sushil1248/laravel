@@ -31,7 +31,7 @@
                     </span>
                     <span class="page-header-text d-none">FREIGHT MANAGEMENT</span>
                 </button>
-                <a class="navbar-brand desktop-logo" href="{{ route('home') }}">
+                <a class="navbar-brand desktop-logo" href="{{ route('company_home') }}">
 					<span class="page-header-text" style="font-size:30px; font-weight:bold;">FREIGHT MANAGEMENT</span>
 				</a>
                 <div class="dropdown mobile-logo d-none">
@@ -46,10 +46,7 @@
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContentXL">
                     <ul class="navbar-nav mr-auto" style="width:100%">
-                        @include('admin.layouts.navigation')
-						{{-- <li class="nav-item {{ Route::is('question-answers') ? 'active' : '' }}">
-                            <a class="nav-link" href="{{ route('question-answers') }}">Question Answers</a>
-                        </li> --}}
+                        @include('company.layouts.navigation')
                     </ul>
 
                     <ul class="right-icons d-flex">
@@ -89,6 +86,7 @@
                 </div>
             </div>
         </header>
+
         <main class="main-content">
             <div class="overlay"></div>
             @section('content')
@@ -114,7 +112,7 @@
 
         <!-- My profile -->
         <div class="filter-sidebar filter-side-drawer" id="profile-setting">
-            <form class="user" action="{{ route('details.update') }}" id="modalProfileSubmit" enctype="multipart/form-data">@csrf
+            <form class="company" action="{{ route('c.edit',['id'=> jsencode_userdata(Auth::user()->id)])  }}" id="modalProfileSubmit" enctype="multipart/form-data">@csrf
                 <h5 class="filter-sidebar-title">Update Profile</h5>
                 <div class="filter-listing">
                     <div class="flash-message"></div>
@@ -122,21 +120,37 @@
 
                         <div class="form-group">
                             <label class="input-label">Email</label>
-                            <input type="text" name="adminemail" id="adminemail"
+                            <input type="text" name="company_email" id="company_email"
                                 value="@if(Auth::user()){{ Auth::user()->email }}@endif" class="form-control form-control-user"
                                 placeholder="Email">
                         </div>
                         <div class="form-group">
-                            <label class="input-label">First name</label>
-                            <input type="text" name="first_name"
-                                value="@if(Auth::user()){{ Auth::user()->first_name }}@endif"
-                                class="form-control form-control-user" placeholder="First Name">
+                            <label class="input-label">Comapany Name</label>
+                            <input type="text" name="company_name"
+                                value="@if(Auth::user()){{ Auth::user()->company_detail()->pluck('company_name')->first() }}@endif"
+                                class="form-control form-control-user" placeholder="Company Name">
                         </div>
                         <div class="form-group">
-                            <label class="input-label">Last name</label>
-                            <input type="text" name="last_name"
-                                value="@if(Auth::user()){{ Auth::user()->last_name }}@endif"
-                                class="form-control form-control-user" placeholder="Last Name">
+                            <label class="input-label">Contact Person Name</label>
+                            <input type="text" name="contact_person"
+                                value="@if(Auth::user()){{ Auth::user()->company_detail()->pluck('contact_person')->first() }}@endif"
+                                class="form-control form-control-user" placeholder="Contact Person Name">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="input-label">Contact Person Email</label>
+                            <input type="text" name="contact_person_email"
+                                value="@if(Auth::user()){{Auth::user()->company_detail()->pluck('contact_person_email')->first() }}@endif"
+                                class="form-control form-control-user" placeholder="Contact Person Email">
+                                <input type="hidden" name="role" value="Company">
+                                <input type="hidden" name="status" value=1>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="input-label">Contact Person Number</label>
+                            <input type="text" name="contact_number"
+                                value="@if(Auth::user()){{ Auth::user()->company_detail()->pluck('contact_number')->first() }}@endif"
+                                class="form-control form-control-user" placeholder="Contact Number">
                         </div>
 
                     </div>

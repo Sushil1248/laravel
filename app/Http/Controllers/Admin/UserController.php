@@ -38,6 +38,9 @@ class UserController extends Controller
      */
     public function getList(Request $request, $deleted = "")
     {
+         if(auth()->user()->hasRole('Company')){
+            return redirect()->route('company.list');
+        }
         $start = $end = "";
         if ($request->filled('daterange_filter')) {
             $daterange = $request->daterange_filter;
@@ -45,10 +48,14 @@ class UserController extends Controller
             $start = $daterang[0] . ' 00:00:00';
             $end = $daterang[1] . ' 23:05:59';
         }
-        $data = User::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+        $data = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', 'User');
+        })
+        ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
             $q->whereBetween('created_at', [$start, $end]);
-        })->when($request->search, function ($qu, $keyword) {
-            $qu->where(function ($q) use ($keyword) {
+        })
+        ->when($request->search, function ($qu, $keyword) {
+           $qu->where(function ($q) use ($keyword) {
                 $q->where('first_name', 'like', '%' . $keyword . '%')
                     ->orWhere('last_name', 'like', '%' . $keyword . '%')
                     ->orWhere('email', 'like', '%' . $keyword . '%')
@@ -65,8 +72,20 @@ class UserController extends Controller
             ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
         $country = Country::pluck('name', 'id');
-        $company = Company::where('status', 1)->pluck('company_name', 'id');
-        return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers'));
+        if(auth()->user()->hasRole('Company')){
+            $company = User::where('id', Auth()->user()->id)
+                    ->with('company_detail:id,user_id,company_name')
+                    ->get()
+                    ->pluck('company_detail.company_name', 'id');
+        }else{
+            $company = Role::findByName('company')
+                        ->users()
+                        ->active()
+                        ->with('company_detail:id,user_id,company_name')
+                        ->get()
+                        ->pluck('company_detail.company_name', 'company_detail.user_id');
+        }
+       return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers'));
     }
     /* End Method getList */
 
@@ -125,8 +144,20 @@ class UserController extends Controller
             }
 
             $country = Country::pluck('name', 'id');
-            $company = Company::where('status', 1)->pluck('company_name', 'id');
-            return view('admin.user.edit', compact('userDetail', 'company', 'states', 'country'));
+            if(auth()->user()->hasRole('Company')){
+                $company = User::where('id', Auth()->user()->id)
+                        ->with('company_detail:id,user_id,company_name')
+                        ->get()
+                        ->pluck('company_detail.company_name', 'id');
+            }else{
+                $company = Role::findByName('company')
+                            ->users()
+                            ->active()
+                            ->with('company_detail:id,user_id,company_name')
+                            ->get()
+                            ->pluck('company_detail.company_name', 'company_detail.user_id');
+            }
+           return view('admin.user.edit', compact('userDetail', 'company', 'states', 'country'));
 
         } else {
             $userId = jsdecode_userdata($id);
@@ -172,7 +203,7 @@ class UserController extends Controller
                     'dob' => $request->dob,
                     'gender' => $request->gender,
                 ]));
-                return redirect()->route('user.list')->with('status', 'success')->with('message', 'User details ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
+                return redirect()->back()->with('status', 'success')->with('message', 'User details ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
             } catch (\Exception$e) {
                 return redirect()->back()->withInput()->with('status', 'error')->with('message', $e->getMessage());
             }
@@ -230,6 +261,7 @@ class UserController extends Controller
                 DB::beginTransaction();
 
                 $user = User::create($data);
+                $user->assignRole('User');
                 if ($user) {
                     // $user->syncRoles('Customer');
                     // $this->sendVerifyEmail( $user );
@@ -294,6 +326,9 @@ class UserController extends Controller
         User::where('id', $userId)->update([
             'password' => bcrypt($request->password),
         ]);
+         if(auth()->user()->hasRole('Company')){
+            return redirect()->route('company.list')->with('status', 'success')->with('message', 'User password ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
+        }
         return redirect()->route('user.list')->with('status', 'success')->with('message', 'User password ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
     }
 
@@ -314,7 +349,7 @@ class UserController extends Controller
             'mobile' => $userDetail->user_detail ? $userDetail->user_detail->mobile : '',
             'address' => $userDetail->user_detail ? $userDetail->user_detail->address : '',
             'country' => $userDetail->user_detail && $userDetail->user_detail->country ? $userDetail->user_detail->country->name : '',
-            'company' => $userDetail->company_id() ? get_company_name($userDetail->company_id()) : '',
+            'company' => $userDetail->company_id() ? get_user_name($userDetail->company_id()) : '',
             'state' => $userDetail->user_detail && $userDetail->user_detail->state ? $userDetail->user_detail->state->name : '',
             'city' => $userDetail->user_detail && $userDetail->user_detail->city ? $userDetail->user_detail->city->city_name : '',
             'weight' => $userDetail->user_detail ? $userDetail->user_detail->weight . $userDetail->user_detail->weight_unit : '',
@@ -322,9 +357,8 @@ class UserController extends Controller
             'gender' => $userDetail->user_detail ? ucfirst($userDetail->user_detail->gender) : '',
             'dob' => $userDetail->user_detail ? $userDetail->user_detail->dob : '',
             'edit_user' => route('user.edit', ['id' => jsencode_userdata($userDetail->id)]),
-            'subscriptions' => strval(view('admin.user.subscriptions', compact('userDetail'))),
-            'mobile_details' => strval(view('admin.user.mobile-details', compact('userDetail'))),
-        ];
+            // 'subscriptions' => strval(view('admin.user.subscriptions', compact('userDetail'))),
+         ];
         return [
             'status' => 'true',
             'data' => $response,
@@ -484,8 +518,8 @@ class UserController extends Controller
         $data = [
             "registration_ids" => $firebaseToken,
             "data" => [
-                "title" => "IoT Tracking",
-                "body" => "IoT Tracking Applcation",
+                "title" => "FREIGHT MANAGEMENT Tracking",
+                "body" => "FREIGHT MANAGEMENT Tracking Applcation",
                 "custom_data" => [
                     "title"=>$request->title,
                     "message"=> $request->message

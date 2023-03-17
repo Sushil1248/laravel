@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use App\Models\{Company, User, Role, CompanyDetail,State,Country, CompanyUsers};
+use App\Models\{Company, User, Role, CompanyDetail,UserDetails, State,Country, CompanyUsers};
 use Spatie\Permission\Models\Permission;
 use App\Exports\CompaniesExport;
 use Illuminate\Support\Facades\DB;
@@ -37,20 +37,34 @@ class CompanyController extends Controller
             $start = $daterang[0].' 00:00:00';
             $end = $daterang[1].' 23:05:59';
         }
-        $data = Company::when( !empty($start) && !empty($end) , function($q , $from) use( $start , $end ) {
-            $q->whereBetween( 'created_at' , [$start , $end] );
-        })->when($request->search ,function($qu , $keyword ) {
-            $qu->where(function ($q) use( $keyword ) {
-                $q->where('company_name', 'like', '%'.$keyword.'%')
-                ->orWhere('company_email', 'like', '%'.$keyword.'%')
-                ->orWhere('id', $keyword);
+
+        $data = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['Company', 'PropertyManager']);
+        })
+        ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+            $q->whereBetween('created_at', [$start, $end]);
+        })
+        ->when($request->search, function ($qu, $keyword) {
+            $qu->where(function ($q) use ($keyword) {
+                $q->where('first_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('last_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('email', 'like', '%' . $keyword . '%')
+                    ->orWhere('id', $keyword);
             });
         })
-        ->when( $request->filled('status') , function($qu){
-            $qu->where('status',request('status'));
-        })->when( jsdecode_userdata($request->user_id) , function( $query , $user_id ){
-            $query->where('id',$user_id);
-        });
+        ->when($request->filled('status'), function ($qu) {
+            $qu->where('status', request('status'));
+        })
+        ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
+            $query->where('id', $user_id);
+        })
+        // ->when($request->has('role_filter'), function ($qu) use ($request) {
+        //     $qu->whereHas('roles', function ($q) use ($request) {
+        //         $q->where('name', $request->role_filter);
+        //     });
+        // })
+        ->where('id', '<>', Auth::id());
+
         $deletedCompanies = (clone $data)->onlyTrashed()->sortable(['id' => 'desc'])
         ->paginate(Config::get('constants.PAGINATION_NUMBER'),'*','dpage');
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
@@ -102,12 +116,12 @@ class CompanyController extends Controller
     Purpose:        Form to update user details
     Params:         [id]
     */
-    public function edit(   $id , Request $request){
+    public function edit($id , Request $request){
 
         if ($request->isMethod('get')){
             $companyId = jsdecode_userdata($id);
 
-            $companyDetail = Company::with('company_detail')->find($companyId);
+            $companyDetail = User::with('company_detail')->find($companyId);
             $states = State::where('country_id',1)->get();
             if(!$companyDetail)
                 return redirect()->route('company.list');
@@ -116,39 +130,50 @@ class CompanyController extends Controller
 
         }else{
             $companyId = jsdecode_userdata($id);
+
             $request->validate([
                 'company_name' => 'required|string|max:100',
-                'company_email' => 'required|unique:companies,company_email,'.$companyId,
+                'company_email' => 'required|unique:users,email,'.$companyId,
                 'address' => '',
                 'contact_number' => 'nullable|numeric',
                 'city' => '',
                 'state' => '',
                 'establish_date'       =>  'date'
             ]);
+
             try {
                 $status = 0;
                 if($request->status == "on") {
                     $status = 1;
                 }
-
-                $company = Company::findOrFail($companyId);
-                $company->company_name = $request->company_name;
-                $company->company_email = $request->company_email;
-                $company->contact_person = $request->contact_person;
-                $company->contact_number = $request->contact_number;
+                $company = User::findOrFail($companyId);
+                $company->roles()->detach();
+                $company->email = $request->company_email;
                 $company->status = $request->input('status',0);
+                if(auth()->user()->hasRole('Company')){
+                    $company->assignRole($request->role);
+                }
                 $company->save();
 
-                $comapny_detail = CompanyDetail::updateOrCreate(['company_id' =>  $companyId],removeEmptyElements([
+                $comapny_detail = CompanyDetail::updateOrCreate(['user_id' =>  $companyId],removeEmptyElements([
                     'address'   =>  $request->address,
                     'city_id'   =>  jsdecode_userdata($request->city),
                     'state_id'  =>  jsdecode_userdata($request->state),
                     'country_id'=>  jsdecode_userdata($request->country),
                     'zipcode'   =>  $request->zipcode,
+                    'company_name'   =>  $request->company_name,
+                    'contact_person'   =>  $request->contact_person,
+                    'contact_number'   =>  $request->contact_number,
+                    'zipcode'   =>  $request->zipcode,
                     'fax_no'   =>  $request->fax_no,
                     'establish_date'   =>  $request->establish_date,
                     'gender' => $request->gender
                 ]));
+
+                if(auth()->user()->hasRole('Company')){
+                    return response()->json(["success" => true, "msg" => "Details " . Config::get('constants.SUCCESS.UPDATE_DONE') ], 200);
+                }
+
                 return redirect()->route('company.list')->with('status', 'success')->with('message', 'Comapny details '.Config::get('constants.SUCCESS.UPDATE_DONE'));
             } catch ( \Exception $e ) {
                 return redirect()->back()->withInput()->with('status', 'error')->with('message', $e->getMessage());
@@ -174,12 +199,12 @@ class CompanyController extends Controller
 
             $roles = $roles->get();
             $states = State::where('country_id',1)->get();
-            $companies = Company::get();
+            $companies = Role::findByName('company')->users()->pluck('company_name', 'id');
             return view('admin.company.add',compact('roles','companies','states'));
         }else{
             $validationRules = [
                 'company_name' => 'required|string|max:100',
-                'company_email' => 'required|unique:companies,company_email',
+                'company_email' => 'required|unique:users,email',
                 'address' => '',
                 'contact_number' => 'nullable|numeric',
                 'contact_person' => 'required',
@@ -193,19 +218,21 @@ class CompanyController extends Controller
 
             try {
                 $data = [
-                    'company_name' =>$request->company_name,
-                    'company_email' =>$request->company_email,
-                    'contact_person' =>$request->contact_person,
-                    'contact_number' =>$request->contact_number,
+                    'email' =>$request->company_email,
                     'password' => bcrypt($request->password),
                     'status' => 1
                 ];
                 DB::beginTransaction();
 
-                $company = Company::create($data);
+                $company = User::create($data);
+                $company->assignRole($request->role);
                 if($company){
                     $details = [
-                        'company_id' => $company->id,
+                        'user_id' => $company->id,
+                        'contact_person' =>$request->contact_person,
+                        'contact_person_email' =>$request->contact_person_email,
+                        'contact_number' =>$request->contact_number,
+                        'company_name'   => $request->company_name,
                         'address' => $request->address,
                         'country_id'    =>  jsdecode_userdata($request->country),
                         'city_id' => jsdecode_userdata($request->city),
@@ -266,12 +293,14 @@ class CompanyController extends Controller
     */
     public function view_detail($id,Request $request){
         $userId = jsdecode_userdata($id);
-        $companyDetail = Company::withTrashed()->find($userId);
+        $companyDetail = User::withTrashed()->find($userId);
+
         $response = [
-            'company_name'    =>  $companyDetail->company_name,
-            'contact_person'     =>  $companyDetail->contact_person,
-            'company_email'         =>  $companyDetail->company_email,
-            'contact_number'        =>  $companyDetail ? $companyDetail->contact_number : '',
+            'company_name'    =>  $companyDetail->company_detail->company_name,
+            'contact_person'     =>  $companyDetail->company_detail->contact_person,
+            'contact_person_email'     =>  $companyDetail->company_detail->contact_person_email,
+            'company_email'         =>  $companyDetail->email,
+            'contact_number'        =>  $companyDetail ? $companyDetail->company_detail->contact_number : '',
             'address'        =>  $companyDetail->company_detail ? $companyDetail->company_detail->address : '',
             'country'        =>  $companyDetail->company_detail && $companyDetail->company_detail->country ? $companyDetail->company_detail->country->name : '',
             'state'        =>  $companyDetail->company_detail && $companyDetail->company_detail->state ? $companyDetail->company_detail->state->name : '',
@@ -291,7 +320,7 @@ class CompanyController extends Controller
     public function changeStatus(Request $request)
     {
         try {
-            $company = Company::withTrashed()->find( jsdecode_userdata($request->id) );
+            $company = User::withTrashed()->find( jsdecode_userdata($request->id) );
             $company->status = $request->status;
             $company->save();
 
@@ -303,5 +332,58 @@ class CompanyController extends Controller
 
     public function export(){
         return \Excel::download(new CompaniesExport , 'company.xlsx'  );
+    }
+
+    // Manage User Inside Company
+    public function getUserList(Request $request, $deleted = "")
+    {
+        $start = $end = "";
+        if ($request->filled('daterange_filter')) {
+            $daterange = $request->daterange_filter;
+            $daterang = explode(' - ', $daterange);
+            $start = $daterang[0] . ' 00:00:00';
+            $end = $daterang[1] . ' 23:05:59';
+        }
+        $companyId = Auth::user()->id;
+        $data = User::whereHas('companyUsers', function ($query) use ($companyId) {
+            $query->where('company_id', $companyId);
+        })
+        ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+            $q->whereBetween('created_at', [$start, $end]);
+        })
+        ->when($request->search, function ($qu, $keyword) {
+            $qu->where(function ($q) use ($keyword) {
+                $q->where('first_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('last_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('email', 'like', '%' . $keyword . '%')
+                    ->orWhere('id', $keyword);
+            });
+        })
+        ->when($request->filled('status'), function ($qu) {
+            $qu->where('status', request('status'));
+        })
+        ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
+            $query->where('id', $user_id);
+        })
+        ->where('id', '<>', Auth::id());
+
+        $deletedUsers = (clone $data)->onlyTrashed()->sortable(['id' => 'desc'])
+            ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
+        $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
+        $country = Country::pluck('name', 'id');
+        if(auth()->user()->hasRole('Company')){
+            $company = User::where('id', Auth()->user()->id)
+                    ->with('company_detail:id,user_id,company_name')
+                    ->get()
+                    ->pluck('company_detail.company_name', 'id');
+        }else{
+            $company = Role::findByName('company')
+                        ->users()
+                        ->active()
+                        ->with('company_detail:id,user_id,company_name')
+                        ->get()
+                        ->pluck('company_detail.company_name', 'company_detail.user_id');
+        }
+        return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers'));
     }
 }

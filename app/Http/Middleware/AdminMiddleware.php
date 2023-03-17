@@ -16,7 +16,7 @@ class AdminMiddleware
    */
    public function handle(Request $request, Closure $next)
    {
-      if( isUserStatusActive() && Auth::user()->hasRole('Administrator') )
+      if( isUserStatusActive())
          return $next($request);
       Auth::logout();
       if($request->ajax())

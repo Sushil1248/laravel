@@ -91,6 +91,10 @@ class ApiController extends Controller
 
             return $this->apiResponse('success', '200', 'Login successfully', [
                 'token' =>  $user->createToken('login')->accessToken,
+                'first_name'=> $user->first_name,
+                'last_name'=> $user->last_name,
+                'email'=> $user->email,
+                'id'=> $user->id,
             ]);
         } catch(\Exception $e) {
             return $this->apiResponse('error', '404', $e->getMessage());
