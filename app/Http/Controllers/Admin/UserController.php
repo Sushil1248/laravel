@@ -323,7 +323,6 @@ class UserController extends Controller
             'dob' => $userDetail->user_detail ? $userDetail->user_detail->dob : '',
             'edit_user' => route('user.edit', ['id' => jsencode_userdata($userDetail->id)]),
             'subscriptions' => strval(view('admin.user.subscriptions', compact('userDetail'))),
-            'mobile_details' => strval(view('admin.user.mobile-details', compact('userDetail'))),
         ];
         return [
             'status' => 'true',
