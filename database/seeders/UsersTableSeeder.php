@@ -18,7 +18,6 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $this->call([PermissionSeeder::class]);
-        Role::firstOrCreate(['name' => 'Customer']);
         $role = Role::firstOrCreate(['name' => 'Administrator']);
         $permissions = Permission::pluck('id','id')->all();
         $role->syncPermissions($permissions);

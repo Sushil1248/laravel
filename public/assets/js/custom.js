@@ -267,15 +267,29 @@ $(document).ready(function(){
                     })
                 return;
             }
+            let user =null;
             let popup_data= false;
+            let users=[];
             $('.filter-side-drawer#' + $(this).data("target") ).toggleClass('open');
             if($(this).data('attribute')!==undefined) {popup_data=$(this).data('attribute')}
+            if($(this).data('user-eid')!==undefined) {user=$(this).data('user-eid'); console.log("user", "assigned_"+user)}
+            if($(".assigned").data('assigned_id')!==undefined) {users=$(".assigned").data('assigned_id'); console.log(users)}
             if(popup_data){
                 $('.filter-side-drawer').find('.dynamic_name').attr('name',popup_data)
                 $('.filter-side-drawer').find('input[name="'+popup_data+'"]').val($(this).data('pass-id'));
+                $('.filter-side-drawer').find('input[name="'+popup_data+'"]').attr("data-se-id",user);
                 $(this).data('pass-title')!=undefined ? $('.filter-side-drawer').find('.device_name').text("  to "+$(this).data('pass-title')):$('.filter-side-drawer').find('.device_name').text("");
             }
             $('body').toggleClass('side-drawer-open');
+            var assigned = document.querySelectorAll('.assigned');
+            assigned.forEach(function(element) {
+                console.log(element)
+                var assignedIds = element.dataset.assigned_id;
+                console.log("assignedIds" , assignedIds, assignedIds.includes(7),  document.querySelector(".dynamic_name").getAttribute('data-se-id') )
+                if (assignedIds.includes(document.querySelector(".dynamic_name").getAttribute('data-se-id'))) {
+                    element.checked = true;
+                }
+            });
             $(".workout-type").change();
         }
     });
@@ -460,10 +474,11 @@ function submit_ajax_form( form , after_success = null ){
         }
     });
 
-
 }
 function closePopup(){
+
     if( $('.filter-side-drawer.open form').length ){
+       // Check all checkboxes in the form
         if( $('.filter-side-drawer.open form#modalProfileSubmit').length ){
             /* If update profile remain as it is */
         }else{

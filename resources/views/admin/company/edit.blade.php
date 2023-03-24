@@ -63,7 +63,7 @@
                                         </li>
 
                                         <li>
-                                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#1847a2; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
+                                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#3eaf86; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
                                             <div class="input-group input-group-sm invoice-value">
                                                 <input type="text"  value="{{ old('company_email' , $companyDetail->email) }}" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Email" name="company_email">
                                             </div>
@@ -87,7 +87,7 @@
                                             <p>Contact Person Email<span class="required-field">*</span></p>
                                             <div class="input-group input-group-sm invoice-value">
                                                 <input type="email" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Number" name="contact_person_email"  value="{{ old( 'contact_person_email' , $companyDetail ? $companyDetail->company_detail->contact_person_email : '' ) }}" >
-                                                <input type="hidden" name="role" value="Company">
+                                                <input type="hidden" name="role" value="1_Company">
                                             </div>
                                         </li>
                                         <li>
@@ -135,25 +135,10 @@
                                                 </label>
                                             </div>
                                         </li>
-                                        <li>
-
-                                            <p>Role</p>
-                                            <div class="input-group input-group-sm invoice-value">
-                                                <select class="custom-select select-country" name="role">
-                                                    <option value="">Select Role</option>
-                                                    @php
-                                                        $selected_role =$companyDetail->roles()->pluck('name')->first() ;
-                                                    @endphp
-                                                    <option value="Company"  {{ $selected_role == "Company" ? 'selected' : '' }}>Company</option>
-                                                    <option value="PropertyManager"  {{ $selected_role == "PropertyManager" ? 'selected' : '' }}>Property Manager</option>
-
-                                                </select>
-                                            </div>
-                                        </li>
                                     </ul>
                                     <div class="footer-menus_button">
                                         <div class="invoice-list">
-
+                                            <input type="hidden" name="role" value="Company">
                                         </div>
                                         <div class="submit-btns">
                                             <ul>

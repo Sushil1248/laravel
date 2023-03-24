@@ -17,7 +17,7 @@
                     </p>
                 </div>
             </div>
-            @can('user-add')
+            @can('company-add')
             <div class="right-btns">
                 <div class="">
                     <a class="nav-link btn navy-blue-btn open-section" data-target="create-company-popup" href="javascript:void(0)"  aria-expanded="false">
@@ -90,7 +90,7 @@
 
                                     <th scope="col">@sortablelink('created_at', 'Created Date')</th>
                                     <th scope="col" class="text-center status-text purchase-order-date" style="display:table-cell">@sortablelink('status', 'Status')</th>
-                                    @if( auth()->user()->can('user-edit') || auth()->user()->can('user-delete') )
+                                    @if( auth()->user()->can('company-edit') || auth()->user()->can('company-delete') )
                                     <th scope="col" class="purchase-order-date text-center">Actions</th>
                                     @endif
                                 </tr>
@@ -99,7 +99,7 @@
                                 @forelse ($data as $singleCompany)
                                 <tr>
                                     <td class="purchase-order-date">
-                                        @can('user-view')
+                                        @can('company-view')
                                         <a href="#" class="open-section get-company-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">{{ $singleCompany->company_detail->company_name }}</a>
                                         @else
                                         {{ $singleCompany->company_detail->company_name }}
@@ -119,13 +119,13 @@
                                         {{ changeDateFormat($singleCompany->created_at) }}
                                     </td>
                                     <td class="text-center status-text">
-                                        <input @if( !auth()->user()->can('user-status') ) disabled @endif data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-offstyle="danger" data-height="20" data-width="70" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
+                                        <input @if( !auth()->user()->can('company-status') ) disabled @endif data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-offstyle="danger" data-height="20" data-width="70" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
                                     </td>
                                     <td class="text-center purchase-order-date">
-                                        @can('user-edit')
+                                        @can('company-edit')
                                         <a title="Edit" href="{{ route('company.edit',['id'=>jsencode_userdata($singleCompany->id)]) }}" onclick="event.stopPropagation()"><i class="fas fa-pencil-alt" style="color:#33383a"></i></a>&nbsp;&nbsp;
                                         @endcan
-                                        @can('user-delete')
+                                        @can('company-delete')
                                         <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('company.delete',['id'=>jsencode_userdata($singleCompany->id)]) }}">
                                             <i class="fas fa-trash" style="color:#FF0000"></i>
                                         </a>

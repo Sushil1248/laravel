@@ -28,8 +28,10 @@
           </div>
         </div>
     </div>
+
         <div class="row mb-3">
-            <div class="col-xl-3 col-md-6 mb-4 mt-4">
+            @can('user-list')
+            {{-- <div class="col-xl-3 col-md-6 mb-4 mt-4">
                 <div class="card h-100 totalCard" data-open-url="{{ route('user.list') }}">
                     <div class="card-body">
                         <div class="row no-gutters align-items-center">
@@ -43,8 +45,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
+            </div> --}}
+            @endcan
+        @can('company-list')
             <div class="col-xl-3 col-md-6 mb-4 mt-4">
                 <div class="card h-100 totalCard" data-open-url="">
                     <div class="card-body">
@@ -60,7 +63,8 @@
                     </div>
                 </div>
             </div>
-
+        @endcan
+        @can('device-list')
             <div class="col-xl-3 col-md-6 mb-4 mt-4">
                 <div class="card h-100 totalCard" data-open-url="">
                     <div class="card-body">
@@ -76,8 +80,11 @@
                     </div>
                 </div>
             </div>
-
+        @endcan
         </div>
+
+
+        {{-- @can('user-list')
         <div class="row">
             <div class="col-xl-6 col-md-6 mb-4 mt-4">
                 <h5>Users Detail</h5>
@@ -90,6 +97,8 @@
                     </div>
                 </div>
             </div>
+        @endcan --}}
+        @can('device-list')
             <div class="col-xl-6 col-md-6 mb-4 mt-4">
                 <h5>Companies Detail</h5>
                 <div class="card h-100 totalCard">
@@ -102,6 +111,7 @@
                 </div>
             </div>
         </div>
+        @endcan
 
     </div>
 </section>

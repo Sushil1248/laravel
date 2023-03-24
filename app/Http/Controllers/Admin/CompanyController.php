@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use App\Models\{Company, User, Role, CompanyDetail,UserDetails, State,Country, CompanyUsers};
+use App\Models\{Company, User, Role, CompanyDetail,UserDetails, State,Country, CompanyUsers, Vehicle};
 use Spatie\Permission\Models\Permission;
 use App\Exports\CompaniesExport;
 use Illuminate\Support\Facades\DB;
 use Auth;
-
+use Illuminate\Support\Str;
 class CompanyController extends Controller
 {
     function __construct()
@@ -39,31 +39,34 @@ class CompanyController extends Controller
         }
 
         $data = User::whereHas('roles', function ($query) {
-            $query->whereIn('name', ['Company', 'PropertyManager']);
+            $query->whereIn('name', ['1_Company', 'PropertyManager']);
         })
         ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
-            $q->whereBetween('created_at', [$start, $end]);
+            $q->whereBetween('users.created_at', [$start, $end]);
         })
         ->when($request->search, function ($qu, $keyword) {
             $qu->where(function ($q) use ($keyword) {
-                $q->where('first_name', 'like', '%' . $keyword . '%')
-                    ->orWhere('last_name', 'like', '%' . $keyword . '%')
-                    ->orWhere('email', 'like', '%' . $keyword . '%')
-                    ->orWhere('id', $keyword);
+
+                $q->where('users.first_name', 'like', '%' . $keyword . '%')
+                    // ->orWhere('company_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('users.last_name', 'like', '%' . $keyword . '%')
+                    ->orWhere('users.email', 'like', '%' . $keyword . '%')
+                    ->orWhere('users.id', $keyword);
+
+                    // check fields from CompanyDetails table
+                    $q->orWhereHas('company_detail', function($qu) use($keyword) {
+                          $qu->where('company_name', 'like', '%' . $keyword . '%');
+
+                     });
             });
         })
         ->when($request->filled('status'), function ($qu) {
-            $qu->where('status', request('status'));
+            $qu->where('users.status', request('status'));
         })
         ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
-            $query->where('id', $user_id);
+            $query->where('users.id', $user_id);
         })
-        // ->when($request->has('role_filter'), function ($qu) use ($request) {
-        //     $qu->whereHas('roles', function ($q) use ($request) {
-        //         $q->where('name', $request->role_filter);
-        //     });
-        // })
-        ->where('id', '<>', Auth::id());
+        ->where('users.id', '<>', Auth::id());
 
         $deletedCompanies = (clone $data)->onlyTrashed()->sortable(['id' => 'desc'])
         ->paginate(Config::get('constants.PAGINATION_NUMBER'),'*','dpage');
@@ -102,8 +105,8 @@ class CompanyController extends Controller
     public function del_restore($id){
         try {
             $userId = jsdecode_userdata($id);
-            Company::where('id',$userId)->restore();
-        	return redirect()->back()->with('status', 'success')->with('message', 'Company details '.Config::get('constants.SUCCESS.RESTORE_DONE'));
+            User::where('id',$userId)->restore();
+        	return redirect()->back()->with('status', 'success')->with('message', 'Company'.Config::get('constants.SUCCESS.RESTORE_DONE'));
         } catch(Exception $ex) {
             return redirect()->back()->with('status', 'error')->with('message', $ex->getMessage());
         }
@@ -124,7 +127,7 @@ class CompanyController extends Controller
             $companyDetail = User::with('company_detail')->find($companyId);
             $states = State::where('country_id',1)->get();
             if(!$companyDetail)
-                return redirect()->route('company.list');
+                return redirect()->back()->with('status', 'error')->with('message', "Something went wrong");
             $country = Country::pluck('name','id');
             return view('admin.company.edit',compact('companyDetail','states','country'));
 
@@ -147,12 +150,8 @@ class CompanyController extends Controller
                     $status = 1;
                 }
                 $company = User::findOrFail($companyId);
-                $company->roles()->detach();
                 $company->email = $request->company_email;
                 $company->status = $request->input('status',0);
-                if(auth()->user()->hasRole('Company')){
-                    $company->assignRole($request->role);
-                }
                 $company->save();
 
                 $comapny_detail = CompanyDetail::updateOrCreate(['user_id' =>  $companyId],removeEmptyElements([
@@ -163,6 +162,7 @@ class CompanyController extends Controller
                     'zipcode'   =>  $request->zipcode,
                     'company_name'   =>  $request->company_name,
                     'contact_person'   =>  $request->contact_person,
+                    'contact_person_email'   =>  $request->contact_person_email,
                     'contact_number'   =>  $request->contact_number,
                     'zipcode'   =>  $request->zipcode,
                     'fax_no'   =>  $request->fax_no,
@@ -170,11 +170,11 @@ class CompanyController extends Controller
                     'gender' => $request->gender
                 ]));
 
-                if(auth()->user()->hasRole('Company')){
+                if(auth()->user()->hasRole('1_Company')){
                     return response()->json(["success" => true, "msg" => "Details " . Config::get('constants.SUCCESS.UPDATE_DONE') ], 200);
                 }
+                return redirect()->back()->with('status', 'success')->with('status', 'success')->with('message', 'Comapny details '.Config::get('constants.SUCCESS.UPDATE_DONE'));
 
-                return redirect()->route('company.list')->with('status', 'success')->with('message', 'Comapny details '.Config::get('constants.SUCCESS.UPDATE_DONE'));
             } catch ( \Exception $e ) {
                 return redirect()->back()->withInput()->with('status', 'error')->with('message', $e->getMessage());
             }
@@ -199,7 +199,7 @@ class CompanyController extends Controller
 
             $roles = $roles->get();
             $states = State::where('country_id',1)->get();
-            $companies = Role::findByName('company')->users()->pluck('company_name', 'id');
+            $companies = Role::findByName('1_Company')->users()->pluck('company_name', 'id');
             return view('admin.company.add',compact('roles','companies','states'));
         }else{
             $validationRules = [
@@ -219,6 +219,7 @@ class CompanyController extends Controller
             try {
                 $data = [
                     'email' =>$request->company_email,
+                    'unique_id'    => Str::random(6),
                     'password' => bcrypt($request->password),
                     'status' => 1
                 ];
@@ -226,7 +227,18 @@ class CompanyController extends Controller
 
                 $company = User::create($data);
                 $company->assignRole($request->role);
+
                 if($company){
+
+                    $role_data = array(
+                        'name' =>  $company->id.'_Driver',
+                        'guard_name' =>'web',
+                        'created_by'=>$company->id
+                    );
+                    $record = Role::create($role_data);
+                    if ($record) {
+                        $record->syncPermissions($request->permission);
+                    }
                     $details = [
                         'user_id' => $company->id,
                         'contact_person' =>$request->contact_person,
@@ -282,7 +294,9 @@ class CompanyController extends Controller
         Company::where('id',$userId)->update([
             'password'  =>  bcrypt($request->password)
         ]);
-        return redirect()->route('company.list')->with('status', 'success')->with('message', 'User password '.Config::get('constants.SUCCESS.UPDATE_DONE'));
+
+
+        return redirect()->back()->with('status', 'success')->with('message', 'User password '.Config::get('constants.SUCCESS.UPDATE_DONE'));
     }
 
     /*
@@ -312,7 +326,7 @@ class CompanyController extends Controller
             'data'      =>  $response
         ];
         if(!$userDetail)
-            return redirect()->route('company.list');
+            return redirect()->back();
         return view('admin.company.view_detail',compact('userDetail','userType'));
     }
     /* End Method view_detail */
@@ -371,19 +385,24 @@ class CompanyController extends Controller
             ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
         $country = Country::pluck('name', 'id');
-        if(auth()->user()->hasRole('Company')){
+        $role = Role::where('created_by', Auth::user()->id)->pluck('name', 'id');
+        $vehicles=[];
+        $vehicles= Vehicle::where('user_id', Auth::user()->id)->get();
+
+        if(auth()->user()->hasRole('1_Company')){
             $company = User::where('id', Auth()->user()->id)
                     ->with('company_detail:id,user_id,company_name')
                     ->get()
                     ->pluck('company_detail.company_name', 'id');
         }else{
-            $company = Role::findByName('company')
+            $company = Role::findByName('1_Company')
                         ->users()
                         ->active()
                         ->with('company_detail:id,user_id,company_name')
                         ->get()
                         ->pluck('company_detail.company_name', 'company_detail.user_id');
         }
-        return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers'));
+
+        return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers','vehicles','role'));
     }
 }

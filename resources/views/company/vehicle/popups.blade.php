@@ -99,7 +99,7 @@
 <!-- Create popup  -->
 <div class="filter-sidebar filter-side-drawer order-sidebar create-module" id="create-vehicle-popup">
     <div class="">
-        <form method="post" action="{{ route('c.vehicle.add') }}" id="create-vehicle">
+        <form method="post" action="{{ route('vehicle.add') }}" id="create-vehicle">
         @csrf
             <div class="invoice-detail invoice-creation">
 

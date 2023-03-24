@@ -100,6 +100,13 @@
                     </li>
 
                     <li>
+                        <p>Contact Person Email</p>
+                        <div class="input-group input-group-sm invoice-value">
+                            <input type="email" class="form-control" readonly aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Person Email" name="contact_person_email">
+                        </div>
+                    </li>
+
+                    <li>
                         <p>Contact Number</p>
                         <div class="input-group input-group-sm invoice-value">
                             <input type="text" class="form-control" readonly aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Number" name="contact_number">
@@ -187,7 +194,7 @@
                             </div>
                         </li>
                         <li>
-                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#1847a2; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
+                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#3eaf86; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
                             <div class="input-group input-group-sm invoice-value">
                                 <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Email" name="company_email">
                             </div>
@@ -202,7 +209,7 @@
                             <p>Contact Person Email<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
                                 <input type="email" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Number" name="contact_person_email">
-                                <input type="hidden" name="role" value="Company">
+                                <input type="hidden" name="role" value="1_Company">
                             </div>
                         </li>
                         <li>

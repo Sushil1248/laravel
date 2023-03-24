@@ -16,8 +16,8 @@ class AdminMiddleware
    */
    public function handle(Request $request, Closure $next)
    {
-      if( isUserStatusActive())
-         return $next($request);
+    if( isUserStatusActive() && Auth::user()->hasRole('Administrator')  || Auth::user()->hasRole('1_Company'))
+        return $next($request);
       Auth::logout();
       if($request->ajax())
          return response()->json(['error' => 'error', 'message' => 'Session timeout'], 302);

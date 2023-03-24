@@ -18,6 +18,9 @@ class HomeController extends Controller
 
     public function index( Request $request )
     {
+        if(!Auth::user()->hasRole('Administrator')){
+            return redirect()->route('company_home');
+        }
         $start = $end = "";
         if( $request->filled('daterange_filter') ) {
             $daterange = $request->daterange_filter;
@@ -26,19 +29,21 @@ class HomeController extends Controller
             $end = $daterang[1].' 23:05:59';
         }
         $totalUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'User');
+            $query->where('name', '=', '1_User');
         })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
            $query->whereBetween( 'created_at' , [$start , $end] );
         } )->count();
 
         $activeUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'User');
+            $query->where('name', '=', '1_User');
         })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
            $query->whereBetween( 'created_at' , [$start , $end] );
         } )->active()->count();
 
-        $activeCompanies = Company::when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
+        $activeCompanies = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', '1_Company');
+        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+           $query->whereBetween( 'created_at' , [$start , $end] );
         } )->active()->count();
 
         $activeDevices = Device::when($start && $end ,function($query, $role) use ($start , $end) {
@@ -46,7 +51,7 @@ class HomeController extends Controller
         } )->active()->count();
 
         $totalCompanies = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'Company');
+            $query->where('name', '=', '1_Company');
         })->when($start && $end ,function($query, $role) use ($start , $end) {
            $query->whereBetween( 'created_at' , [$start , $end] );
         } )->count();
@@ -77,17 +82,19 @@ class HomeController extends Controller
             $start = $daterang[0].' 00:05:00';
             $end = $daterang[1].' 23:05:59';
         }
-        $totalUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'User');
-        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
-        } )->count();
+        $companyId = Auth::user()->id;
 
-        $activeUsers = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', 'User');
-        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
-            $query->whereBetween( 'created_at' , [$start , $end] );
-        } )->active()->count();
+        $totalUsers = User::whereHas('companyUsers', function ($query) use ($companyId) {
+                            $query->where('company_id', $companyId);
+                        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+                            $query->whereBetween( 'created_at' , [$start , $end] );
+                        } )->count();
+
+        $activeUsers =  User::whereHas('companyUsers', function ($query) use ($companyId) {
+                            $query->where('company_id', $companyId);
+                        })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
+                            $query->whereBetween( 'created_at' , [$start , $end] );
+                        } )->active()->count();
 
         return view('company.home', compact('totalUsers','activeUsers') );
    }
@@ -160,7 +167,7 @@ class HomeController extends Controller
                 'email' =>$request->email,
             ];
             $user = User::create($data);
-            $user->assignRole('User');
+            $user->assignRole('1_User');
 
             if ($user) {
                 UserDetails::create(['user_id' => $user->id]);
@@ -209,7 +216,7 @@ class HomeController extends Controller
                 'password' => $request->password
             ];
 
-            if ( auth()->attempt($attempt,$request->has('remember')) && auth()->user()->hasRole('User')) {
+            if ( auth()->attempt($attempt,$request->has('remember')) && auth()->user()->hasRole('1_User')) {
                 User::where('email',$request->email)->update(['remember_token' =>$request->has('remember')]);
 
                 return redirect()->route('home');
@@ -275,7 +282,7 @@ class HomeController extends Controller
                     ]);
                 }
                 $role_name = Auth::user()->getRoleNames()->first();
-                if($role_name == 'User') {
+                if($role_name == '1_User') {
                     return response()
                         ->json([
                             "success" => true,

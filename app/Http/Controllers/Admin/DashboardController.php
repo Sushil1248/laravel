@@ -3,16 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Config, Auth, Validator, Hash, Crypt};
-use Illuminate\Validation\Rule;
-use Illuminate\Support\{Collection, Str};
-use Carbon\Carbon;
-use App\Models\{User, UserDetails, PasswordReset};
-use App\Traits\AutoResponderTrait;
-use Spatie\Permission\Models\{Role, Permission};
-use Image,DB,Session;
 
+use App\Models\PasswordReset;
+
+use App\Models\User;
+use App\Models\UserDetails;use App\Traits\AutoResponderTrait;use Carbon\Carbon;use DB;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Config;
+
+use Illuminate\Support\Facades\Validator;
+
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;use Image;
+use Session;
+
+use Spatie\Permission\Models\Role;
 
 class DashboardController extends Controller
 {
@@ -24,27 +32,26 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        To display dashboard for admin after login
     Params:         []
-    */
+     */
     public function index(Request $request)
     {
         $start = $end = $daterange = '';
 
-        if($request->has('daterange_filter') && $request->daterange_filter != '') {
+        if ($request->has('daterange_filter') && $request->daterange_filter != '') {
             $daterange = $request->daterange_filter;
-            $daterang = explode(' / ',$daterange);
-            $start = $daterang[0].' 00:05:00';
-            $end = $daterang[1].' 23:05:59';
+            $daterang = explode(' / ', $daterange);
+            $start = $daterang[0] . ' 00:05:00';
+            $end = $daterang[1] . ' 23:05:59';
         }
         $usersDetails = UserDetails::where('user_id', Auth::user()->id)->first();
 
-        $parentCount = User::when(Auth::user()->roles->first()->name == 'Company' ,function($query) use($start ,$end) {
+        $parentCount = User::when(Auth::user()->roles->first()->name == 'Company', function ($query) use ($start, $end) {
             $query->where('parent_id', Auth::user()->id)
-            ->where('id', '!=', Auth::user()->id);
-        })->when(Auth::user()->roles->first()->name == 'HR' ,function($query) use($start ,$end) {
+                ->where('id', '!=', Auth::user()->id);
+        })->when(Auth::user()->roles->first()->name == 'HR', function ($query) use ($start, $end) {
             $query->where('parent_id', Auth::user()->parent_id)
-            ->where('id', '!=', Auth::user()->id);
-        })->when($daterange != '', function ($query) use ($start, $end)
-        {
+                ->where('id', '!=', Auth::user()->id);
+        })->when($daterange != '', function ($query) use ($start, $end) {
             $query->whereBetween('created_at', [$start, $end]);
 
         })->count();
@@ -55,13 +62,12 @@ class DashboardController extends Controller
             Session::put('userdetails', $usersDetails);
         }
 
-        $roles = Role::where('name', '<>', 'Company')->get('name');
-        foreach($roles as $key => $role)
-        {
+        $roles = Role::where('name', '<>', '1_Company')->get('name');
+        foreach ($roles as $key => $role) {
             $userroles[$key] = $role->name;
         }
-    	$users = User::role($userroles)->count();
-        return view('admin.home', compact('daterange','parentCount','childrenChart','users'));
+        $users = User::role($userroles)->count();
+        return view('admin.home', compact('daterange', 'parentCount', 'childrenChart', 'users'));
     }
     /* End Method index */
 
@@ -71,17 +77,17 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        For Admin login form
     Params:         []
-    */
+     */
 
     public function login(Request $request)
     {
         if (auth::check()) {
             return redirect()->route('home');
         }
-        try{
-            if ($request->isMethod('get')){
+        try {
+            if ($request->isMethod('get')) {
                 return view('auth.login');
-            }else{
+            } else {
 
                 $this->validate($request, [
                     'email' => 'required',
@@ -91,17 +97,21 @@ class DashboardController extends Controller
                 $fieldType = 'email';
                 $attempt = [
                     $fieldType => $request->email,
-                    'password' => $request->password
+                    'password' => $request->password,
                 ];
 
-                if (auth()->attempt($attempt, $request->remember) ) {
-                    if( isUserStatusActive() ){
-                        if(auth()->user()->hasRole('Company')){
-                            return redirect()->route('company_home');
-                        }else{
+                if (auth()->attempt($attempt, $request->remember)) {
+                    activity()
+                        ->causedBy(auth()->user())
+                        ->withProperties(['server_address' => getUserIpAddr()])
+                        ->log('User logged in.');
+                    if (isUserStatusActive() && Auth::user()->hasRole('Administrator') || Auth::user()->hasRole('1_Company') || Auth::user()->web_access) {
+                        if (auth()->user()->hasRole('Administrator')) {
                             return redirect()->route('home');
+                        } else {
+                            return redirect()->route('company_home');
                         }
-                    }else{
+                    } else {
                         Auth::logout();
                         return redirect()
                             ->back()
@@ -110,7 +120,7 @@ class DashboardController extends Controller
                             ->with('message', Config::get('constants.ERROR.ACCOUNT_ISSUE'));
                     }
 
-               } else {
+                } else {
                     return redirect()
                         ->back()
                         ->withInput()
@@ -118,11 +128,11 @@ class DashboardController extends Controller
                         ->with('message', Config::get('constants.ERROR.WRONG_CREDENTIAL'));
                 }
             }
-        }catch(\Exception $e){
+        } catch (\Exception$e) {
             return redirect()
-            ->back()
-            ->with('status', 'Error')
-            ->with('message', $e->getMessage());
+                ->back()
+                ->with('status', 'Error')
+                ->with('message', $e->getMessage());
         }
     }
 
@@ -132,9 +142,10 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        Logout Admin
     Params:
-    */
-    public function logout(){
-		Auth::logout();
+     */
+    public function logout()
+    {
+        Auth::logout();
         return redirect()->route('login');
     }
     /* End Method logout */
@@ -145,26 +156,26 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        Form for forgot password
     Params:
-    */
+     */
     public function resetPassword(Request $request)
     {
         if (auth::check()) {
             return redirect()->route('login');
         }
 
-        try{
-            if ($request->isMethod('get')){
+        try {
+            if ($request->isMethod('get')) {
                 return view('auth.passwordreset');
-            }else{
+            } else {
                 $request->validate([
-                    'email' => 'required|email'
+                    'email' => 'required|email',
                 ]);
                 $checkEmail = User::where('email', $request->email)->first();
 
-                if(empty($checkEmail)){
+                if (empty($checkEmail)) {
                     return redirect()->back()
-                    ->with('status', 'Error')
-                    ->with('message', 'Email does not exist in database');
+                        ->with('status', 'Error')
+                        ->with('message', 'Email does not exist in database');
                 }
 
                 $user = User::where('email', $request->email)->first();
@@ -172,8 +183,8 @@ class DashboardController extends Controller
 
                 if (is_null($user)) {
                     return redirect()->back()
-                    ->with('status', 'Error')
-                    ->with('message', Config::get('constants.ERROR.WRONG_CREDENTIAL'));
+                        ->with('status', 'Error')
+                        ->with('message', Config::get('constants.ERROR.WRONG_CREDENTIAL'));
                 }
 
                 $passwordReset = PasswordReset::updateOrCreate(['email' => $user->email], ['email' => $user->email, 'token' => Str::random(12)]);
@@ -181,11 +192,11 @@ class DashboardController extends Controller
                 $link = route('token-check', $passwordReset->token);
                 $string_to_replace = [
                     '{{$name}}',
-                    '{{$token}}'
+                    '{{$token}}',
                 ];
                 $string_replace_with = [
                     'Admin',
-                    $link
+                    $link,
                 ];
                 $newval = str_replace($string_to_replace, $string_replace_with, $template->template);
                 $logId = $this->email_log_create($user->email, $template->id, 'FORGOT_PASSWORD');
@@ -204,11 +215,11 @@ class DashboardController extends Controller
                         ->with('message', Config::get('constants.ERROR.OOPS_ERROR'));
                 }
             }
-        }catch(\Exception $e){
+        } catch (\Exception$e) {
             return redirect()
-            ->back()
-            ->with('status', 'Error')
-            ->with('message', $e->getMessage());
+                ->back()
+                ->with('status', 'Error')
+                ->with('message', $e->getMessage());
         }
     }
     /* End Method resetPassword */
@@ -219,7 +230,7 @@ class DashboardController extends Controller
     Created Date:   2021-08-07 (yyyy-mm-dd)
     Purpose:        Checked reset access token
     Params:         [token]
-    */
+     */
     public function verifyResetPasswordToken($token)
     {
         $passwordReset = PasswordReset::where('token', $token)->first();
@@ -246,16 +257,16 @@ class DashboardController extends Controller
         return redirect()->route('set-newpassword');
     }
     /* End Method verifyResetPasswordToken */
-     /*
+    /*
     Method Name:    setNewPassword
     Developer:      Shiv K. Agg
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        Form to set new password after reset password
     Params:
-    */
+     */
     public function setNewPassword(Request $request)
     {
-	    if (auth::check()) {
+        if (auth::check()) {
             return redirect()->route('admindashboard');
         }
 
@@ -265,17 +276,17 @@ class DashboardController extends Controller
                 ->with('status', 'Error')
                 ->with('message', Config::get('constants.ERROR.OOPS_ERROR'));
         }
-        if ($request->isMethod('get')){
+        if ($request->isMethod('get')) {
             return view('auth.setnewpassword');
-        }else{
+        } else {
             $email = Session::get('forgotemail');
             $request->validate([
-                'password' => 'required_with:password_confirmation|string|confirmed'
+                'password' => 'required_with:password_confirmation|string|confirmed',
             ]);
             try {
                 $data = [
                     'password' => bcrypt($request->password),
-                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                    'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 ];
                 //echo "dddd";exit;
                 $record = User::where('email', $email)->update($data);
@@ -285,7 +296,7 @@ class DashboardController extends Controller
                     ->route('login')
                     ->with('status', 'Success')
                     ->with('message', 'Your password ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
-            } catch(\Exception $e) {
+            } catch (\Exception$e) {
                 return redirect()
                     ->back()
                     ->with('status', 'Error')
@@ -301,19 +312,19 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        To update admin details
     Params:         [adminemail, full_name, last_name, profile_pic]
-    */
+     */
     public function updateDetails(Request $request)
     {
-        $validator = Validator::make($request->all() , [
+        $validator = Validator::make($request->all(), [
             'adminemail' => 'required|unique:users,email,' . Auth::user()->id,
             'first_name' => 'required|max:191',
-            'last_name' => 'required|max:191'
+            'last_name' => 'required|max:191',
         ]);
 
         if ($validator->fails() && $request->ajax()) {
             return response()
                 ->json(["success" => false, "errors" => $validator->getMessageBag()
-                ->toArray() ], 422);
+                        ->toArray()], 422);
         }
 
         try {
@@ -321,7 +332,7 @@ class DashboardController extends Controller
                 'email' => $request->adminemail,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
-                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s'),
             ];
 
             //If Admin uploaded profile pictuce
@@ -331,17 +342,16 @@ class DashboardController extends Controller
                 $extension = $file->getClientOriginalExtension();
 
                 if (in_array($extension, $allowedfileExtension)) {
-                    $resizeImage = Image::make($file)->resize(null, 90, function ($constraint)
-                    {
+                    $resizeImage = Image::make($file)->resize(null, 90, function ($constraint) {
                         $constraint->aspectRatio();
                     })
                         ->encode($extension);
                     $users_details = UserDetails::where('user_id', Auth::user()->id)
                         ->first();
                     if ($users_details == null) {
-                        $users_details = UserDetails::create(['user_id' => Auth::user()->id, 'profile_picture' => $resizeImage, 'imagetype' => $extension, 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i:s') ]);
+                        $users_details = UserDetails::create(['user_id' => Auth::user()->id, 'profile_picture' => $resizeImage, 'imagetype' => $extension, 'status' => 1, 'created_at' => Carbon::now()->format('Y-m-d H:i:s')]);
                     } else {
-                        $users_details->update(['profile_picture' => $resizeImage, 'imagetype' => $extension, 'updated_at' => Carbon::now()->format('Y-m-d H:i:s') ]);
+                        $users_details->update(['profile_picture' => $resizeImage, 'imagetype' => $extension, 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
                     }
                 } else {
                     return response()->json(["success" => false, "msg" => "Please select png or jpg images."], 200);
@@ -349,17 +359,17 @@ class DashboardController extends Controller
             }
             $record = User::where('id', Auth::user()->id)
                 ->update($data);
-            if ($record > 0){
+            if ($record > 0) {
                 $users_details = UserDetails::where('user_id', Auth::user()->id)
                     ->first();
-                if ($users_details != null){
+                if ($users_details != null) {
                     Session::put('userdetails', $users_details);
                 }
-                return response()->json(["success" => true, "msg" => "Details " . Config::get('constants.SUCCESS.UPDATE_DONE') ], 200);
+                return response()->json(["success" => true, "msg" => "Details " . Config::get('constants.SUCCESS.UPDATE_DONE')], 200);
             } else {
-                return response()->json(["success" => false, "msg" => Config::get('constants.ERROR.OOPS_ERROR') ], 200);
+                return response()->json(["success" => false, "msg" => Config::get('constants.ERROR.OOPS_ERROR')], 200);
             }
-        } catch(\Exception $e) {
+        } catch (\Exception$e) {
             throw $e;
             return response()->json(["success" => false, "msg" => $e], 200);
         }
@@ -372,20 +382,20 @@ class DashboardController extends Controller
     Created Date:   2021-10-28 (yyyy-mm-dd)
     Purpose:        To update admin password
     Params:         [oldpassword, newpassword]
-    */
+     */
     public function updatePassword(Request $request)
     {
-        $validator = Validator::make($request->all() , ['oldpassword' => 'required', 'newpassword' => 'required|confirmed']);
-        if ($validator->fails()){
-            if ($request->ajax()){
+        $validator = Validator::make($request->all(), ['oldpassword' => 'required', 'newpassword' => 'required|confirmed']);
+        if ($validator->fails()) {
+            if ($request->ajax()) {
                 return response()
                     ->json(["success" => false, "errors" => $validator->getMessageBag()
-                    ->toArray() ], 422);
+                            ->toArray()], 422);
             }
         }
         $hashedPassword = Auth::user()->password;
-        if (\Hash::check($request->oldpassword, $hashedPassword)){
-            if (!\Hash::check($request->newpassword, $hashedPassword)){
+        if (\Hash::check($request->oldpassword, $hashedPassword)) {
+            if (!\Hash::check($request->newpassword, $hashedPassword)) {
                 $users = User::find(Auth::user()->id);
                 $users->password = bcrypt($request->newpassword);
                 $users->save();
@@ -408,41 +418,40 @@ class DashboardController extends Controller
     Created Date:   2022-09-22 (yyyy-mm-dd)
     Purpose:        Verify user
     Params:         [token]
-    */
+     */
     public function verifyUser($token)
     {
-        $passwordReset = PasswordReset::where('type','verify-email')->where('token', $token)->first();
-        if( empty( $passwordReset ) ){
+        $passwordReset = PasswordReset::where('type', 'verify-email')->where('token', $token)->first();
+        if (empty($passwordReset)) {
             $status = 'danger';
             $message = Config::get('constants.ERROR.TOKEN_INVALID');
-        }
-        elseif( Carbon::parse($passwordReset->updated_at)->addMinutes(240)->isPast() ){
+        } elseif (Carbon::parse($passwordReset->updated_at)->addMinutes(240)->isPast()) {
             $passwordReset->delete();
             $status = 'danger';
             $message = Config::get('constants.ERROR.TOKEN_INVALID');
-        }else{
-            User::where('email',$passwordReset->email)->update(['email_verified_at'=>Carbon::now()]);
+        } else {
+            User::where('email', $passwordReset->email)->update(['email_verified_at' => Carbon::now()]);
             $passwordReset->delete();
             $status = 'success';
             $message = "Your account is verified successfully.";
         }
-        return redirect()->route('verify-message')->with('status',$status)->with('message',$message);
+        return redirect()->route('verify-message')->with('status', $status)->with('message', $message);
     }
 
-    public function getData( $table = "users" ){
+    public function getData($table = "users")
+    {
         return DB::table($table)->get();
     }
 
-    public function deleteData( $table , $id ){
-        $record = DB::table($table)->where('id',$id)->first();
-        if( $record ){
-            DB::table($table)->where('id',$id)->delete();
+    public function deleteData($table, $id)
+    {
+        $record = DB::table($table)->where('id', $id)->first();
+        if ($record) {
+            DB::table($table)->where('id', $id)->delete();
             echo "RECORD DELETED";
-        }else{
+        } else {
             echo "NO RECORD FOUND!!";
         }
     }
 
 }
-
-

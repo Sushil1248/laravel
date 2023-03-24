@@ -26,6 +26,14 @@ class ApiController extends Controller
             $is_activated = Device::where('device_activation_code', $device_code)->pluck('is_activate')->first();
             $user_id = $device_exist->user_id;
 
+            $user_exists =User::where('id', $user_id)
+            ->where('deleted_at', NULL)
+            ->where('status', 1)
+            ->exists();
+           if(!$user_exists){
+            return $this->apiResponse('error', '404', "Oops! user might be deleted or is inactive");
+           }
+
             if(!is_null($device_token)){
                 Device::where('device_activation_code', $device_code)->update(['device_token' => $device_token, 'device_platform'=> "android"]);
             }
@@ -89,6 +97,18 @@ class ApiController extends Controller
             // if( !$user->email_verified_at )
             //     return $this->apiResponse('error', '404', "Email not verified yet.",['is_verified'=>false]);
 
+            $login_log = [];
+            $login_log =    [
+                                'user_id' =>  $user->id,
+                                'latitude'=>$request->latitude,
+                                'longitude'=>$request->longitude,
+                                'last_login'=>Carbon::now()->toDateTimeString()
+                            ];
+            $log_response = makeCurlRequest(env('USER_LOGS_POST_URL'), 'POST', $login_log);
+            if($request->has('device_token')){
+                $user->update(['device_token' => $request->device_token]);
+            }
+
             return $this->apiResponse('success', '200', 'Login successfully', [
                 'token' =>  $user->createToken('login')->accessToken,
                 'first_name'=> $user->first_name,
@@ -96,6 +116,8 @@ class ApiController extends Controller
                 'email'=> $user->email,
                 'id'=> $user->id,
             ]);
+
+
         } catch(\Exception $e) {
             return $this->apiResponse('error', '404', $e->getMessage());
         }
@@ -110,6 +132,10 @@ class ApiController extends Controller
                     $token->delete();
                 });
             }
+            $logout_log = [
+                'user_id' =>  $user->id,
+                'logged_out_at'=>Carbon::now()->toDateTimeString()
+            ];
             return $this->apiResponse('success', '200', 'Logout successfully', [],$want_status=false);
         }catch(\Exception $e){
             return $this->apiResponse('error', '404', $e->getMessage());

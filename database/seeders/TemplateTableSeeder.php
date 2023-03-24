@@ -22,7 +22,7 @@ class TemplateTableSeeder extends Seeder
             <table style="margin: auto;" role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
             <tbody>
             <tr>
-            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #1a47a6;" valign="top">
+            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #3eaf86;" valign="top">
             <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0">
             <tbody>
             <tr>
@@ -42,7 +42,7 @@ class TemplateTableSeeder extends Seeder
             <div class="text" style="padding: 0 2.5em;">
             <h2 style="text-align: left; color: #000000; font-size: 18px; margin-top: 0; line-height: 1.4; font-weight: bold;">Hello {{$name}},</h2>
             <p style="text-align: left; margin-top: 15px;">You have recently requested to reset your password for your account. Use below OTP to reset your password.</p>
-            <p style="margin-top: 15px;background-color: #1a47a6; padding: 5px 20px; color: #fff;display:inline-block">{{$token}}</p>
+            <p style="margin-top: 15px;background-color: #3eaf86; padding: 5px 20px; color: #fff;display:inline-block">{{$token}}</p>
 
             <p style="text-align: left;">If you did not initiate this request, please ignore this mail.</p>
             <p style="margin: 10px 0 0; text-align: left; color: #000000;">Thanks</p>
@@ -86,7 +86,7 @@ class TemplateTableSeeder extends Seeder
             <table style="margin: auto;" role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
             <tbody>
             <tr>
-            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #1a47a6;" valign="top">
+            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #3eaf86;" valign="top">
             <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0">
             <tbody>
             <tr>

@@ -11,6 +11,7 @@ class Role extends SpatiRole
 
     protected $fillable = [
         'created_by',
+        'name','guard_name'
     ];
     public function createdBy()
     {

@@ -38,7 +38,23 @@ class PermissionSeeder extends Seeder
             ['name' =>  'role-view','group_name'    =>  'role'],
             ['name' =>  'role-status','group_name'    =>  'role'],
 
-            ['name'  =>  'propfile-update','group_name'    =>  'profile'],
+            ['name'  =>  'vehicle-list','group_name'    =>  'vehicle'],
+            ['name'  =>  'vehicle-delete','group_name'    =>  'vehicle'],
+            ['name'  =>  'vehicle-edit','group_name'    =>  'vehicle'],
+            ['name'  =>  'vehicle-add','group_name'    =>  'vehicle'],
+            ['name' =>  'vehicle-view','group_name'    =>  'vehicle'],
+            ['name' =>  'vehicle-assign','group_name'    =>  'vehicle'],
+            ['name' =>  'vehicle-status','group_name'    =>  'vehicle'],
+
+            ['name'  =>  'device-list','group_name'    =>  'device'],
+            ['name'  =>  'device-delete','group_name'    =>  'device'],
+            ['name'  =>  'device-edit','group_name'    =>  'device'],
+            ['name'  =>  'device-add','group_name'    =>  'device'],
+            ['name' =>  'device-view','group_name'    =>  'device'],
+            ['name' =>  'device-assign','group_name'    =>  'device'],
+            ['name' =>  'device-status','group_name'    =>  'device'],
+
+            ['name'  =>  'profile-update','group_name'    =>  'profile'],
             ['name'  =>  'change-password','group_name'    =>  'profile'],
 
         ];

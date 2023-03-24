@@ -260,5 +260,4 @@ class UserController extends Controller
             return $this->apiResponse('error', '404', $e->getMessage());
         }
     }
-
 }

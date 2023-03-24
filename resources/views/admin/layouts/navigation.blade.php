@@ -3,7 +3,7 @@
 </li>
 
 
-@can('user-list')
+@can('company-list')
 <li class="nav-item">
     <div class="dropdown main-menu">
         <a class="nav-link dropdown-toggle {{ Route::is('company.*') ? 'active' : '' }}" data-toggle="dropdown">Companies</a>
@@ -24,14 +24,26 @@
         <a class="nav-link dropdown-toggle {{ Route::is('user.*') ? 'active' : '' }}" data-toggle="dropdown">Users</a>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="{{ route('user.list') }}">All Users</a>
-            <a class="dropdown-item" href="{{ route('user.list',['open_section'=>'create-user-popup']) }}">Add User</a>
+            {{-- <a class="dropdown-item" href="{{ route('user.list',['open_section'=>'create-user-popup']) }}">Add User</a> --}}
+        </div>
+    </div>
+</li>
+@endcan
+
+@can('vehicle-list')
+<li class="nav-item">
+    <div class="dropdown main-menu">
+        <a class="nav-link dropdown-toggle {{ Route::is('vehicle.*') ? 'active' : '' }}" data-toggle="dropdown">Vehicles</a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" href="{{ route('vehicle.list') }}">All vehicles</a>
+            <a class="dropdown-item" href="{{ route('vehicle.list',['open_section'=>'create-vehicle-popup']) }}">Add Vehicle</a>
         </div>
     </div>
 </li>
 @endcan
 
 
-@can('user-list')
+@can('role-list')
 <li class="nav-item">
     <div class="dropdown main-menu">
             <a class="nav-link  {{ Route::is('roles.*') ? 'active' : '' }}" href="{{ route('roles.list') }}">Manage Roles</a>

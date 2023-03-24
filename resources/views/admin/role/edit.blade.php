@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Company')
 
 
@@ -57,7 +57,7 @@
 
         .permission-item input[type=checkbox] {
             position: relative;
-            border: 2px solid  #1847a2;
+            border: 2px solid #3eaf86;
             border-radius: 2px;
             background: none;
             cursor: pointer;
@@ -75,8 +75,9 @@
         .permission-item input[type=checkbox]:hover {
             opacity: 1;
         }
+
         .permission-item input[type=checkbox]:checked {
-            background-color: #1847a2;
+            background-color: #3eaf86;
             opacity: 1;
         }
 
@@ -139,31 +140,53 @@
                                         <div class="row">
                                             @forelse ($permissionByGroup as $pkey=>$item)
                                                 <div class="permission-group container mt-0">
-                                                    @if(hasGroupPermission($item->group_name))
-                                                        <h5 class="permission-group-title" style="background:#1847a2; color:#FFF; padding:10px;">{{ $item->group_name }}</h5>
+                                                    @if (hasGroupPermission($item->group_name))
+                                                        <h5 class="permission-group-title"
+                                                            style="background:#3eaf86; color:#FFF; padding:10px;">
+                                                            {{ $item->group_name }}</h5>
                                                         <ul class="permission-list">
                                                             @php $all_permissions = get_permission_by_user_group($item->group_name); @endphp
                                                             @forelse ($all_permissions as $all_permission)
-                                                                <li class="permission-item">
+                                                                @if (Auth::user()->hasRole('1_Company'))
                                                                     @can($all_permission->name)
-                                                                    <div class="form-group">
-                                                                        <label class="permission-label">
-                                                                            <input class="permission-input toggle-class"
-                                                                                type="checkbox"
-                                                                                name="{{ $all_permission->name }}"
-                                                                                data-value="{{ $all_permission->name }}"
-                                                                                data-role="{{ $record->name }}"
-                                                                                @can($all_permission->name) checked @endcan>
-                                                                            <span
-                                                                                class="permission-name">{{ $all_permission->name }}</span>
-                                                                        </label>
-                                                                    </div>
+                                                                        <li class="permission-item">
+                                                                            <div class="form-group">
+                                                                                <label class="permission-label">
+                                                                                    <input class="permission-input toggle-class"
+                                                                                        type="checkbox"
+                                                                                        name="{{ $all_permission->name }}"
+                                                                                        data-value="{{ $all_permission->name }}"
+                                                                                        data-role="{{ $record->name }}"
+                                                                                        @if ($record->hasPermissionTo($all_permission->name)) checked @endif>
+                                                                                    <span
+                                                                                        class="permission-name">{{ $all_permission->name }}</span>
+                                                                                </label>
+                                                                            </div>
+                                                                        </li>
                                                                     @endcan
-                                                                </li>
+                                                                @else
+                                                                    <li class="permission-item">
+                                                                        <div class="form-group">
+                                                                            <label class="permission-label">
+                                                                                <input class="permission-input toggle-class"
+                                                                                    type="checkbox"
+                                                                                    name="{{ $all_permission->name }}"
+                                                                                    data-value="{{ $all_permission->name }}"
+                                                                                    data-role="{{ $record->name }}"
+                                                                                    @if ($record->hasPermissionTo($all_permission->name)) checked @endif>
+                                                                                <span
+                                                                                    class="permission-name">{{ $all_permission->name }}</span>
+                                                                            </label>
+                                                                        </div>
+                                                                    </li>
+                                                                @endif
+
+
                                                             @empty
                                                                 <li class="permission-item">
                                                                     <span class="text-secondary">There are currently no
-                                                                        permissions created for this permission group!</span>
+                                                                        permissions created for this permission
+                                                                        group!</span>
                                                                 </li>
                                                             @endforelse
                                                         </ul>

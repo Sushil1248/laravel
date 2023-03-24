@@ -35,9 +35,6 @@ class User extends Authenticatable
         'password',
         'contact_person',
         'contact_number',
-        'unique_id',
-        'web_access',
-        'device_token',
         'updated_at'
     ];
 

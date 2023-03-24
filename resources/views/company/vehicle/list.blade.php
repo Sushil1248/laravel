@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Vehicles')
 
 
@@ -17,7 +17,9 @@
                     </p>
                 </div>
             </div>
-            @can('user-add')
+            @if (auth()->user()->hasRole('Administrator'))
+            @else
+            @can('vehicle-add')
             <div class="right-btns">
                 <div class="">
                     <a class="nav-link btn navy-blue-btn open-section" data-target="create-vehicle-popup" href="javascript:void(0)"  aria-expanded="false">
@@ -26,6 +28,8 @@
                 </div>
             </div>
             @endcan
+            @endif
+
         </div>
         <div class="order-listing Invoice-tabs">
             <x-alert/>
@@ -56,11 +60,6 @@
                         @endif
                         @endforeach
                         @endif
-                        <li class="">
-                            <a class="btn navy-blue-btn export-btn" data-target="create-companies" href="{{ route('company.export')}}" aria-expanded="false">
-                                <i class="fas fa-file-download"></i> Export
-                            </a>
-                        </li>
                         <li class="filters-btn">
                             <button class="filter-text open-section" data-target="company-filter" > <img src="{{ asset('assets/images/Filters lines.svg') }}"> Filters</button>
                         </li>
@@ -81,6 +80,9 @@
                                     <th scope="col">
                                         @sortablelink('vehicle_num', 'Vehicle Number')
                                     </th>
+                                    <th scope="col">
+                                        @sortablelink('vehicle_num', 'Company Name')
+                                    </th>
                                     <th scope="col">@sortablelink('created_at', 'Created Date')</th>
                                     <th scope="col" class="text-center status-text purchase-order-date" style="display:table-cell">@sortablelink('status', 'Status')</th>
                                     @if( auth()->user()->can('user-edit') || auth()->user()->can('user-delete') )
@@ -92,7 +94,7 @@
                                 @forelse ($data as $singleCompany)
                                 <tr>
                                     <td class="purchase-order-date">
-                                        @can('user-view')
+                                        @can('vehicle-view')
                                         <a href="#" class="open-section get-vehicle-detail" data-target="company-details" data-user-id="{{ jsencode_userdata($singleCompany->id) }}">{{ $singleCompany->name }}</a>
                                         @else
                                         {{ $singleCompany->name }}
@@ -101,19 +103,27 @@
                                     <td>
                                         {{ $singleCompany && $singleCompany->vehicle_num ? $singleCompany->vehicle_num : 'NA' }}
                                     </td>
+                                    <td class="purchase-order-date">
+                                        @if(Auth::check() && Auth::user()->hasRole('Administrator'))
+                                         <a title="view company" href="{{ route('company.list',['search'=>get_company_name($singleCompany->user_id)]) }}" onclick="event.stopPropagation()">{{ $singleCompany && $singleCompany->user_id ? ucfirst(get_company_name($singleCompany->user_id)) : 'NA' }}</a>
+                                        @else
+                                        {{get_company_name($singleCompany->user_id)}}
+                                        @endif
+
+                                    </td>
 
                                     <td>
                                         {{ changeDateFormat($singleCompany->created_at) }}
                                     </td>
                                     <td class="text-center status-text">
-                                        <input @if( !auth()->user()->can('user-status') ) disabled @endif data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-offstyle="danger" data-height="20" data-width="70" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
+                                        <input @if( !auth()->user()->can('vehicle-status') ) disabled @endif data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-offstyle="danger" data-height="20" data-width="70" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
                                     </td>
                                     <td class="text-center purchase-order-date">
-                                        @can('user-edit')
-                                        <a title="Edit" href="{{ route('c.vehicle.edit',['id'=>jsencode_userdata($singleCompany->id)]) }}" onclick="event.stopPropagation()"><i class="fas fa-pencil-alt" style="color:#33383a"></i></a>&nbsp;&nbsp;
+                                        @can('vehicle-edit')
+                                        <a title="Edit" href="{{ route('vehicle.edit',['id'=>jsencode_userdata($singleCompany->id)]) }}" onclick="event.stopPropagation()"><i class="fas fa-pencil-alt" style="color:#33383a"></i></a>&nbsp;&nbsp;
                                         @endcan
-                                        @can('user-delete')
-                                        <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('c.vehicle.delete',['id'=>jsencode_userdata($singleCompany->id)]) }}">
+                                        @can('vehicle-delete')
+                                        <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('vehicle.delete',['id'=>jsencode_userdata($singleCompany->id)]) }}">
                                             <i class="fas fa-trash" style="color:#FF0000"></i>
                                         </a>
                                         @endcan
@@ -122,7 +132,7 @@
                                 @empty
                                 <tr>
                                     <td colspan="7">
-                                        No Company yet!
+                                        No Vehicle yet!
                                     </td>
                                 </tr>
                                 @endforelse
@@ -132,7 +142,7 @@
                                     <td colspan="7">
                                         {{ $data->appends(request()->except('dpage','page','open_section'))->links() }}
                                         <p>
-                                            Displaying {{$data->count()}} of {{ $data->total() }} company(s).
+                                            Displaying {{$data->count()}} of {{ $data->total() }} vehicle(s).
                                         </p>
                                     </td>
                                 </tr>
@@ -178,7 +188,7 @@
                                             <input data-id="{{ jsencode_userdata($singleCompany->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleCompany->status ? 'checked' : '' }}>
                                         </td>
                                         <td class="text-center" class="purchase-order-date">
-                                            <a onclick="event.stopPropagation()" title="Restore" href="{{ route('c.vehicle.restore',['id'=>jsencode_userdata($singleCompany->id)]) }}">
+                                            <a onclick="event.stopPropagation()" title="Restore" href="{{ route('vehicle.restore',['id'=>jsencode_userdata($singleCompany->id)]) }}">
                                                 <i class="fas fa-trash-restore"></i>
                                             </a>
                                         </td>
@@ -186,7 +196,7 @@
                                     @empty
                                     <tr >
                                         <td colspan="7" class="purchase-order-date">
-                                            No Company deleted yet!
+                                            No Vehicles deleted yet!
                                         </td>
                                     </tr>
                                     @endforelse
@@ -231,7 +241,7 @@
             $.ajax({
                 type: "GET",
                 dataType: "json",
-                url: '/c/vehicle/changeStatus',
+                url: '/vehicle/changeStatus',
                 data: {'status': status, 'id': id},
                 success: function(data){
                     //swal("Success!",data.message, "success");
@@ -359,7 +369,7 @@
         });
         /** Get user details **/
         $(".get-vehicle-detail").on("click",function(){
-            $.get("/c/vehicle/details/"+$(this).data("user-id"), function(data, status){
+            $.get("/vehicle/details/"+$(this).data("user-id"), function(data, status){
                 console.log(data)
                 if( data.status ){
                     for (let input_name in data.data)

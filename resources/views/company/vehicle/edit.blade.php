@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
 
 @section('title', '- Edit Vehicle')
 
@@ -19,7 +19,7 @@
             </div>
             <div class="right-btns">
                 <div class="">
-                    <a class="nav-link btn navy-blue-btn" href="{{ route('c.vehicle.list') }}"  aria-expanded="false">
+                    <a class="nav-link btn navy-blue-btn" href="{{ route('vehicle.list') }}"  aria-expanded="false">
                     List Vehicle
                     </a>
                 </div>
@@ -42,7 +42,7 @@
             <div class="tab-content invoice-tab-content">
                 <div class="tab-pane active" id="tabs-1" role="tabpanel">
                     <div class="">
-                        <form method="post" action="{{ route('c.vehicle.edit',['id'=>jsencode_userdata($companyDetail->id)]) }}" id="update-company">
+                        <form method="post" action="{{ route('vehicle.edit',['id'=>jsencode_userdata($companyDetail->id)]) }}" id="update-company">
                         @csrf
                             <div class="invoice-detail invoice-creation">
                                 <div class="invoice-details-inner">

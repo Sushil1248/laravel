@@ -5,9 +5,11 @@
 <section>
     <div class="container">
       <div class="row mb-4 mt-4">
+        @can('user-list')
         <div class="col-xl-3 col-md-6">
           <div class="card h-100">
             <div class="card-body">
+
                 <form class="navbar-search" id="search-form">
                     <div class="input-group">
                         <input type="text"  value="{{ request('daterange_filter') }}" name="daterange_filter" autocomplete="off" class="form-control bg-light multi-date-rangepicker small " placeholder="Date Range"
@@ -24,10 +26,13 @@
                         </div>
                     </div>
                 </form>
+
             </div>
           </div>
         </div>
+        @endcan
     </div>
+        @can('user-list')
         <div class="row mb-3">
             <div class="col-xl-3 col-md-6 mb-4 mt-4">
                 <div class="card h-100 totalCard" data-open-url="{{ route('user.list') }}">
@@ -44,8 +49,9 @@
                     </div>
                 </div>
             </div>
+        @endcan
 
-
+            @can('user-list')
             <div class="col-xl-3 col-md-6 mb-4 mt-4">
                 <div class="card h-100 totalCard" data-open-url="{{ route('user.list') }}">
                     <div class="card-body">
@@ -61,10 +67,12 @@
                     </div>
                 </div>
             </div>
+            @endcan
             </div>
 
 
         </div>
+        @can('user-list')
         <div class="row container">
             <div class="col-xl-6 col-md-6 mb-4 mt-4">
                 <h5>Users Detail</h5>
@@ -78,6 +86,7 @@
                 </div>
             </div>
         </div>
+        @endcan
 
     </div>
 </section>

@@ -46,15 +46,11 @@ class RoleController extends Controller
     }
 
     public function create_record(Request $request){
-		$request->validate([
-            'name' => 'required|unique:roles'
-        ]);
-
     	try {
         	$postData = $request->all();
 
         	$data = array(
-				'name' => $postData['name'],
+				'name' => auth()->user()->id.'_'.$postData['name'],
                 'created_by'=>auth()->user()->id
         	);
 
@@ -69,6 +65,12 @@ class RoleController extends Controller
             }
 
         } catch (\Exception$e) {
+            if ($e instanceof \Spatie\Permission\Exceptions\RoleAlreadyExists) {
+                return [
+                    'success' => false,
+                    'msg' => "Oops! You might have created this role!",
+                ];
+            }
             DB::rollBack();
             return [
                 'success' => false,

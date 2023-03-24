@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Users')
 
 
@@ -74,6 +74,9 @@
                                             </div>
                                         </li>
 
+                                        @if(Auth::user()->hasRole('1_Company'))
+                                                <input type="hidden" name="company" value="{{jsencode_userdata(Auth::user()->id)}}">
+                                        @else
                                         <li>
                                             <p>Company</p>
                                             <div class="input-group input-group-sm invoice-value">
@@ -85,6 +88,8 @@
                                                 </select>
                                             </div>
                                         </li>
+                                        @endif
+
 
                                         <li>
                                             <p>Mobile</p>
@@ -162,6 +167,33 @@
                                                 </label>
                                             </div>
                                         </li>
+
+                                        @isset($role)
+                                        @php
+                                            $selected_role =$userDetail->roles()->pluck('name')->first() ;
+                                        @endphp
+                                        <li>
+                                            <p>Role</p>
+                                            <div class="input-group input-group-sm invoice-value">
+                                                <select class="custom-select select-role" name="role">
+                                                    <option value="">Select Role</option>
+                                                    @foreach( $role as $roleId => $roleName )
+                                                        <option value="{{ $roleName }}" @if($selected_role==$roleName) selected @endif>{{ trim_role_name($roleName) }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </li>
+
+                                        <li class="d-flex align-items-center mt-4">
+                                            <p style="margin-right: 18px;">Allow Web Access</p>
+                                            <div class="checkbox-wrapper-18">
+                                                <div class="round">
+                                                  <input type="checkbox" name="web_access" id="web_access" @if($userDetail->web_access) checked @endif>
+                                                  <label for="web_access" class="m-0"></label>
+                                                </div>
+                                              </div>
+                                        </li>
+                                        @endisset
                                     </ul>
                                     <div class="footer-menus_button">
                                         <div class="invoice-list">
@@ -212,6 +244,8 @@
             email:{
                 required:true,
                 email:true
+            },role:{
+                required:true,
             },
             mobile:{
                 number: true

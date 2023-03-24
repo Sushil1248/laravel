@@ -44,14 +44,13 @@ class VehicleController extends Controller
             $end = $daterang[1] . ' 23:05:59';
         }
 
-        $data = Vehicle::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+        if (auth()->user()->hasRole('Administrator')) {
+            $data = Vehicle::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
                 $q->whereBetween('created_at', [$start, $end]);
             })
             ->when($request->search, function ($qu, $keyword) {
                 $qu->where(function ($q) use ($keyword) {
-                    $q->where('first_name', 'like', '%' . $keyword . '%')
-                        ->orWhere('last_name', 'like', '%' . $keyword . '%')
-                        ->orWhere('email', 'like', '%' . $keyword . '%')
+                    $q->where('name', 'like', '%' . $keyword . '%')
                         ->orWhere('id', $keyword);
                 });
             })
@@ -61,6 +60,24 @@ class VehicleController extends Controller
             ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
                 $query->where('id', $user_id);
             });
+
+        }else{
+            $data = Vehicle::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+                $q->whereBetween('created_at', [$start, $end]);
+            })
+            ->when($request->search, function ($qu, $keyword) {
+                $qu->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('id', $keyword);
+                });
+            })
+            ->when($request->filled('status'), function ($qu) {
+                $qu->where('status', request('status'));
+            })
+            ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
+                $query->where('id', $user_id);
+            })->where('user_id', Auth::user()->id);
+        }
 
         $deletedVehicle = (clone $data)->onlyTrashed()->sortable(['id' => 'desc'])
             ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
@@ -147,7 +164,7 @@ class VehicleController extends Controller
 
                 $company->save();
 
-                return redirect()->route('c.vehicle.list')->with('status', 'success')->with('message', 'Vehicle details ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
+                return redirect()->route('vehicle.list')->with('status', 'success')->with('message', 'Vehicle details ' . Config::get('constants.SUCCESS.UPDATE_DONE'));
             } catch (\Exception$e) {
                 return redirect()->back()->withInput()->with('status', 'error')->with('message', $e->getMessage());
             }
@@ -219,7 +236,7 @@ class VehicleController extends Controller
             'name' => $vehicle_Detail->name,
             'vehicle_num' => $vehicle_Detail->vehicle_num,
             'extra_notes' => $vehicle_Detail->extra_notes,
-            'edit_user' => route('c.vehicle.edit', ['id' => jsencode_userdata($vehicle_Detail->id)]),
+            'edit_user' => route('vehicle.edit', ['id' => jsencode_userdata($vehicle_Detail->id)]),
         ];
         return [
             'status' => 'true',

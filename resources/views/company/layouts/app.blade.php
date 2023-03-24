@@ -32,33 +32,38 @@
                     <span class="page-header-text d-none">FREIGHT MANAGEMENT</span>
                 </button>
                 <a class="navbar-brand desktop-logo" href="{{ route('company_home') }}">
-					<span class="page-header-text" style="font-size:30px; font-weight:bold;">FREIGHT MANAGEMENT</span>
+					<span class="page-header-text" style="font-size:30px; font-weight:bold;">
+                        FREIGHT MANAGEMENT<br />
+                    </span>
 				</a>
                 <div class="dropdown mobile-logo d-none">
                     <button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown">
                         <i class="far fa-user" style="font-size: 25px;color: #FFF;background: transparent;"></i>
                     </button>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item open-section" href="#" data-target="password-setting">Update Password</a>
-                        <a class="dropdown-item open-section" href="#" data-target="profile-setting">My Profile</a>
+                        @can('change-password')<a class="dropdown-item open-section" href="#" data-target="password-setting">Update Password</a>@endcan
+                        @can('profile-update')<a class="dropdown-item open-section" href="#" data-target="profile-setting">My Profile</a>@endcan
                         <a class="dropdown-item" href="{{ route('logout-ad') }}">Logout</a>
                     </div>
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContentXL">
-                    <ul class="navbar-nav mr-auto" style="width:100%">
+                    <ul class="navbar-nav mr-auto" style="width:80%">
                         @include('company.layouts.navigation')
                     </ul>
 
-                    <ul class="right-icons d-flex">
+                    <ul class="right-icons d-flex"  style="width:8%">
 
                         <li class="user-img header-profile-img">
 							<div class="dropdown">
 								<button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown">
+                                    <small style="color:#FFF; font-weight:bold;">
+                                        {{Auth::user()->company_detail->company_name}}
+                                    </small>
 									<i class="far fa-user" style="font-size: 25px;color: #FFF;background: transparent;"></i>
 								</button>
 								<div class="dropdown-menu">
-                                    <a class="dropdown-item open-section" href="#" data-target="password-setting">Update Password</a>
-									<a class="dropdown-item open-section" href="#" data-target="profile-setting">My Profile</a>
+                                    @can('change-password') <a class="dropdown-item open-section" href="#" data-target="password-setting">Update Password</a>@endcan
+                                    @can('profile-update')<a class="dropdown-item open-section" href="#" data-target="profile-setting">My Profile</a>@endcan
 									<a class="dropdown-item" href="{{ route('logout-ad') }}">Logout</a>
 								</div>
 							</div>

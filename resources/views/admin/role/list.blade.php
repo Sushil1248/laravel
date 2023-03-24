@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Role Management')
 
 
@@ -15,7 +15,7 @@
                     </p>
                 </div>
             </div>
-            @can('user-add')
+            @can('role-add')
                 <div class="right-btns">
                     <div class="">
                         <a class="nav-link btn navy-blue-btn open-section" data-target="create-role-popup"
@@ -28,7 +28,7 @@
         </div>
 
         <div class="tab-content invoice-tab-content">
-            <!-- User listing -->
+            <!-- rolelisting -->
             <div class="tab-pane active" id="tabs-1" role="tabpanel">
                 <div class=" table-responsive list-items">
                     <table class="table">
@@ -39,8 +39,8 @@
                                 </th>
                                 <th scope="col">@sortablelink('created_at', 'Created Date')</th>
                                 {{--  <th scope="col" class="text-center status-text purchase-order-date" style="display:table-cell">@sortablelink('status', 'Status')</th> --}}
-                                @if (auth()->user()->can('user-edit') ||
-                                        auth()->user()->can('user-delete'))
+                                @if (auth()->user()->can('role-edit') ||
+                                        auth()->user()->can('role-delete'))
                                     <th scope="col" class="purchase-order-date text-center">Actions</th>
                                 @endif
                             </tr>
@@ -49,11 +49,11 @@
                             @forelse ($data as $key => $role)
                                 <tr>
                                     <td class="purchase-order-date">
-                                        @can('user-view')
+                                        @can('role-view')
                                             <a href="#" class="open-section get-user-detail" data-target="user-details"
-                                                data-user-id="{{ jsencode_userdata($role->id) }}">{{ $role->name }}</a>
+                                                data-user-id="{{ jsencode_userdata($role->id) }}">{{ trim_role_name($role->name) }}</a>
                                         @else
-                                            {{ $role->name }}
+                                            {{ trim_role_name($role->name) }}
                                         @endcan
                                     </td>
                                     <td>
@@ -63,23 +63,23 @@
                                     <input @if (!auth()->user()->can('user-status')) disabled @endif data-id="{{ jsencode_userdata($role->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-offstyle="danger" data-height="20" data-width="70" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $role->status ? 'checked' : '' }}>
                                 </td> --}}
                                     <td class="text-center purchase-order-date">
-                                        @can('user-edit')
+                                        @can('role-edit')
                                             <a title="Edit"
                                                 href="{{ route('roles.edit', ['id' => jsencode_userdata($role->id)]) }}"
                                                 onclick="event.stopPropagation()"><i class="fas fa-pencil-alt"
                                                     style="color:#33383a"></i></a>&nbsp;&nbsp;
                                         @endcan
-                                        {{-- @can('user-delete')
-                                    <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('role.delete',['id'=>jsencode_userdata($role->id)]) }}">
-                                        <i class="fas fa-trash" style="color:#FF0000"></i>
-                                    </a>
-                                    @endcan --}}
+                                        {{-- @can('role-delete')
+                                            <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('role.delete',['id'=>jsencode_userdata($role->id)]) }}">
+                                                <i class="fas fa-trash" style="color:#FF0000"></i>
+                                            </a>
+                                        @endcan --}}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
                                     <td colspan="7">
-                                        No user yet!
+                                        No role yet!
                                     </td>
                                 </tr>
                             @endforelse
@@ -89,7 +89,7 @@
                                 <td colspan="7">
                                     {{ $data->appends(request()->except('dpage', 'page', 'open_section'))->links() }}
                                     <p>
-                                        Displaying {{ $data->count() }} of {{ $data->total() }} user(s).
+                                        Displaying {{ $data->count() }} of {{ $data->total() }} role(s).
                                     </p>
                                 </td>
                             </tr>
