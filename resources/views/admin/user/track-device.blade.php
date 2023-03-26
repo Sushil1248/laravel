@@ -40,158 +40,182 @@
 
                             {{-- Device Details --}}
                             @isset($device)
-                            <tr style="background: #3eaf86;">
-                                <td colspan="2" style="color:#FFF; font-weight:bold;">Device Details</td>
-                            </tr>
-                            <tr>
-                                <td width="40%">Device Name</td>
-                                <td>@isset( $device['device_name'] ){{ $device['device_name'] }}@endif</td>
-                            </tr>
-                            <tr>
-                                <td width="40%">Tracking Radius</td>
-                                <td>@isset($device['device_name'] ){{ $device['tracking_radius'] }}@endif</td>
-                            </tr>
-                            <tr>
-                                <td width="40%">Platform</td>
-                                <td>@isset( $device['device_platform'] ){{ $device['device_platform'] }}@else NA @endif</td>
-                            </tr>
-                            @endisset
-                            {{-- Vehicle Details --}}
+                                <tr style="background: #3eaf86;">
+                                    <td colspan="2" style="color:#FFF; font-weight:bold;">Device Details</td>
+                                </tr>
+                                <tr>
+                                    <td width="40%">Device Name</td>
+                                        <td>
+                                            @isset($device['device_name']){{ $device['device_name'] }}@endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="40%">Tracking Radius</td>
+                                        <td>
+                                            @isset($device['device_name']){{ $device['tracking_radius'] }}@endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td width="40%">Platform</td>
+                                            <td>
+                                                @isset($device['device_platform']){{ $device['device_platform'] }}
+                                                @else
+                                                    NA @endif
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                        {{-- Vehicle Details --}}
 
-                            <tr style="background: #3eaf86;">
-                                <td colspan="2" style="color:#FFF; font-weight:bold;">Vechile Details</td>
-                            </tr>
+                                        <tr style="background: #3eaf86;">
+                                            <td colspan="2" style="color:#FFF; font-weight:bold;">Vechile Details</td>
+                                        </tr>
 
-                            <tr>
-                                @forelse ($vehicles as $vehicle)
-                            <tr>
-                                <td width="50%">
-                                    <ul>
-                                        <li>Vehicle Name: {{ ucfirst($vehicle->name) }}</li>
-                                        <li>Vehicle Number: {{ ucfirst($vehicle->vehicle_num) }}</li>
-                                        <li>Extra Notes: {{ $vehicle->extra_notes }}</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td width="100%">
-                                    NA
-                                </td>
-                            </tr>
-                            @endforelse
-                            </tr>
+                                        <tr>
+                                            @forelse ($vehicles as $vehicle)
+                                        <tr>
+                                            <td width="50%">
+                                                <ul>
+                                                    <li>Vehicle Name: {{ ucfirst($vehicle->name) }}</li>
+                                                    <li>Vehicle Number: {{ ucfirst($vehicle->vehicle_num) }}</li>
+                                                    <li>Extra Notes: {{ $vehicle->extra_notes }}</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td width="100%">
+                                                NA
+                                            </td>
+                                        </tr>
+                                        @endforelse
+                                        </tr>
 
-                        </table>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="row" style="margin:10px 0px;;">
-                        <div class="col-lg-8" style="font-weight:bold;">
-                            Note: The location will get updated after every 40 seconds
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="row" style="margin:10px 0px;;">
+                                    <div class="col-lg-8" style="font-weight:bold;">
+                                        Note: The location will get updated after every 4 seconds
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <span class="float-right" id="myButton"
+                                            style="background:#dc3545; color:#FFF; padding:2px 10px; border-radius:5px; font-size:13px; cursor:pointer">
+                                            Track {{ ucwords($user['full_name']) }}
+                                            <i class="fas fa-map-marker-alt"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="map" style="height: 500px; width: 100%; height:82vh"></div>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <span class="float-right" id="myButton"
-                                style="background:#dc3545; color:#FFF; padding:2px 10px; border-radius:5px; font-size:13px; cursor:pointer">
-                                Track {{ ucwords($user['full_name']) }}
-                                <i class="fas fa-map-marker-alt" ></i>
-                            </span>
-                        </div>
                     </div>
-                    <div id="map" style="height: 500px; width: 100%; height:82vh"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <script>
-        var device_token = "{{ $token }}";
-        var latitude = "{{ $data->latitude }}";
-        var longitude = "{{ $data->longitude }}";
-
-        console.log("Device Token : ", latitude)
-
-        function initMap() {
-            var myLatLng = {
-                lat: 30.8333,
-                lng: 76.9357
-            };
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 12,
-                center: myLatLng
-            });
-
-            const svgMarker = {
-                path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-                fillColor: "blue",
-                fillOpacity: 0.6,
-                strokeWeight: 0,
-                rotation: 0,
-                scale: 2,
-                anchor: new google.maps.Point(0, 20),
-            };
-
-            var marker = new google.maps.Marker({
-                position: myLatLng,
-                map: map,
-                icon: svgMarker,
-                title: 'Device Name'
-            });
-
-            // Connect to Socket.io server
-            const socket = io('http://10.20.20.224:1234/', {
-                cors: {
-                    origin: "http://10.20.20.224:1234",
-                    methods: ["GET", "POST"]
-                }
-            });
-            // socket.emit('my_event', { my_data: 'Hello, server!' });
-
-            socket.on('connection', function(data) {
-                console.log("Messaege", data)
-            });
-
-
-
-            // Listen for real-time location data from Socket.io server
-            socket.on('fetch_lat_long', function(data) {
-                var latLng = {
-                    lat: parseFloat(data.deviceLatitude),
-                    lng: parseFloat(data.deviceLongitude)
-                };
-                console.log(data)
-
-
-                marker.setPosition(latLng);
-                map.panTo(latLng);
-            });
-        }
-
-        // Get a reference to the button element
-        const btn = document.getElementById("myButton");
-        let intervalId;
-        // Add a click event listener to the button
-        btn.addEventListener("click", () => {
-            // Call the function once
-            track_device();
-
-            // Schedule the function to run every 40 seconds
-            setInterval(track_device, 4000);
-        });
-
-        function track_device() {
-            console.log("kwjf");
-            const socket = io('http://10.20.20.224:1234/', {
-                cors: {
-                    origin: "http://10.20.20.224:1234",
-                    methods: ["GET", "POST"]
-                }
-            });
-            socket.emit("fetch_lat_long", {
-                token: device_token
-            });
-        }
-
-        // initMap();
-    </script>
-    @parent
-@endsection
+                </section>
+                <script>
+                    var device_token = "{{ $token }}";
+                    var latitude = "{{ $data ? $data->latitude : 30.8333 }}";
+                    var longitude = "{{ $data ? $data->longitude : 76.9357 }}";
+                
+                    console.log("Device Token : ", latitude)
+                
+                    function initMap() {
+                        var myLatLng = {
+                            lat: parseFloat(latitude),
+                            lng: parseFloat(longitude)
+                        };
+                        var map = new google.maps.Map(document.getElementById('map'), {
+                            zoom: 18,
+                            center: myLatLng
+                        });
+                
+                        const customIcon = {
+                            url: 'https://www.svgrepo.com/show/110969/car-with-roof-rack.svg',
+                            size: new google.maps.Size(64, 64),
+                            origin: new google.maps.Point(0, 0),
+                            anchor: new google.maps.Point(32, 64),
+                            scaledSize: new google.maps.Size(64, 64)
+                        };
+                
+                
+                        var marker = new google.maps.Marker({
+                            position: myLatLng,
+                            map: map,
+                            icon: customIcon,
+                            title: '{{ $user['full_name'] }}'
+                        });
+                
+                        const path = new google.maps.Polyline({
+                            path: [],
+                            strokeColor: "#3eaf86",
+                            strokeOpacity: 1.0,
+                            strokeWeight: 5,
+                            map: map
+                        });
+                
+                        // Connect to Socket.io server
+                        const socket = io('http://10.20.20.224:1234/', {
+                            cors: {
+                                origin: "http://10.20.20.224:1234",
+                                methods: ["GET", "POST"]
+                            }
+                        });
+                        // socket.emit('my_event', { my_data: 'Hello, server!' });
+                
+                        socket.on('connection', function (data) {
+                            console.log("Messaege", data)
+                        });
+                
+                        // Listen for real-time location data from Socket.io server
+                        socket.on('fetch_lat_long', function (data) {
+                            var latLng = {
+                                lat: parseFloat(data.deviceLatitude),
+                                lng: parseFloat(data.deviceLongitude)
+                            };
+                            console.log(data)
+                
+                            marker.setPosition(latLng);
+                            map.panTo(latLng);
+                
+                            // Add the new point to the path
+                            var pathPoints = path.getPath();
+                            pathPoints.push(latLng);
+                            path.setPath(pathPoints);
+                        });
+                    }
+                
+                    // Get a reference to the button element
+                    const btn = document.getElementById("myButton");
+                    let intervalId;
+                
+                    // Add a click event listener to the button
+                    btn.addEventListener("click", () => {
+                        if (intervalId) {
+                            // Stop tracking
+                            clearInterval(intervalId);
+                            intervalId = null;
+                            btn.innerHTML = "Track {{ ucwords($user['full_name']) }}";
+                        } else {
+                            // Start tracking
+                            track_device();
+                            intervalId = setInterval(track_device, 4000);
+                            btn.innerHTML = "Stop Tracking {{ ucwords($user['full_name']) }}";
+                        }
+                    });
+                
+                    function track_device() {
+                        console.log("kwjf");
+                        const socket = io('http://10.20.20.224:1234/', {
+                            cors: {
+                                origin: "http://10.20.20.224:1234",
+                                methods: ["GET", "POST"]
+                            }
+                        });
+                        socket.emit("fetch_lat_long", {
+                            token: device_token
+                        });
+                    }
+                
+                    // initMap();
+                </script>         
+                @parent
+            @endsection

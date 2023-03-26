@@ -69,16 +69,16 @@
                     <div class='ajax-response'></div>
                     <ul class="d-flex" style="flex-direction: column;">
                         <li>
-                            <p>Title<span class="required-field">*</span></p>
+                            <p>Notification Title<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
-                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Add Title" name="title">
+                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Add Notification Title" name="title">
                                 <input type="hidden" class="dynamic_name" name="dyn_name" value="">
                             </div>
                         </li>
                         <li>
                             <p>Message<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
-                               <textarea name="message" id="message" class="form-control border-0" cols="30" rows="3"></textarea>
+                               <textarea name="message" id="message" class="form-control border-0" cols="30" rows="3"  placeholder="Add a notificaton Message"></textarea>
                             </div>
                         </li>
                     </ul>

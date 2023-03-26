@@ -95,7 +95,7 @@ class HomeController extends Controller
                         })->where('id','<>',Auth::id())->when($start && $end ,function($query, $role) use ($start , $end) {
                             $query->whereBetween( 'created_at' , [$start , $end] );
                         } )->active()->count();
-
+       
         return view('company.home', compact('totalUsers','activeUsers') );
    }
 

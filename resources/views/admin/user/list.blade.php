@@ -3,71 +3,86 @@
 
 
 @section('content')
-<style>
-.custom-action-button{
-    background: #3eaf86;
-    border: none;
-    height: 37px;
-    padding: 0px 23px;
-    font-size: small;
-    margin: 0;
-}
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
+    <style>
+        .custom-table {
+            box-shadow: 0px 1px 3px rgba(16, 24, 40, 0.1), 0px 1px 2px rgba(16, 24, 40, 0.06);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
 
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 120px;
-  z-index: 1;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+        .custom-action-button {
+            background: #3eaf86;
+            border: none;
+            color: white;
+            height: 37px;
+            padding: 0px 23px;
+            font-size: small;
+            margin: 0;
+        }
 
-.dropdown:hover .dropdown-menu {
-  display: block;
-}
-.dropdown-item:hover {
-  background-color: #f2f2f2;
-}
+        .dropdown-item:hover {
+            color: #FFF;
+        }
 
-.dropdown-item i {
-  margin-right: 0.5rem;
-}
-.dropdown-menu {
-    margin: 0px !important;
-    border: none !important;
-    width: min-content;
-}
-.dropdown-item {
-    display: block;
-    padding: -1.5rem 0rem;
-    color: #333;
-    text-decoration: none;
-    text-align: center;
-}
-a.dropdown-item.active, a.dropdown-item:hover {
-    background: #3eaf86 !important;
-    color: #fff !important;
-}
-</style>
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        table .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 120px;
+            z-index: 1;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f2f2f2;
+        }
+
+        .dropdown-item i {
+            margin-right: 0.5rem;
+        }
+
+        table .dropdown-menu {
+            margin: 0px !important;
+            border: none !important;
+            width: min-content;
+        }
+
+        table .dropdown-item {
+            display: block;
+            padding: 10px 0 10px 0 !important;
+            color: #333;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        a.dropdown-item.active,
+        a.dropdown-item:hover {
+            background: #3eaf86 !important;
+            color: #fff !important;
+        }
+
+        .table-responsive {
+            overflow-y: visible !important;
+        }
+    </style>
     <section class="order-listing Invoice-listing">
 
         <div class="container">
-            <div class="flash-message">
-                @if(session('status') === 'error')
-                    <div class="alert alert-danger">
-                        {{ session('message') }}
-                    </div>
-                @endif
             <div class="left-content d-flex">
                 <div class="list-title d-flex">
                     <i class="fas fa-users" style="font-size: 30px;"></i>
@@ -93,16 +108,22 @@ a.dropdown-item.active, a.dropdown-item:hover {
                             @endif
                             <a title="Send Notification to All Users" onclick="event.stopPropagation()"
                                 class="btn btn-sm open-section" data-attribute="all_users" data-pass-id="users"
-                                data-notify="{{ $is_notify }}" data-target="push-notification-popup"
+                                data-notify="{{ $is_notify }}" data-target="push-notification-popup-user"
                                 href="javascript:void(0)">
-                                <i class="fas fa-bell" style="color:#33383a"></i>
+                                <i class="fas fa-bell" style="color:#33383a" ></i>
                             </a>
                         </div>
                     </div>
                 @endcan
             </div>
             <div class="order-listing Invoice-tabs">
-                <x-alert />
+                <div class="flash-message">
+                    @if(session()->has('status'))
+                        <div class="alert alert-{{ session()->get('status') == 'success' ? 'success' : 'danger' }} alert-dismissible ">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a> {{ session()->get('message') }}
+                        </div>
+                    @endif
+                </div>
                 <!-- tabs Start here -->
                 <ul class="tabs nav nav-tabs" role="tablist">
                     <li class="nav-item">
@@ -115,10 +136,6 @@ a.dropdown-item.active, a.dropdown-item:hover {
                 </ul>
                 <!-- Search section Start here -->
                 <div class="list-header d-flex justify-content-between">
-                    <form class="form-inline my-2 my-lg-0">
-                        {{-- <input class="form-control search-input" type="search" placeholder="Search User" aria-label="Search">
-                    <button class="btn btn-outline-dark my-2 my-sm-0 form-control-feedback" type="submit"><img src="{{ asset('assets/images/search-filter.svg') }}"></button> --}}
-                    </form>
                     <div class="list-filters d-flex  align-items-center   ">
                         <ul class="d-flex justify-content-between align-items-center">
                             @if (request('daterange_filter') || request('search'))
@@ -152,7 +169,7 @@ a.dropdown-item.active, a.dropdown-item:hover {
                 <div class="tab-content invoice-tab-content">
                     <!-- User listing -->
                     <div class="tab-pane active" id="tabs-1" role="tabpanel">
-                        <div class=" table-responsive list-items">
+                        <div class="custom-table list-items">
                             <table class="table">
                                 <thead>
                                     <tr>
@@ -225,66 +242,67 @@ a.dropdown-item.active, a.dropdown-item:hover {
                                             @else
                                                 <td class="text-center purchase-order-date">
                                                     <!-- Example single danger button -->
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-primary custom-action-button dropdown-toggle"
-                                                            data-toggle="dropdown" aria-haspopup="true"
-                                                            aria-expanded="false" style="background:#3eaf86">
+                                                    <div class="dropdown">
+                                                        <button class="btn custom-action-button dropdown-toggle"
+                                                            type="button" data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">
                                                             Action
                                                         </button>
-                                                        <div class="dropdown-menu">
+                                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                                             @can('device-list')
-                                                        <a title="Manage Devices" class=" dropdown-item manage-devices"
-                                                            href="{{ route('user.devices', ['id' => jsencode_userdata($singleUser->id)]) }}">
-                                                            <i class="fas fa-mobile-phone" style="color:#33383a"></i>
-                                                        </a>&nbsp;&nbsp;
-                                                    @endcan
+                                                                <li><a title="Manage Devices"
+                                                                        class=" dropdown-item manage-devices"
+                                                                        href="{{ route('user.devices', ['id' => jsencode_userdata($singleUser->id)]) }}">
+                                                                        <i class="fas fa-mobile-phone"
+                                                                            ></i>
+                                                                    </a></li>
+                                                            @endcan
                                                             @can('vehicle-assign')
-                                                        <a href="#" data-attribute="user_id"
-                                                            data-pass-id={{ jsencode_userdata($singleUser->id) }}
-                                                            class="dropdown-item open-section get-user-vehicle" data-target="user-vehicles"
-                                                            data-user-id="{{ jsencode_userdata($singleUser->id) }}"
-                                                            data-user-eid="{{ $singleUser->id }}">
-                                                            <i class="fas fa-truck" style="color:#33383a"></i>
-                                                        </a>&nbsp;&nbsp;
-                                                    @endcan
+                                                                <li><a href="#" data-attribute="user_id"
+                                                                        data-pass-id={{ jsencode_userdata($singleUser->id) }}
+                                                                        class="dropdown-item open-section get-user-vehicle"
+                                                                        data-target="user-vehicles"
+                                                                        data-user-id="{{ jsencode_userdata($singleUser->id) }}"
+                                                                        data-user-eid="{{ $singleUser->id }}">
+                                                                        <i class="fas fa-truck" ></i>
+                                                                    </a></li>
+                                                            @endcan
 
-                                                    @can('user-edit')
-                                                        <a title="Edit" class="dropdown-item"
-                                                            href="{{ route('user.edit', ['id' => jsencode_userdata($singleUser->id)]) }}"
-                                                            onclick="event.stopPropagation()"><i class="fas fa-pencil-alt"
-                                                                style="color:#33383a"></i></a>&nbsp;&nbsp;
-                                                        <a title="Change Password"
-                                                            data-update-password="{{ route('user.update-password', ['id' => jsencode_userdata($singleUser->id)]) }}"
-                                                            class="dropdown-item open-section update-user-password"
-                                                            data-target="update-user-password"
-                                                            onclick="event.stopPropagation()">
-                                                            <i class="fas fa-key"></i>
-                                                        </a>&nbsp;&nbsp;
-                                                    @endcan
-                                                    @isset($singleUser->device_token)
-                                                        <a class="dropdown-item"
-                                                            href="{{ route('user.tracking', ['token' => $singleUser->device_token]) }}"><i
-                                                                style="color:#33383a"
-                                                                class="fas fa-map-marker-alt"></i></a>&nbsp;&nbsp;
-                                                    @endisset
-                                                    @can('user-delete')
-                                                        <a title="Delete" onclick="event.stopPropagation()"
-                                                            class="delete-temp dropdown-item"
-                                                            href="{{ route('user.delete', ['id' => jsencode_userdata($singleUser->id)]) }}">
-                                                            <i class="fas fa-trash" style="color:#FF0000"></i>
-                                                        </a>
-                                                    @endcan
-
+                                                            @can('user-edit')
+                                                                <li><a title="Edit" class="dropdown-item"
+                                                                        href="{{ route('user.edit', ['id' => jsencode_userdata($singleUser->id)]) }}"
+                                                                        onclick="event.stopPropagation()"><i
+                                                                            class="fas fa-pencil-alt"
+                                                                            ></i></a></li>
+                                                                <li><a title="Change Password"
+                                                                        data-update-password="{{ route('user.update-password', ['id' => jsencode_userdata($singleUser->id)]) }}"
+                                                                        class="dropdown-item open-section update-user-password"
+                                                                        data-target="update-user-password"
+                                                                        onclick="event.stopPropagation()">
+                                                                        <i class="fas fa-key"></i>
+                                                                    </a></li>
+                                                            @endcan
+                                                            @isset($singleUser->device_token)
+                                                                <li><a class="dropdown-item"
+                                                                        href="{{ route('user.tracking', ['token' => $singleUser->device_token]) }}"><i
+                                                                            
+                                                                            class="fas fa-map-marker-alt"></i></a></li>
+                                                                    <li> <a title="Send Notification" onclick="event.stopPropagation()" class="dropdown-item send-push-notification open-section" data-attribute="user_id" data-pass-id={{jsencode_userdata($singleUser->id)}}  data-pass-title ="{{$singleUser->full_name}}"
+                                                                        data-notify = {{$is_notify}}
+                                                                        data-target="push-notification-popup-user" href="javascript:void(0)" >
+                                                                        <i class="fas fa-bell" ></i>
+                                                                    </a></li>
+                                                                
+                                                            @endisset
+                                                            @can('user-delete')
+                                                                <li><a title="Delete" onclick="event.stopPropagation()"
+                                                                        class="delete-temp dropdown-item"
+                                                                        href="{{ route('user.delete', ['id' => jsencode_userdata($singleUser->id)]) }}">
+                                                                        <i class="fas fa-trash" style="color:#FF0000"></i>
+                                                                    </a></li>
+                                                            @endcan
                                                         </div>
                                                     </div>
-
-
-
-
-
-
-
-
                                                 </td>
                                             @endif
                                         </tr>
@@ -384,7 +402,8 @@ a.dropdown-item.active, a.dropdown-item:hover {
                                         <td colspan="7">
                                             {{ $deletedUsers->appends(request()->except('page', 'open_section'))->links() }}
                                             <p>
-                                                Displaying {{ $deletedUsers->count() }} of {{ $deletedUsers->total() }}
+                                                Displaying {{ $deletedUsers->count() }} of
+                                                {{ $deletedUsers->total() }}
                                                 user(s).
                                             </p>
                                         </td>

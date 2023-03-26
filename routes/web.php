@@ -62,9 +62,8 @@ Route::group([], function () use ($router) {
             $router->match(['get', 'post'], 'update-password/{id}', [UserController::class, "updatePassword"])->name('update-password')->middleware('permission:user-edit');
             $router->get('delete/{id}', [UserController::class, "del_record"])->name('delete')->middleware('permission:user-delete');
             $router->get('delete/device/{id}', [UserController::class, "del_device"])->name('deviceDelete')->middleware('permission:user-delete');
-            // $router->post('notify/device/', [UserController::class, "sendPushNotification"])->name('device.push-notification')->middleware('permission:user-edit');
-
-            $router->post('notify/device/', [UserController::class, "sendPushNotificationToUsers"])->name('device.push-notification');
+            $router->post('notify/device/', [UserController::class, "sendPushNotification"])->name('device.push-notification')->middleware('permission:user-edit');
+            $router->post('notify/users/', [UserController::class, "sendPushNotificationToUsers"])->name('users.push-notification');
 
 
             $router->get('restore/{id}', [UserController::class, "del_restore"])->name('restore')->middleware('permission:user-delete');

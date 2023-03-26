@@ -57,7 +57,7 @@
 							<div class="dropdown">
 								<button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown">
                                     <small style="color:#FFF; font-weight:bold;">
-                                        {{Auth::user()->company_detail->company_name}}
+                                        @if(Auth::user()->hasRole('1_Company')){{Auth::user()->company_detail->company_name}}@else {{Auth::user()->full_name}} @endif
                                     </small>
 									<i class="far fa-user" style="font-size: 25px;color: #FFF;background: transparent;"></i>
 								</button>

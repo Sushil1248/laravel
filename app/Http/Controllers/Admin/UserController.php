@@ -527,6 +527,7 @@ class UserController extends Controller
     public function sendPushNotification(Request $request)
     {
         $tokens = [];
+    
         if ($request->has('device_id')) {
             $deviceId = jsdecode_userdata($request->device_id);
             $token = Device::where(['id' => $deviceId, 'is_activate' => 1, 'status' => 1])->pluck('device_token')->first();
@@ -566,11 +567,8 @@ class UserController extends Controller
         }
 
         $firebaseToken = array_values($tokens);
-        // $firebaseToken = ["eXepwEEDSoqCXP9Q4i1G-F:APA91bEfnpF0Ub6PBlsufwwR4Plh_NrFTQ0vxaspjj7RNCWL1tz93i5Yykrb5FhKD5sFYfTOYPtfeVO05nbn9rUjAji9dDQ81KH8IEn5IpL5GTUDu9MqnmLujUhyN27KbYQx6sHD4H0Z"];
-
-
+       
         $SERVER_API_KEY = env('FCM_SERVER_KEY');
-
         $data = [
             "registration_ids" => $firebaseToken,
             "data" => [
@@ -600,8 +598,6 @@ class UserController extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $dataString);
 
         $response = curl_exec($ch);
-        dd($response);
-
         if (json_decode($response)->success) {
             return [
                 'success' => true,
@@ -610,7 +606,7 @@ class UserController extends Controller
         } else {
             return [
                 'success' => false,
-                'msg' => Config::get('constants.ERROR.OOPS_ERROR'),
+                'msg' => "Firebase returned '" .json_decode($response)->results[0]->error . "' error",
             ];
         }
     }
@@ -643,7 +639,7 @@ class UserController extends Controller
         }
 
         $firebaseToken = array_values($tokens);
-
+        dd($firebaseToken);
         $SERVER_API_KEY = env('FCM_SERVER_KEY');
 
         $data = [
@@ -728,33 +724,38 @@ class UserController extends Controller
         }
     }
 
-    public function track_device($token=null){
-        if($token==null){
-            return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "OOps! there must be no token for this Device exists.");
-        }
-        $device = Device::where('device_token', $token)->first();
-        if(is_null($device)){
-            $user = User::where('device_token', $token)->first();
-        }
-        else{
-            $user = User::where('id', $device['user_id'])->first();
-        }
-
-        $vehicles = $user->vehicles()->get();
-
-        // fetchlatestcoordinates/3
+    public function track_device($token = null)
+    {
         try {
-        $log_response = makeCurlRequest(env('MONGO_URL')."fetchlatestcoordinates/".$user['id'], 'GET',[]);
-        }catch ( \Exception $e ) {
-            dd($e);
-        }
+            if (is_null($token)) {
+                return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! There must be no token for this Device exists.");
+            }
+    
+            $device = Device::where('device_token', $token)->first();
+            if (is_null($device)) {
+                $user = User::where('device_token', $token)->first();
+            } else {
+                $user = User::where('id', $device['user_id'])->first();
+            }
+    
+            if (is_null($user)) {
+                return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! No user found for this Device.");
+            }
+    
+            $vehicles = $user->vehicles()->get();
+    
+            // Fetch latest coordinates/3
+            $log_response = makeCurlRequest(env('MONGO_URL')."fetchlatestcoordinates/".$user['id'], 'GET', []);
+    
+            $data = json_decode($log_response)->data ?? null;
 
-        if(is_null((json_decode($log_response)->data))){
-            return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "OOps! there must be no token for this Device exists.");
+            return view('admin.user.track-device', compact('token', 'device', 'user', 'vehicles', 'data'));
+        } catch (\Exception $e) {
+            dd($e);
+            return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! Something went wrong while tracking device.");
         }
-        $data = json_decode($log_response)->data;
-        return view('admin.user.track-device',compact('token', 'device','user','vehicles','data'));
     }
+    
 
 
 }
