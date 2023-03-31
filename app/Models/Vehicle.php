@@ -28,7 +28,7 @@ class Vehicle extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_vehicle');
+        return $this->belongsToMany(User::class, 'user_vehicle')->withPivot('ride_status');
     }
 
     public function getHasVehicleAttribute()

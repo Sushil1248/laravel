@@ -105,7 +105,7 @@ class DashboardController extends Controller
                         ->causedBy(auth()->user())
                         ->withProperties(['server_address' => getUserIpAddr()])
                         ->log('User logged in.');
-                    if (isUserStatusActive() && Auth::user()->hasRole('Administrator') || Auth::user()->hasRole('1_Company') || Auth::user()->web_access) {
+                    if (isUserStatusActive() && Auth::user()->hasRole('Administrator') || !Auth::user()->hasRole('Administrator') || Auth::user()->web_access) {
                         if (auth()->user()->hasRole('Administrator')) {
                             return redirect()->route('home');
                         } else {

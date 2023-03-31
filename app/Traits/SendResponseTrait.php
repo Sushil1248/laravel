@@ -25,6 +25,9 @@ trait SendResponseTrait {
             $responseArray['message'] = $message;
             $responseArray['data'] = $want_status ? array_merge($data,$otherDetail) : $data;
         }
+        if($responseArray['data']==[]){
+            $responseArray['data']=null;
+        }
         return response()->json($responseArray);
     }
 

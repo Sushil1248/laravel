@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Vehicles')
 
 
@@ -106,8 +106,12 @@
                                     <td class="purchase-order-date">
                                         @if(Auth::check() && Auth::user()->hasRole('Administrator'))
                                          <a title="view company" href="{{ route('company.list',['search'=>get_company_name($singleCompany->user_id)]) }}" onclick="event.stopPropagation()">{{ $singleCompany && $singleCompany->user_id ? ucfirst(get_company_name($singleCompany->user_id)) : 'NA' }}</a>
+                                        @elseif (Auth::user()->roles->contains(function ($role) {
+                                            return Illuminate\Support\Str::contains($role->name, 'Company');
+                                        }))
+                                            {{Auth::user()->company_detail->company_name}}
                                         @else
-                                        {{get_company_name($singleCompany->user_id)}}
+                                        {{get_company_name_for_user($singleCompany->user_id)}}
                                         @endif
 
                                     </td>

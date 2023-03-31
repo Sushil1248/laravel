@@ -231,7 +231,7 @@ if (!function_exists('getParentCompany')) {
      */
     function getParentCompany()
     {
-        if (Auth::user()->hasRole('1_Company')) {
+        if (!Auth::user()->hasRole('Administrator')) {
             return Auth::id();
         }
 
@@ -412,7 +412,14 @@ function getCategoriesOfType($parent = null, $ignoreCategory = null)
 
 function get_company_name($company_id)
 {
-    return CompanyDetail::where('user_id', $company_id)->pluck('company_name')->first();
+    $user = User::where('id', $company_id)->first();
+    $role = $user->getRoleNames()->first();
+
+    if (stripos(strtolower($role), 'company') ) {
+        return CompanyDetail::where('user_id', $company_id)->pluck('company_name')->first();
+    }
+
+    return get_company_name_for_user($company_id);
 }
 
 function getMinutes($interval)
@@ -490,6 +497,14 @@ if (!function_exists('hasGroupPermission')) {
         $user = Auth::user();
         $groupPermissions = Permission::where('group_name', $groupName)->pluck('name')->toArray();
         return $user->hasAnyPermission($groupPermissions);
+    }
+}
+
+if (! function_exists('get_company_name_for_user')) {
+    function get_company_name_for_user($user_id)
+    {
+        $user = User::find($user_id);
+        return $user->getCompanyName();
     }
 }
 

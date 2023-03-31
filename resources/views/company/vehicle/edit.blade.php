@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator') ? 'company.layouts.app' : 'admin.layouts.app')
 
 @section('title', '- Edit Vehicle')
 
@@ -76,6 +76,7 @@
                                                 <input type="text" class="form-control"  value="{{ old('extra_notes',$companyDetail->extra_notes ? $companyDetail->extra_notes: '') }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Extra Notes" name="extra_notes">
                                             </div>
                                         </li>
+                                        @can('vehicle-status')
                                         <li>
                                             <p>Status</p>
                                             <div class="custom-control custom-checkbox">
@@ -85,6 +86,7 @@
                                                 </label>
                                             </div>
                                         </li>
+                                        @endcan
                                     </ul>
                                     <div class="footer-menus_button">
                                         <div class="invoice-list">

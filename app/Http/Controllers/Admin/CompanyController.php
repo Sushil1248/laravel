@@ -88,7 +88,7 @@ class CompanyController extends Controller
             if(count(CompanyUsers::where('company_id',$comapnyId)->get()) > 0){
                 return redirect()->back()->with('status', 'error')->with('message', "Oops, it seems user (s) are associated with this company, Please delete the users first.");
             }
-            Company::where('id',$comapnyId)->delete();
+            User::where('id',$comapnyId)->delete();
         	return redirect()->back()->with('status', 'success')->with('message', 'Company details '.Config::get('constants.SUCCESS.DELETE_DONE'));
         } catch(Exception $ex) {
             return redirect()->back()->with('status', 'error')->with('message', $ex->getMessage());
@@ -106,7 +106,7 @@ class CompanyController extends Controller
         try {
             $userId = jsdecode_userdata($id);
             User::where('id',$userId)->restore();
-        	return redirect()->back()->with('status', 'success')->with('message', 'Company'.Config::get('constants.SUCCESS.RESTORE_DONE'));
+        	return redirect()->back()->with('status', 'success')->with('message', 'Company '.Config::get('constants.SUCCESS.RESTORE_DONE'));
         } catch(Exception $ex) {
             return redirect()->back()->with('status', 'error')->with('message', $ex->getMessage());
         }
@@ -359,8 +359,14 @@ class CompanyController extends Controller
             $end = $daterang[1] . ' 23:05:59';
         }
         $companyId = Auth::user()->id;
-        $data = User::whereHas('companyUsers', function ($query) use ($companyId) {
+        $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
             $query->where('company_id', $companyId);
+        })->where('id', '<>', Auth::id())->get()->pluck('id', 'first_name');
+
+
+        $data = User::whereHas('companyUsers', function ($query) use ($companyId, $user_ids) {
+            $query->where('company_id', $companyId);
+            $query->orWhereIn('company_id',$user_ids);
         })
         ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
             $q->whereBetween('created_at', [$start, $end]);
@@ -386,10 +392,20 @@ class CompanyController extends Controller
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
         $country = Country::pluck('name', 'id');
         $role = Role::where('created_by', Auth::user()->id)->pluck('name', 'id');
-        $vehicles=[];
-        $vehicles= Vehicle::where('user_id', Auth::user()->id)->get();
 
-        if(auth()->user()->hasRole('1_Company')){
+        $vehicles=[];
+        $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
+            $query->where('company_id', $companyId);
+        })->with('vehicles')
+        ->where('id', '<>', Auth::id())->get()->pluck('id');
+
+        $vehicles = Vehicle::where(function ($query) use ($user_ids) {
+            $query->where('user_id', Auth::user()->id)
+                ->orWhereIn('user_id', $user_ids);
+        })->get();
+
+
+        if(! auth()->user()->hasRole('Administrator')){
             $company = User::where('id', Auth()->user()->id)
                     ->with('company_detail:id,user_id,company_name')
                     ->get()

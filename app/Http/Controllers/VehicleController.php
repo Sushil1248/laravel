@@ -37,6 +37,7 @@ class VehicleController extends Controller
     public function getList(Request $request, $deleted = "")
     {
         $start = $end = "";
+        $role =  auth()->user()->getRoleNames()->first();
         if ($request->filled('daterange_filter')) {
             $daterange = $request->daterange_filter;
             $daterang = explode(' - ', $daterange);
@@ -61,7 +62,33 @@ class VehicleController extends Controller
                 $query->where('id', $user_id);
             });
 
-        }else{
+        }else if (stripos(strtolower($role), 'company')) {
+            $companyId = Auth::user()->id;
+            $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })->with('vehicles')
+            ->where('id', '<>', Auth::id())->get()->pluck('id');
+
+            $data = Vehicle::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
+                $q->whereBetween('created_at', [$start, $end]);
+            })
+            ->when($request->search, function ($qu, $keyword) {
+                $qu->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('id', $keyword);
+                });
+            })
+            ->when($request->filled('status'), function ($qu) {
+                $qu->where('status', request('status'));
+            })
+            ->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
+                $query->where('id', $user_id);
+            })->where(function ($query) use ($user_ids) {
+                $query->where('user_id', Auth::user()->id)
+                    ->orWhereIn('user_id', $user_ids);
+            });
+        }
+        else{
             $data = Vehicle::when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
                 $q->whereBetween('created_at', [$start, $end]);
             })

@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Blade; 
+use Illuminate\Support\Facades\Blade;
 use App\View\Components\Alert;
 use Illuminate\Pagination\Paginator;
 use App\Channels\DatabaseChannel;
@@ -32,8 +32,8 @@ class AppServiceProvider extends ServiceProvider
         // Blade::component('alert', Alert::class,'alert');
         // Blade::component('admin.components.alert', 'alert');
         Paginator::useBootstrapFour();
-        Blade::component('admin.components.daterange', 'daterangeScipts'); 
-        Schema::defaultStringLength(191); 
+        Blade::component('admin.components.daterange', 'daterangeScipts');
+        Schema::defaultStringLength(191);
         $this->app->instance(IlluminateDatabaseChannel::class, new DatabaseChannel);
     }
 }

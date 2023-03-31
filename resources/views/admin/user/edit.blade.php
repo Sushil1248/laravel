@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !(Auth::user()->hasRole('Administrator')) ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Users')
 
 
@@ -74,7 +74,7 @@
                                             </div>
                                         </li>
 
-                                        @if(Auth::user()->hasRole('1_Company'))
+                                        @if(!Auth::user()->hasRole('Administrator'))
                                                 <input type="hidden" name="company" value="{{jsencode_userdata(Auth::user()->id)}}">
                                         @else
                                         <li>
@@ -158,6 +158,7 @@
                                                 <input type="text" class="form-control"  value="{{ old('address',$userDetail->user_detail ? $userDetail->user_detail->address : '') }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
                                             </div>
                                         </li>
+                                        @can('user-status')
                                         <li>
                                             <p>Status</p>
                                             <div class="custom-control custom-checkbox">
@@ -167,6 +168,7 @@
                                                 </label>
                                             </div>
                                         </li>
+                                        @endcan
 
                                         @isset($role)
                                         @php

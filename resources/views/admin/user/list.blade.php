@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator') ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Users')
 
 
@@ -96,7 +96,8 @@
                 </div>
                 @can('user-add')
                     @php
-                        $is_notify = checkDeviceTokenExists() ? 'hide' : 'show';
+                        // $is_notify = checkDeviceTokenExists() ? 'hide' : 'show';
+                        $is_notify = checkDeviceTokenExists() ? 'hide' : 'hide';
                     @endphp
                     <div class="right-btns">
                         <div class="d-flex">
@@ -136,6 +137,10 @@
                 </ul>
                 <!-- Search section Start here -->
                 <div class="list-header d-flex justify-content-between">
+                    <form class="form-inline my-2 my-lg-0">
+                        {{-- <input class="form-control search-input" type="search" placeholder="Search User" aria-label="Search">
+                        <button class="btn btn-outline-dark my-2 my-sm-0 form-control-feedback" type="submit"><img src="{{ asset('assets/images/search-filter.svg') }}"></button> --}}
+                    </form>
                     <div class="list-filters d-flex  align-items-center   ">
                         <ul class="d-flex justify-content-between align-items-center">
                             @if (request('daterange_filter') || request('search'))
@@ -216,6 +221,7 @@
                                                     <a title="view company"
                                                         href="{{ route('company.list', ['search' => get_company_name($singleUser->company_id())]) }}"
                                                         onclick="event.stopPropagation()">{{ $singleUser && $singleUser->company_id() ? ucfirst(get_company_name($singleUser->company_id())) : 'NA' }}</a>
+
                                                 @else
                                                     {{ get_company_name($singleUser->company_id()) }}
                                                 @endif
@@ -249,14 +255,14 @@
                                                             Action
                                                         </button>
                                                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                            @can('device-list')
+                                                            {{-- @can('device-list')
                                                                 <li><a title="Manage Devices"
                                                                         class=" dropdown-item manage-devices"
                                                                         href="{{ route('user.devices', ['id' => jsencode_userdata($singleUser->id)]) }}">
                                                                         <i class="fas fa-mobile-phone"
                                                                             ></i>
                                                                     </a></li>
-                                                            @endcan
+                                                            @endcan --}}
                                                             @can('vehicle-assign')
                                                                 <li><a href="#" data-attribute="user_id"
                                                                         data-pass-id={{ jsencode_userdata($singleUser->id) }}
@@ -285,14 +291,14 @@
                                                             @isset($singleUser->device_token)
                                                                 <li><a class="dropdown-item"
                                                                         href="{{ route('user.tracking', ['token' => $singleUser->device_token]) }}"><i
-                                                                            
+
                                                                             class="fas fa-map-marker-alt"></i></a></li>
                                                                     <li> <a title="Send Notification" onclick="event.stopPropagation()" class="dropdown-item send-push-notification open-section" data-attribute="user_id" data-pass-id={{jsencode_userdata($singleUser->id)}}  data-pass-title ="{{$singleUser->full_name}}"
                                                                         data-notify = {{$is_notify}}
                                                                         data-target="push-notification-popup-user" href="javascript:void(0)" >
                                                                         <i class="fas fa-bell" ></i>
                                                                     </a></li>
-                                                                
+
                                                             @endisset
                                                             @can('user-delete')
                                                                 <li><a title="Delete" onclick="event.stopPropagation()"

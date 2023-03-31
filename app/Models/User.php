@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Laravel\Cashier\Billable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Laravel\Passport\Token;
 
 
 
@@ -64,6 +65,24 @@ class User extends Authenticatable
     ];
 
 
+    public function revokeOtherTokens()
+    {
+        if (!$this->currentAccessToken()) {
+            return;
+        }
+
+        $tokens = $this->tokens()->where('id', '<>', $this->currentAccessToken()->id)->get();
+
+        foreach ($tokens as $token) {
+            Token::find($token->id)->revoke();
+        }
+    }
+
+    public function logins()
+    {
+        return $this->hasMany(Login::class);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults();
@@ -92,6 +111,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(CompanyUsers::class);
     }
+
+    public function getCompanyName()
+    {
+        $company_id = $this->companyUsers()->first()->company_id;
+        $company_detail = CompanyDetail::where('user_id', $company_id)->first();
+        return $company_detail->company_name;
+    }
+
     // public function notifications()
     // {
     //     return $this->morphMany(Notification::class, 'notifiable')
@@ -189,9 +216,10 @@ class User extends Authenticatable
     }
 
     public function vehicles()
-    {
-        return $this->belongsToMany(Vehicle::class, 'user_vehicle');
-    }
+{
+    return $this->belongsToMany(Vehicle::class, 'user_vehicle')->withPivot('ride_status');
+}
+
 
     /* Helper functions */
     public function saveQuestionnaire( $type , $value ){

@@ -37,7 +37,7 @@ class UserController extends Controller
 
     public function getList(Request $request, $deleted = "")
     {
-         if(auth()->user()->hasRole('1_Company')){
+         if(! auth()->user()->hasRole('Administrator')){
             return redirect()->back();
         }
         $start = $end = "";
@@ -47,8 +47,9 @@ class UserController extends Controller
             $start = $daterang[0] . ' 00:00:00';
             $end = $daterang[1] . ' 23:05:59';
         }
+
         $data = User::whereHas('roles', function ($query) {
-            $query->where('name', '=', '1_User');
+            $query->where('name', '!=', '1_Company');
         })
         ->when(!empty($start) && !empty($end), function ($q, $from) use ($start, $end) {
             $q->whereBetween('created_at', [$start, $end]);
@@ -66,14 +67,17 @@ class UserController extends Controller
             })->when(jsdecode_userdata($request->user_id), function ($query, $user_id) {
             $query->where('id', $user_id);
         })
-            ->where('id', '<>', Auth::id());
+            ->where('id', '<>', Auth::id())
+              ->where('id', '<>', 1);
         $deletedUsers = (clone $data)->onlyTrashed()->sortable(['id' => 'desc'])
             ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
+        $role = Role::where('created_by', Auth::user()->id)->pluck('name', 'id');
+
         $country = Country::pluck('name', 'id');
         $vehicles=[];
         $vehicles = Vehicle::all();
-        if(auth()->user()->hasRole('1_Company')){
+        if(auth()->user()->hasRole(Auth::user()->id.'_Company')){
             $company = User::where('id', Auth()->user()->id)
                     ->with('company_detail:id,user_id,company_name')
                     ->get()
@@ -87,7 +91,8 @@ class UserController extends Controller
                         ->pluck('company_detail.company_name', 'company_detail.user_id');
         }
         $vehicle_assigned = UserVehicles::all();
-       return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers', 'vehicles'));
+
+       return view('admin.user.list', compact('data', 'deleted', 'country', 'company', 'deletedUsers', 'vehicles','role'));
     }
     /* End Method getList */
 
@@ -151,13 +156,13 @@ class UserController extends Controller
             }
 
             $country = Country::pluck('name', 'id');
-            if(auth()->user()->hasRole('1_Company')){
+            if(!auth()->user()->hasRole('Administrator')){
                 $company = User::where('id', Auth()->user()->id)
                         ->with('company_detail:id,user_id,company_name')
                         ->get()
                         ->pluck('company_detail.company_name', 'id');
             }else{
-                $company = Role::findByName('company')
+                $company = Role::findByName(Auth::user()->id.'_Company')
                             ->users()
                             ->active()
                             ->with('company_detail:id,user_id,company_name')
@@ -288,6 +293,7 @@ class UserController extends Controller
                 DB::beginTransaction();
 
                 $user = User::create($data);
+
                 activity()
                 ->performedOn($user)
                 ->withProperties(['attributes' => $user->toArray()])
@@ -527,7 +533,7 @@ class UserController extends Controller
     public function sendPushNotification(Request $request)
     {
         $tokens = [];
-    
+
         if ($request->has('device_id')) {
             $deviceId = jsdecode_userdata($request->device_id);
             $token = Device::where(['id' => $deviceId, 'is_activate' => 1, 'status' => 1])->pluck('device_token')->first();
@@ -567,7 +573,7 @@ class UserController extends Controller
         }
 
         $firebaseToken = array_values($tokens);
-       
+
         $SERVER_API_KEY = env('FCM_SERVER_KEY');
         $data = [
             "registration_ids" => $firebaseToken,
@@ -628,7 +634,21 @@ class UserController extends Controller
                 ];
             }
         } else {
-            $tokenx = User::select('device_token')->get();
+            if(Auth::user()->hasRole('Administrator')){
+                $tokenx = User::select('device_token')->get();
+            }else{
+                $companyId = Auth::user()->id;
+                $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
+                    $query->where('company_id', $companyId);
+                })->where('id', '<>', Auth::id())->get()->pluck('id', 'first_name');
+
+                $tokenx  = User::whereHas('companyUsers', function ($query) use ($companyId, $user_ids) {
+                    $query->where('company_id', $companyId);
+                    $query->orWhereIn('company_id',$user_ids);
+                })
+                ->where('id', '<>', Auth::id())->get();
+            }
+
             if ($tokenx != null) {
                 foreach ($tokenx as $key => $token) {
                     if ($token['device_token'] != null) {
@@ -639,7 +659,7 @@ class UserController extends Controller
         }
 
         $firebaseToken = array_values($tokens);
-        dd($firebaseToken);
+
         $SERVER_API_KEY = env('FCM_SERVER_KEY');
 
         $data = [
@@ -730,23 +750,23 @@ class UserController extends Controller
             if (is_null($token)) {
                 return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! There must be no token for this Device exists.");
             }
-    
+            $devices=[];
             $device = Device::where('device_token', $token)->first();
             if (is_null($device)) {
                 $user = User::where('device_token', $token)->first();
             } else {
                 $user = User::where('id', $device['user_id'])->first();
             }
-    
+
             if (is_null($user)) {
                 return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! No user found for this Device.");
             }
-    
+
             $vehicles = $user->vehicles()->get();
-    
+
             // Fetch latest coordinates/3
             $log_response = makeCurlRequest(env('MONGO_URL')."fetchlatestcoordinates/".$user['id'], 'GET', []);
-    
+
             $data = json_decode($log_response)->data ?? null;
 
             return view('admin.user.track-device', compact('token', 'device', 'user', 'vehicles', 'data'));
@@ -755,7 +775,7 @@ class UserController extends Controller
             return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! Something went wrong while tracking device.");
         }
     }
-    
+
 
 
 }

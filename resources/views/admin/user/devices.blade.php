@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator')  ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Devices')
 
 
@@ -106,7 +106,7 @@
                                                 data-target="push-notification-popup" href="javascript:void(0)" >
                                                 <i class="fas fa-bell" style="color:#33383a"></i>
                                             </a>&nbsp;&nbsp;
-                                            <a href="{{route('user.tracking',['token'=>$singleDevice->device_token])}}"><i style="color:#33383a" class="fas fa-map-marker-alt" ></i></a>
+                                            <a href="{{route('user.tracking',['token'=>$singleDevice->device_token])}}"><i style="color:#33383a" class="fas fa-map-marker-alt" ></i></a>&nbsp;&nbsp;
                                             @can('device-delete')
                                             <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('user.deviceDelete',['id'=>jsencode_userdata($singleDevice->id)]) }}">
                                                 <i class="fas fa-trash" style="color:#FF0000"></i>

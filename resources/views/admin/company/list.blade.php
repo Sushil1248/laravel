@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->role == 'Company' ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator')  ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Company')
 
 

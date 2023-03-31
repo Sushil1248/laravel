@@ -1,4 +1,4 @@
-@extends(Auth::check() && Auth::user()->hasRole('1_Company') ? 'company.layouts.app' : 'admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator')  ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Company')
 
 
@@ -139,7 +139,7 @@
                                         @php $permissions = $record->permissions; @endphp
                                         <div class="row">
                                             @forelse ($permissionByGroup as $pkey=>$item)
-                                                <div class="permission-group container mt-0">
+                                                <div class="permission-group mt-0" style="width:100%;">
                                                     @if (hasGroupPermission($item->group_name))
                                                         <h5 class="permission-group-title"
                                                             style="background:#3eaf86; color:#FFF; padding:10px;">
@@ -147,7 +147,7 @@
                                                         <ul class="permission-list">
                                                             @php $all_permissions = get_permission_by_user_group($item->group_name); @endphp
                                                             @forelse ($all_permissions as $all_permission)
-                                                                @if (Auth::user()->hasRole('1_Company'))
+                                                                @if (!Auth::user()->hasRole('Administrator'))
                                                                     @can($all_permission->name)
                                                                         <li class="permission-item">
                                                                             <div class="form-group">

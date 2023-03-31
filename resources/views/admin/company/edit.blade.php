@@ -126,6 +126,7 @@
                                                 <input type="text" class="form-control"  value="{{ old('address',$companyDetail->company_detail ? $companyDetail->company_detail->address : '') }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
                                             </div>
                                         </li>
+                                        @can('company-status')
                                         <li>
                                             <p>Status</p>
                                             <div class="custom-control custom-checkbox">
@@ -135,6 +136,7 @@
                                                 </label>
                                             </div>
                                         </li>
+                                        @endcan
                                     </ul>
                                     <div class="footer-menus_button">
                                         <div class="invoice-list">

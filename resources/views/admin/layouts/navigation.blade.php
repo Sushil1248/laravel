@@ -36,7 +36,7 @@
         <a class="nav-link dropdown-toggle {{ Route::is('vehicle.*') ? 'active' : '' }}" data-toggle="dropdown">Vehicles</a>
         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <a class="dropdown-item" href="{{ route('vehicle.list') }}">All vehicles</a>
-            <a class="dropdown-item" href="{{ route('vehicle.list',['open_section'=>'create-vehicle-popup']) }}">Add Vehicle</a>
+            {{-- <a class="dropdown-item" href="{{ route('vehicle.list',['open_section'=>'create-vehicle-popup']) }}">Add Vehicle</a> --}}
         </div>
     </div>
 </li>

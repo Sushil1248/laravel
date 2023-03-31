@@ -9,7 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Throwable, Exception;
-use App\Traits\SendResponseTrait; 
+use App\Traits\SendResponseTrait;
 use Illuminate\Auth\AuthenticationException;
 
 
@@ -62,16 +62,16 @@ class Handler extends ExceptionHandler
     {
         $rendered = parent::render($request, $exception);
 
-        if( !$request->is('api/*') || config('constants.API_TESTING') )/* For browser errors */
+        if( !$request->is('api/*') )/* For browser errors */
             return $rendered;
-        
+
 
         if($exception instanceof AuthenticationException){
-            return $this->apiResponse('false', 403, 'User is not logged in.');
+            return $this->apiResponse('false', 403, 'User is not logged in.',null, false);
         }
 
         if($exception instanceof \Spatie\Permission\Exceptions\UnauthorizedException){
-            return $this->apiResponse('error', 403, 'You do not have the required authorization.'); 
+            return $this->apiResponse('error', 403, 'You do not have the required authorization.');
         }
 
         if($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException){
@@ -83,15 +83,15 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof UnauthorizedException) {
-            return $this->apiResponse('error', 403, 'You do not have the required authorization.');  
+            return $this->apiResponse('error', 403, 'You do not have the required authorization.');
         }
 
-        if ($this->isHttpException($exception) && $exception->getStatusCode() == 404) { 
-            return $this->apiResponse('error', 404, 'Try to access undefined api');   
+        if ($this->isHttpException($exception) && $exception->getStatusCode() == 404) {
+            return $this->apiResponse('error', 404, 'Try to access undefined api');
         }
 
         if ($exception instanceof TokenMismatchException && Auth::guest()) {
-            return $this->apiResponse('error', 500, $exception->getMessage());   
+            return $this->apiResponse('error', 500, $exception->getMessage());
         }
 
         if ($exception instanceof TokenMismatchException && getenv('APP_ENV') != 'local') {
@@ -99,36 +99,36 @@ class Handler extends ExceptionHandler
         }
 
         if($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException && getenv('APP_ENV') != 'local') {
-            return $this->apiResponse('error', 404, $exception->getMessage()); 
+            return $this->apiResponse('error', 404, $exception->getMessage());
         }
 
         if($exception instanceof \Illuminate\Database\QueryException ){
-            return $this->apiResponse('error', 500, $exception->getMessage());  
+            return $this->apiResponse('error', 500, $exception->getMessage());
         }
-        
+
         if(($exception instanceof PDOException || $exception instanceof QueryException) && getenv('APP_ENV') != 'local') {
-            return $this->apiResponse('error', 500, $exception->getMessage());  
+            return $this->apiResponse('error', 500, $exception->getMessage());
         }
 
         if ($exception instanceof ClientException) {
             return $this->apiResponse('error', 500, $exception->getMessage());
         }
-       
+
         if ($exception instanceof \Illuminate\Contracts\Container\BindingResolutionException) {
             return $this->apiResponse('error', 404, 'Try to access undefined api');
-        }     
+        }
 
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            return $this->apiResponse('error', 404, 'Try to access undefined api'); 
+            return $this->apiResponse('error', 404, 'Try to access undefined api');
         }
 
         if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
             return $this->apiResponse('error', 404, 'Try to access undefined api');
         }
-        
+
         /** Return default on form request validation **/
         if( $exception instanceof  \Illuminate\Validation\ValidationException ){
-            
+
             return $rendered;
         }
 

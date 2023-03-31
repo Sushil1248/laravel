@@ -35,6 +35,12 @@
             <div class="input-group">
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
             </div>
+
+           {{--  @if(Auth::user()->hasRole('Administrator'))
+            <div class="input-group">
+                <input type="text" class="form-control" name="company_name" value="{{ request('search') }}" placeholder="Company Name">
+            </div>
+            @endif --}}
             <div class="filter-listing-item">
                 <label class="input-label">Date Range</label>
                 <div class="input-group">
@@ -235,7 +241,7 @@
                             </div>
                         </li>
 
-                        @if(Auth::user()->hasRole('1_Company'))
+                        @if(!Auth::user()->hasRole('Administrator'))
                             <input type="hidden" name="company" value="{{Auth::user()->id}}">
                         @else
                         <li>
@@ -323,9 +329,8 @@
                             </div>
                         </li>
 
-                        @isset($role)
                         <li>
-                            <p>Role</p>
+                            <p>Role<span class="required-field">*</span></p></p>
                             <div class="input-group input-group-sm invoice-value">
                                 <select class="custom-select select-role" name="role">
                                     <option value="">Select Role</option>
@@ -335,7 +340,6 @@
                                 </select>
                             </div>
                         </li>
-                        @endisset
 
                         <li class="d-flex align-items-center mt-4">
                             <p style="margin-right: 18px;">Allow Web Access</p>
@@ -425,7 +429,7 @@
                                                    data-html="true"
                                                    data-content="@if ($vehicle->hasVehicle)
                                                     <ul>
-                                                    @if(Auth::user()->hasRole('1_Company'))
+                                                    @if(!Auth::user()->hasRole('Administrator'))
                                                       @foreach ($vehicle->users->whereIn('id',$companyUsers->pluck('id')) as $v)
                                                         <li>{{$v->full_name}}</li>
                                                       @endforeach
@@ -447,7 +451,10 @@
 
                                     </li>
                                 @empty
-                                    <p>No vehicles available</p>
+                                    <div class="alert alert-danger w-100" role="alert">
+                                        No vehicles available
+                                    </div>
+
                                 @endforelse
                                 </ul>
                                 <div class="footer-menus_button">
