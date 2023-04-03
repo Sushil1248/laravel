@@ -391,13 +391,26 @@ class CompanyController extends Controller
             ->paginate(Config::get('constants.PAGINATION_NUMBER'), '*', 'dpage');
         $data = $data->sortable(['id' => 'desc'])->paginate(Config::get('constants.PAGINATION_NUMBER'));
         $country = Country::pluck('name', 'id');
-        $role = Role::where('created_by', Auth::user()->id)->pluck('name', 'id');
 
-        $vehicles=[];
+        $user_ids = [];
         $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
             $query->where('company_id', $companyId);
         })->with('vehicles')
-        ->where('id', '<>', Auth::id())->get()->pluck('id');
+        ->where('id', '<>', Auth::id())->get()->pluck('id')->toArray();
+
+        $role = Auth::user()->getRoleNames()->first();
+
+        if (stripos(strtolower($role), 'company') === false) {
+            $companyIds = Auth::user()->companyUsers()->pluck('company_id')->first();
+            array_push($user_ids, $companyIds);
+        }
+
+        $role = Role::where('created_by', Auth::user()->id)
+                ->orWhereIn('created_by', $user_ids)
+                ->pluck('name', 'id');
+
+        $vehicles=[];
+
 
         $vehicles = Vehicle::where(function ($query) use ($user_ids) {
             $query->where('user_id', Auth::user()->id)

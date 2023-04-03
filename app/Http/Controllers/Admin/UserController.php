@@ -148,7 +148,22 @@ class UserController extends Controller
 
         if ($request->isMethod('get')) {
             $userId = jsdecode_userdata($id);
-            $role = Role::where('created_by', Auth::user()->id)->pluck('name', 'id');
+            $user_ids = [];
+            $companyId = Auth::user()->id;
+            $user_ids = User::whereHas('companyUsers', function ($query) use ($companyId) {
+                $query->where('company_id', $companyId);
+            })->where('id', '<>', Auth::id())->get()->pluck('id')->toArray();
+
+            $role = Auth::user()->getRoleNames()->first();
+
+            if (stripos(strtolower($role), 'company') == false) {
+                $companyIds = Auth::user()->companyUsers()->pluck('company_id')->first();
+                array_push($user_ids, $companyIds);
+            }
+
+            $role = Role::where('created_by', Auth::user()->id)
+                    ->orWhereIn('created_by', $user_ids)
+                    ->pluck('name', 'id');
             $userDetail = User::with('user_detail')->find($userId);
             $states = State::where('country_id', 1)->get();
             if (!$userDetail) {
@@ -771,11 +786,14 @@ class UserController extends Controller
 
             return view('admin.user.track-device', compact('token', 'device', 'user', 'vehicles', 'data'));
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->route('user.list')->withInput()->with('status', 'error')->with('message', "Oops! Something went wrong while tracking device.");
         }
     }
 
+    // public function myRides($token){
+
+    //     $data
+    // }
 
 
 }

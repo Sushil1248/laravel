@@ -70,6 +70,7 @@ Route::group([], function () use ($router) {
             $router->get('device/restore/{id}', [UserController::class, "device_restore"])->name('redev')->middleware('permission:device-restore');
             $router->get('details/{id}', [UserController::class, "view_detail"])->name('details')->middleware('permission:user-view');
             $router->get('track/{token?}', [UserController::class, "track_device"])->name('tracking');
+            $router->get('{token}/my-rides', [UserController::class, "myRides"])->name('my-rides');
             $router->get('export', [UserController::class, "export"])->name('export');
         });
 

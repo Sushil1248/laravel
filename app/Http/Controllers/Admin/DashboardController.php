@@ -101,11 +101,16 @@ class DashboardController extends Controller
                 ];
 
                 if (auth()->attempt($attempt, $request->remember)) {
+                    $is_company = false;
+                    $role = auth()->user()->getRoleNames()->first();
+                    if (stripos(strtolower($role), 'company') ) {
+                        $is_company=true;
+                    }
                     activity()
                         ->causedBy(auth()->user())
                         ->withProperties(['server_address' => getUserIpAddr()])
                         ->log('User logged in.');
-                    if (isUserStatusActive() && Auth::user()->hasRole('Administrator') || !Auth::user()->hasRole('Administrator') || Auth::user()->web_access) {
+                    if (isUserStatusActive() && Auth::user()->hasRole('Administrator') ||Auth::user()->web_access || $is_company) {
                         if (auth()->user()->hasRole('Administrator')) {
                             return redirect()->route('home');
                         } else {
