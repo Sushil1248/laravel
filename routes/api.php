@@ -35,8 +35,11 @@ Route::post('verify/otp', [AuthController::class,'verifyOtp']);
 Route::middleware(['auth:api','validateUser'])->group(function(){
     Route::get('logout', [ApiController::class,'logout']);
     Route::get('profile',[ApiController::class,'profile']);
+    Route::get('my-vehicles',[ApiController::class,'getUsersVehicles']);
+    Route::get('vehicle/ride-active/{id}',[ApiController::class,'makeVehicleActive']);
     Route::post('update-profile',[ApiController::class,'updateProfile']);
     Route::post('update-device/{device_id}',[ApiController::class,'updateDeviceDetails']);
+
 });
 
 

@@ -13,23 +13,26 @@ return new class extends Migration
      */
     public function up()
     {
-          if (!Schema::hasTable('company_details')) {
+        if (!Schema::hasTable('company_details')) {
             Schema::create('company_details', function (Blueprint $table) {
               $table->bigIncrements('id');
-              $table->unsignedBigInteger('company_id');
+              $table->string('company_name')->nullable();
+              $table->string('contact_person')->nullable();
+              $table->string('contact_person_email')->nullable();
+              $table->string('contact_number')->nullable();
+              $table->unsignedBigInteger('user_id');
               $table->string('address')->nullable();
               $table->string('fax_no')->nullable();
               $table->unsignedBigInteger('city_id')->nullable();
               $table->unsignedBigInteger('state_id')->nullable();
               $table->unsignedBigInteger('country_id')->nullable();
               $table->string('zipcode')->nullable();
-              $table->date('establish_date')->nullable();
               $table->binary('company_logo')->nullable();
               $table->string('imagetype')->nullable();
               $table->text('current_photos')->nullable();
               $table->text('details')->nullable();
               $table->string('cover_image')->nullable();
-              $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+              $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
               $table->tinyInteger('status')->nullable();
               $table->timestamps();
             });

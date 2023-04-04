@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Company;
+use App\Models\User;
 use Maatwebsite\Excel\Concerns\{FromQuery,WithMapping,WithHeadings,ShouldAutoSize};
 
 class CompaniesExport implements FromQuery,WithMapping,WithHeadings,ShouldAutoSize
@@ -18,7 +18,9 @@ class CompaniesExport implements FromQuery,WithMapping,WithHeadings,ShouldAutoSi
             $start = $daterang[0].' 00:00:00';
             $end = $daterang[1].' 23:05:59';
         }
-        $data = Company::when( !empty($start) && !empty($end) , function($q , $from) use( $start , $end ) {
+        $data = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', '1_Company');
+        })->when( !empty($start) && !empty($end) , function($q , $from) use( $start , $end ) {
             $q->whereBetween( 'created_at' , [$start , $end] );
         })->when($request->search ,function($qu , $keyword ) {
             $qu->where(function ($q) use( $keyword ) {
@@ -37,10 +39,10 @@ class CompaniesExport implements FromQuery,WithMapping,WithHeadings,ShouldAutoSi
     public function map($company): array
     {
         return [
-            $company->company_name,
-            $company->company_email,
-            $company ? $company->contact_person : '',
-            $company ? ucfirst($company->contact_number) : '',
+            $company->company_detail->company_name,
+            $company->email,
+            $company ? $company->company_detail->contact_person : '',
+            $company ? ucfirst($company->company_detail->contact_number) : '',
             $company->company_detail ? $company->company_detail->address : '',
             $company->created_at
         ];

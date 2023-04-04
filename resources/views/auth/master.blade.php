@@ -14,7 +14,7 @@
     .login-inner-content .form-group label.error{color:red}
     </style>
 </head>
-<body>   
+<body>
 <section class="login-page">
     <div class="container-box">
         <div class="login-inner d-flex justify-content-center">
@@ -25,7 +25,8 @@
             </div>
             <div class="vendor-slider">
                 <div class="slider_inner">
-                    <h1 class="lgn-app-name">IoT Tracking</h1>
+                    <img src="{{asset('assets/images/logo-freight.png')}}" style="width:500px" alt="logo_image">
+                    <h1 class="lgn-app-name">FREIGHT MANAGEMENT</h1>
                 </div>
             </div>
         </div>
@@ -67,7 +68,7 @@
                     email: 'Provide a valid Email address',
                 },
                 password: {
-                    required: 'Password is required',	
+                    required: 'Password is required',
                 }
             },
             submitHandler: function(form) {

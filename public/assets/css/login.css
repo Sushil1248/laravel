@@ -99,7 +99,7 @@
     color: #026aa2;
 }
 .vendor-slider {
-    background: linear-gradient(90deg, rgba(26,71,166,1) 0%, rgba(11,81,141,1) 35%, rgba(0,151,255,1) 100%);
+    background: linear-gradient(90deg, rgb(123 205 175) 0%, rgb(65 183 139) 35%, rgb(17 129 87) 100%);
     position: relative;
     overflow: hidden;
     padding: 70px;

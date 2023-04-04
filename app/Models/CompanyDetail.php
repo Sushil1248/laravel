@@ -10,13 +10,17 @@ class CompanyDetail extends Model
 	use HasFactory;
 	public $timestamps = true;
 	protected $fillable = [
-	'company_id',
+	'user_id',
+	'company_name',
 	 'address',
 	 'mobile',
 	 'estalish_date',
 	 'city_id',
 	 'state_id',
 	 'country_id',
+     'contact_person',
+     'contact_number',
+     'contact_person_email',
 	 'zipcode',
 	 'company_logo',
 	 'cover_image',
@@ -51,8 +55,8 @@ class CompanyDetail extends Model
 		);
 	}
 
-	public function Company(){
-		return $this->belongsTo(Company::class);
+	public function User(){
+		return $this->belongsTo(User::class);
 	}
 
 	public function country(){

@@ -8,6 +8,7 @@ use App\Traits\SendResponseTrait;
 use App\Models\User;
 class ValidateApiUser
 {
+
     use SendResponseTrait;
     /**
      * Handle an incoming request.
@@ -18,8 +19,10 @@ class ValidateApiUser
      */
     public function handle(Request $request, Closure $next)
     {
-        if( !$request->user() )
+        if (!auth()->guard('api')->check()){
             return $this->apiResponse('error', '404', "User not loged in.");
+        }
+
         // addUserNotification( $request->user() , "MESSAGE - " . time() , User::find(1) );
         return $next($request);
     }

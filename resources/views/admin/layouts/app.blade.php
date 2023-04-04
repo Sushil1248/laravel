@@ -29,10 +29,10 @@
                         <img src="{{ asset('assets/images/mobile-toggle.svg') }}">
                         <i class="fas fa-times"></i>
                     </span>
-                    <span class="page-header-text d-none">IoT</span>
+                    <span class="page-header-text d-none">FREIGHT MANAGEMENT</span>
                 </button>
                 <a class="navbar-brand desktop-logo" href="{{ route('home') }}">
-					<span class="page-header-text" style="font-size:30px; font-weight:bold;">IoT</span>
+					<span class="page-header-text" style="font-size:30px; font-weight:bold;">FREIGHT MANAGEMENT</span>
 				</a>
                 <div class="dropdown mobile-logo d-none">
                     <button type="button" class="btn bg-transparent dropdown-toggle" data-toggle="dropdown">
