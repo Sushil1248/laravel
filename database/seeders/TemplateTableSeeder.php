@@ -22,11 +22,11 @@ class TemplateTableSeeder extends Seeder
             <table style="margin: auto;" role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
             <tbody>
             <tr>
-            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #1a47a6;" valign="top">
+            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #3eaf86;" valign="top">
             <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0">
             <tbody>
             <tr>
-            <td class="logo" style="text-align: center; color: #fff;">&nbsp;IoT</td>
+            <td class="logo" style="text-align: center; color: #fff;">&nbsp;FREIGHT MANAGEMENT</td>
             </tr>
             </tbody>
             </table>
@@ -42,11 +42,11 @@ class TemplateTableSeeder extends Seeder
             <div class="text" style="padding: 0 2.5em;">
             <h2 style="text-align: left; color: #000000; font-size: 18px; margin-top: 0; line-height: 1.4; font-weight: bold;">Hello {{$name}},</h2>
             <p style="text-align: left; margin-top: 15px;">You have recently requested to reset your password for your account. Use below OTP to reset your password.</p>
-            <p style="margin-top: 15px;background-color: #1a47a6; padding: 5px 20px; color: #fff;display:inline-block">{{$token}}</p>
+            <p style="margin-top: 15px;background-color: #3eaf86; padding: 5px 20px; color: #fff;display:inline-block">{{$token}}</p>
 
             <p style="text-align: left;">If you did not initiate this request, please ignore this mail.</p>
             <p style="margin: 10px 0 0; text-align: left; color: #000000;">Thanks</p>
-            <p style="margin: 0px; text-align: left; color: #000000; font-weight: bold;">IoT</p>
+            <p style="margin: 0px; text-align: left; color: #000000; font-weight: bold;">FREIGHT MANAGEMENT</p>
             </div>
             </td>
             </tr>
@@ -64,7 +64,7 @@ class TemplateTableSeeder extends Seeder
             <tbody>
             <tr>
             <td style="text-align: center; margin: 0;">
-            <p style="margin: 0; font-size: 12px;">&copy; 2022 <a style="color: #141637;">IoT</a>. All Rights Reserved</p>
+            <p style="margin: 0; font-size: 12px;">&copy; 2022 <a style="color: #141637;">FREIGHT MANAGEMENT</a>. All Rights Reserved</p>
             </td>
             </tr>
             </tbody>
@@ -86,11 +86,11 @@ class TemplateTableSeeder extends Seeder
             <table style="margin: auto;" role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0" align="center">
             <tbody>
             <tr>
-            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #1a47a6;" valign="top">
+            <td class="bg_white" style="padding: 1.2em 2.5em 1em 2.5em; background-color: #3eaf86;" valign="top">
             <table role="presentation" border="0" width="100%" cellspacing="0" cellpadding="0">
             <tbody>
             <tr>
-            <td class="logo" style="text-align: center; color: #fff;">&nbsp;IoT</td>
+            <td class="logo" style="text-align: center; color: #fff;">&nbsp;FREIGHT MANAGEMENT</td>
             </tr>
             </tbody>
             </table>
@@ -105,7 +105,7 @@ class TemplateTableSeeder extends Seeder
             <td>
             <div class="text" style="padding: 0 2.5em;">
             <h2 style="text-align: left; color: #000000; font-size: 18px; margin-top: 0; line-height: 1.4; font-weight: bold;">Hello {{$name}},</h2>
-            <p style="text-align: left; margin-top: 15px;">You have received this mail as a user who has shown interest in IoT.</p>
+            <p style="text-align: left; margin-top: 15px;">You have received this mail as a user who has shown interest in FREIGHT MANAGEMENT.</p>
             <p style="text-align: left; margin-top: 15px;">Below are the details of the user.</p>
             <p style="text-align: left; margin-top: 15px;"><strong>Name: </strong>{{$username}}</p>
             <p style="text-align: left; margin-top: 15px;"><strong>Email: </strong>{{$email}}</p>
@@ -113,7 +113,7 @@ class TemplateTableSeeder extends Seeder
             <p style="text-align: left; margin-top: 15px;"><strong>Subject: </strong>{{$subject}}</p>
             <p style="text-align: left; margin-top: 15px;"><strong>Feature: </strong>{{$feature}}</p>
             <p style="margin: 10px 0 0; text-align: left; color: #000000;">Thanks</p>
-            <p style="margin: 0px; text-align: left; color: #000000; font-weight: bold;">IoT Team</p>
+            <p style="margin: 0px; text-align: left; color: #000000; font-weight: bold;">FREIGHT MANAGEMENT Team</p>
             </div>
             </td>
             </tr>
@@ -131,7 +131,7 @@ class TemplateTableSeeder extends Seeder
             <tbody>
             <tr>
             <td style="text-align: center; margin: 0;">
-            <p style="margin: 0; font-size: 12px;">&copy; 2022 <a style="color: #141637;">IoT</a>. All Rights Reserved</p>
+            <p style="margin: 0; font-size: 12px;">&copy; 2022 <a style="color: #141637;">FREIGHT MANAGEMENT</a>. All Rights Reserved</p>
             </td>
             </tr>
             </tbody>

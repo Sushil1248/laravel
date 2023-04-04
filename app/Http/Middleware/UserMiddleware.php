@@ -18,7 +18,7 @@ class UserMiddleware
     {
         if (auth::check())
         {
-            $user_list = (['User']);
+            $user_list = (['1_User']);
             $user_role = Auth::user()->getRoleNames()
                 ->first();
                 // Auth::user()->status == 1

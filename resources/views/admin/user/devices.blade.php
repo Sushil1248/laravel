@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends(Auth::check() && !Auth::user()->hasRole('Administrator')  ? 'company.layouts.app' : 'admin.layouts.app')
 @section('title', '- Devices')
 
 
@@ -19,7 +19,7 @@
             @php
                 $is_notify = checkDeviceTokenExists() ? "hide" : "show";
             @endphp
-            @can('user-add')
+            @can('device-add')
             <div class="right-btns">
                 <div class="d-flex">
                     <a class="nav-link btn navy-blue-btn open-section " data-target="create-device-popup" href="javascript:void(0)">
@@ -98,15 +98,16 @@
                                             {{ changeDateFormat($singleDevice->created_at) }}
                                         </td>
                                         <td class="text-center status-text">
-                                            <input data-id="{{ jsencode_userdata($singleDevice->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleDevice->status ? 'checked' : '' }}>
+                                            <input data-id="{{ jsencode_userdata($singleDevice->id) }}" class="@can('device-status')toggle-class @endcan"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleDevice->status ? 'checked' : '' }}>
                                         </td>
                                         <td class="text-center purchase-order-date">
                                             <a title="Send Notification" onclick="event.stopPropagation()" class="send-push-notification open-section"   data-attribute="device_id" data-pass-id={{jsencode_userdata($singleDevice->id)}}  data-pass-title ="{{$singleDevice->device_name}}"
                                                 data-notify = {{$is_notify}}
                                                 data-target="push-notification-popup" href="javascript:void(0)" >
                                                 <i class="fas fa-bell" style="color:#33383a"></i>
-                                            </a>
-                                            @can('user-delete')
+                                            </a>&nbsp;&nbsp;
+                                            <a href="{{route('user.tracking',['token'=>$singleDevice->device_token])}}"><i style="color:#33383a" class="fas fa-map-marker-alt" ></i></a>&nbsp;&nbsp;
+                                            @can('device-delete')
                                             <a title="Delete" onclick="event.stopPropagation()" class="delete-temp" href="{{ route('user.deviceDelete',['id'=>jsencode_userdata($singleDevice->id)]) }}">
                                                 <i class="fas fa-trash" style="color:#FF0000"></i>
                                             </a>
@@ -151,7 +152,7 @@
                                         </th>
                                         <th scope="col">@sortablelink('created_at', 'Created Date')</th>
                                         <th scope="col" class="text-center status-text purchase-order-date" style="display:table-cell">@sortablelink('status', 'Status')</th>
-                                        <th scope="col" class="purchase-order-date text-center">Actions</th>
+                                        @can('device-restore')<th scope="col" class="purchase-order-date text-center">Actions</th>@endcan
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -172,9 +173,9 @@
                                             <input data-id="{{ jsencode_userdata($singleDevice->id) }}" class="toggle-class"  data-style="ios" type="checkbox" data-onstyle="success" data-height="20" data-width="70"  data-offstyle="danger" data-toggle="toggle"  data-size="mini" data-on="Active" data-off="InActive" {{ $singleDevice->status ? 'checked' : '' }}>
                                         </td>
                                         <td class="text-center" class="purchase-order-date">
-                                            <a onclick="event.stopPropagation()" title="Restore" href="{{ route('user.restore',['id'=>jsencode_userdata($singleDevice->id)]) }}">
+                                            @can('device-restore')<a onclick="event.stopPropagation()" title="Restore" href="{{ route('user.redev',['id'=>jsencode_userdata($singleDevice->id)]) }}">
                                                 <i class="fas fa-trash-restore"></i>
-                                            </a>
+                                            </a>@endcan
                                         </td>
                                     </tr>
                                     @empty

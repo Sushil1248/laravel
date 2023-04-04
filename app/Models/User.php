@@ -12,11 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 use Kyslik\ColumnSortable\Sortable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Laravel\Cashier\Billable;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+use Laravel\Passport\Token;
+
 
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, Sortable, Billable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasRoles, Sortable, Billable, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -30,8 +34,16 @@ class User extends Authenticatable
         'company_id',
         'status',
         'password',
+        'contact_person',
+        'contact_number',
+        'unique_id',
+        'web_access',
+        'device_token',
         'updated_at'
     ];
+
+    protected static $logAttributes = ['*'];
+
     protected $appends = ['full_name','status_label','profile_completed'];
     /**
      * The attributes that should be hidden for serialization.
@@ -52,12 +64,36 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
+    public function revokeOtherTokens()
+    {
+        if (!$this->currentAccessToken()) {
+            return;
+        }
+
+        $tokens = $this->tokens()->where('id', '<>', $this->currentAccessToken()->id)->get();
+
+        foreach ($tokens as $token) {
+            Token::find($token->id)->revoke();
+        }
+    }
+
+    public function logins()
+    {
+        return $this->hasMany(Login::class);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults();
+    }
+
     public function user_detail(){
 	    return $this->hasOne(UserDetails::class);
     }
 
-    public function companyUsers(){
-        return $this->belongsToMany(Company::class,'companies')->withTimestamps();
+    public function company_detail(){
+	    return $this->hasOne(CompanyDetail::class);
     }
 
     public function userProgress(){
@@ -70,6 +106,19 @@ class User extends Authenticatable
     public function activePrograms(){
         return $this->belongsToMany(Program::class,'user_programs')->withPivot('start_date')->wherePivotNull('end_date')->using(UserProgram::class)->withTimestamps();
     }
+
+    public function companyUsers()
+    {
+        return $this->hasMany(CompanyUsers::class);
+    }
+
+    public function getCompanyName()
+    {
+        $company_id = $this->companyUsers()->first()->company_id;
+        $company_detail = CompanyDetail::where('user_id', $company_id)->first();
+        return $company_detail->company_name;
+    }
+
     // public function notifications()
     // {
     //     return $this->morphMany(Notification::class, 'notifiable')
@@ -166,6 +215,12 @@ class User extends Authenticatable
         }
     }
 
+    public function vehicles()
+{
+    return $this->belongsToMany(Vehicle::class, 'user_vehicle')->withPivot('ride_status');
+}
+
+
     /* Helper functions */
     public function saveQuestionnaire( $type , $value ){
         $question = QuestionnaireType::where('name',$type)->first();
@@ -188,6 +243,11 @@ class User extends Authenticatable
         return $this->activePrograms->first();
     }
 
+    public function companies()
+    {
+        return $this->belongsToMany(Company::class, 'company_users', 'user_id', 'company_id');
+    }
+
     public function company_id(){
         $company_id = CompanyUsers::where('user_id', $this->id)->pluck('company_id')->first();
         return $company_id;
@@ -197,8 +257,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Device::class);
     }
+
     public function device_data()
     {
         return($this->hasMany(Device::class)->select(['id','user_id', 'device_token', 'device_name', 'device_activation_code','status','is_activate','tracking_radius' ]));
     }
+
 }

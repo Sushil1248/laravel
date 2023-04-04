@@ -35,6 +35,12 @@
             <div class="input-group">
                 <input type="text" class="form-control" name="search" value="{{ request('search') }}" placeholder="Search">
             </div>
+
+           {{--  @if(Auth::user()->hasRole('Administrator'))
+            <div class="input-group">
+                <input type="text" class="form-control" name="company_name" value="{{ request('search') }}" placeholder="Company Name">
+            </div>
+            @endif --}}
             <div class="filter-listing-item">
                 <label class="input-label">Date Range</label>
                 <div class="input-group">
@@ -150,6 +156,12 @@
                             <input type="text" class="form-control" readonly aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
                         </div>
                     </li>
+                    <li>
+                        <p>Role</p>
+                        <div class="input-group input-group-sm invoice-value">
+                            <input type="text" class="form-control" readonly aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Role" name="role">
+                        </div>
+                    </li>
                 </ul>
 
 
@@ -229,6 +241,9 @@
                             </div>
                         </li>
 
+                        @if(!Auth::user()->hasRole('Administrator'))
+                            <input type="hidden" name="company" value="{{Auth::user()->id}}">
+                        @else
                         <li>
                             <p>Company<span class="required-field">*</span></p>
                             <div class="input-group input-group-sm invoice-value">
@@ -240,6 +255,7 @@
                                 </select>
                             </div>
                         </li>
+                        @endif
 
                         <li>
                             <p>Password<span class="required-field">*</span></p>
@@ -312,6 +328,29 @@
                                 <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
                             </div>
                         </li>
+
+                        <li>
+                            <p>Role<span class="required-field">*</span></p></p>
+                            <div class="input-group input-group-sm invoice-value">
+                                <select class="custom-select select-role" name="role">
+                                    <option value="">Select Role</option>
+                                    @foreach( $role as $roleId => $roleName )
+                                        <option value="{{ $roleName }}">{{ trim_role_name($roleName) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </li>
+
+                        <li class="d-flex align-items-center mt-4">
+                            <p style="margin-right: 18px;">Allow Web Access</p>
+                            <div class="checkbox-wrapper-18">
+                                <div class="round">
+                                  <input type="checkbox" name="web_access" id="web_access">
+                                  <label for="web_access" class="m-0"></label>
+                                </div>
+                              </div>
+
+                        </li>
                     </ul>
                     <div class="footer-menus_button">
                         <div class="invoice-list">
@@ -336,3 +375,165 @@
 </div>
 <!-- End create popup  -->
 
+<!-- Create Manage Vehicle Popup  -->
+<!-- Detail popup  -->
+<div class="filter-sidebar filter-side-drawer order-sidebar view-module" id="user-vehicles" @if(request('user_id')) data-page-refresh="1" data-refresh-url="{{ route('user.list') }}" @endif>
+    <div class="">
+        <div class="invoice-detail invoice-creation">
+
+            <div class="invoice-details-inner">
+                <div class="detail-item-1 d-flex align-items-center">
+                    <div class="shipmemnt-details-item item1">
+                        <div class="list-content">
+                            <h2>Manage User Vehicles</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <div class='ajax-response'></div>
+                <form method="post" action="{{ route('vehicle.assign') }}" id="assign-user-vehicle">
+                    @csrf
+                        <div class="invoice-detail invoice-creation">
+                            <div class="Contract-details invoice-feild">
+                                <input type="hidden" class="dynamic_name" name="dyn_name" value="">
+                                <ul>
+                                    @php $companyUsers = company_user_array();     @endphp
+                                    @forelse ($vehicles as $vehicle)
+                                    <li class="card px-4 py-2" style="padding: 19px 6px !important;">
+                                        <div class="form-check d-flex" style="justify-content: space-between;align-items: center;">
+                                            @if ($vehicle->hasVehicle)
+                                            <div class="checkbox-wrapper-18">
+                                                <div class="round">
+                                                    <input type="checkbox" id="assigned_id_{{ $vehicle->id }}" class="assigned form-check-input " name="vehicle[]" value="{{ $vehicle->id }}" data-assigned_id="{{$vehicle->users->pluck('id')}}">
+                                                    <label for="assigned_id_{{ $vehicle->id }}"></label>
+                                                  </div>
+                                                {{-- Assigned to {{ get_user_name($vehicle->users[0]->id) }} --}}
+                                                </div>
+                                        @else
+
+                                        <div class="checkbox-wrapper-18">
+                                            <div class="round">
+                                              <input type="checkbox" name="vehicle[]" value="{{ $vehicle->id }}" id="assigned_id_{{ $vehicle->id }}">
+                                              <label for="assigned_id_{{ $vehicle->id }}"></label>
+                                            </div>
+                                            {{-- Assigned to {{ get_user_name($vehicle->users[0]->id) }} --}}
+                                          </div>
+
+                                        @endif
+                                        <span class="d-flex flex-direction-column mx-4" style="flex-direction: column;">
+                                            <p>{{ $vehicle->name }}
+                                                <i class="fa fa-info-circle" style="font-size: 15px; margin-left:10px"
+                                                   data-toggle="popover"
+                                                   title="Assigned Users"
+                                                   data-html="true"
+                                                   data-content="@if ($vehicle->hasVehicle)
+                                                    <ul>
+                                                    @if(!Auth::user()->hasRole('Administrator'))
+                                                      @foreach ($vehicle->users->whereIn('id',$companyUsers->pluck('id')) as $v)
+                                                        <li>{{$v->full_name}}</li>
+                                                      @endforeach
+                                                    @else
+                                                        @foreach ($vehicle->users as $v)
+                                                        <li>{{$v->full_name}}</li>
+                                                      @endforeach
+                                                    @endif
+                                                    </ul>
+                                                    @else
+                                                      No users assigned
+                                                    @endif">
+                                                </i>
+                                            </p>
+                                            <span>{{ $vehicle->vehicle_num }}</span>
+                                        </span>
+                                        </div>
+
+
+                                    </li>
+                                @empty
+                                    <div class="alert alert-danger w-100" role="alert">
+                                        No vehicles available
+                                    </div>
+
+                                @endforelse
+                                </ul>
+                                <div class="footer-menus_button">
+                                    <div class="invoice-list">
+
+                                    </div>
+                                    <div class="submit-btns">
+                                        <ul>
+                                            <li class="close-section"><a href="#">Cancel</a></li>
+                                            <li><a href="#" class="submit-button ajax-submit-button" onclick="$(this).closest('form').submit()">Submit </a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="filter-cross">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 1L1 9M1 1L9 9" stroke="#12344D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </div>
+    </div>
+</div>
+<!-- End Detail popup  -->
+
+
+<div class="filter-sidebar filter-side-drawer order-sidebar create-module" id="push-notification-popup-user">
+    <div class="">
+        <form method="post" action="{{ route('user.users.push-notification') }}" id="notify-device">
+        @csrf
+            <div class="invoice-detail invoice-creation">
+
+                <div class="invoice-details-inner">
+                    <div class="detail-item-1 d-flex align-items-center">
+                        <div class="shipmemnt-details-item item1">
+                            <div class="list-content">
+                                <h2>Send Push Notification &nbsp; <span class="device_name"></span></h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Contract-details invoice-feild">
+                    <div class='ajax-response'></div>
+                    <ul class="d-flex" style="flex-direction: column;">
+                        <li>
+                            <p>Notification Title<span class="required-field">*</span></p>
+                            <div class="input-group input-group-sm invoice-value">
+                                <input type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Add Notification Title" name="title">
+                                <input type="hidden" class="dynamic_name" name="dyn_name" value="">
+                            </div>
+                        </li>
+                        <li>
+                            <p>Message<span class="required-field">*</span></p>
+                            <div class="input-group input-group-sm invoice-value">
+                               <textarea name="message" id="message" class="form-control border-0" cols="30" rows="3"  placeholder="Add notificaton Message"></textarea>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="footer-menus_button">
+                        <div class="invoice-list">
+
+                        </div>
+                        <div class="submit-btns">
+                            <ul>
+                                <li class="close-section"><a href="#">Cancel</a></li>
+                                <li><a href="#" class="submit-button ajax-submit-button" onclick="$(this).closest('form').submit()">Submit </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="filter-cross">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 1L1 9M1 1L9 9" stroke="#12344D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </div>
+    </div>
+</div>

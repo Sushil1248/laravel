@@ -58,30 +58,38 @@
                                         <li>
                                             <p>Company name <span class="required-field">*</span></p>
                                             <div class="input-group input-group-sm invoice-value">
-                                                <input type="text" class="form-control" value="{{ old('company_name',$companyDetail->company_name) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Company name" name="company_name">
+                                                <input type="text" class="form-control" value="{{ old('company_name',$companyDetail->company_detail->company_name) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Company name" name="company_name">
                                             </div>
                                         </li>
+
                                         <li>
-                                            <p>Email <span class="required-field">*</span></p>
+                                            <p>Company Email<span class="required-field">*</span><span style="color:#FFF; background:#3eaf86; font-size:10px; padding:2px 4px; border-radius:5px;">This email will use for login</span></p>
                                             <div class="input-group input-group-sm invoice-value">
-                                                <input type="text"  value="{{ old('company_email' , $companyDetail->company_email) }}" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Email" name="company_email">
+                                                <input type="text"  value="{{ old('company_email' , $companyDetail->email) }}" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Email" name="company_email">
                                             </div>
                                         </li>
 
                                         <li>
                                             <p>Contact Person</p>
                                             <div class="input-group input-group-sm invoice-value">
-                                                <input type="text" class="form-control"  value="{{ old( 'contact_person' , $companyDetail ? $companyDetail->contact_person : '' ) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Person" name="contact_person">
+                                                <input type="text" class="form-control"  value="{{ old( 'contact_person' , $companyDetail ? $companyDetail->company_detail->contact_person : '' ) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Person" name="contact_person">
                                             </div>
                                         </li>
 
                                         <li>
                                             <p>Contact Number</p>
                                             <div class="input-group input-group-sm invoice-value">
-                                                <input type="text" class="form-control"  value="{{ old( 'contact_number' , $companyDetail ? $companyDetail->contact_number : '' ) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Person" name="contact_number">
+                                                <input type="text" class="form-control"  value="{{ old( 'contact_number' , $companyDetail ? $companyDetail->company_detail->contact_number : '' ) }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Contact Person" name="contact_number">
                                             </div>
                                         </li>
 
+                                        <li>
+                                            <p>Contact Person Email<span class="required-field">*</span></p>
+                                            <div class="input-group input-group-sm invoice-value">
+                                                <input type="email" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Enter Contact Number" name="contact_person_email"  value="{{ old( 'contact_person_email' , $companyDetail ? $companyDetail->company_detail->contact_person_email : '' ) }}" >
+                                                <input type="hidden" name="role" value="1_Company">
+                                            </div>
+                                        </li>
                                         <li>
                                             <p>Country</p>
                                             <div class="input-group input-group-sm invoice-value">
@@ -118,6 +126,7 @@
                                                 <input type="text" class="form-control"  value="{{ old('address',$companyDetail->company_detail ? $companyDetail->company_detail->address : '') }}" aria-label="Small" aria-describedby="inputGroup-sizing-sm" placeholder="Address" name="address">
                                             </div>
                                         </li>
+                                        @can('company-status')
                                         <li>
                                             <p>Status</p>
                                             <div class="custom-control custom-checkbox">
@@ -127,10 +136,11 @@
                                                 </label>
                                             </div>
                                         </li>
+                                        @endcan
                                     </ul>
                                     <div class="footer-menus_button">
                                         <div class="invoice-list">
-
+                                            <input type="hidden" name="role" value="Company">
                                         </div>
                                         <div class="submit-btns">
                                             <ul>
@@ -181,6 +191,10 @@
             contact_number:{
                 number: true
             },
+            contact_person_email:{
+                required:true,
+                email:true
+            }
         },
         messages:{
             company_name:{

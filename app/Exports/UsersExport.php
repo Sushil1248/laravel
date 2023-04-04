@@ -17,8 +17,10 @@ class UsersExport implements FromQuery,WithMapping,WithHeadings,ShouldAutoSize
             $daterang = explode(' - ',$daterange);
             $start = $daterang[0].' 00:00:00';
             $end = $daterang[1].' 23:05:59';
-        } 
-        $data = User::when( !empty($start) && !empty($end) , function($q , $from) use( $start , $end ) {
+        }
+        $data = User::whereHas('roles', function ($query) {
+            $query->where('name', '=', '1_User');
+        })->when( !empty($start) && !empty($end) , function($q , $from) use( $start , $end ) {
             $q->whereBetween( 'created_at' , [$start , $end] );
         })->when($request->search ,function($qu , $keyword ) {
             $qu->where(function ($q) use( $keyword ) {
@@ -33,7 +35,7 @@ class UsersExport implements FromQuery,WithMapping,WithHeadings,ShouldAutoSize
         })->when( jsdecode_userdata($request->user_id) , function( $query , $user_id ){
             $query->where('id',$user_id);
         });
-        return $data->role('Customer')->with('user_detail.country');
+        return $data->with('user_detail.country');
     }
 
     public function map($user): array

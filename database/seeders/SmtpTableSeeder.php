@@ -22,7 +22,7 @@ class SmtpTableSeeder extends Seeder
 				'port' => 587,
 				'username' => 'developer.infostride@gmail.com',
 				'from_email' => 'developer.infostride@gmail.com',
-				'from_name' => 'IoT',
+				'from_name' => 'FREIGHT MANAGEMENT',
 				'password' => 'mpmpesspoxoxvmke',
 				'encryption' => 'tls',
 				'status' => 1,
