@@ -38,7 +38,8 @@
                             </tr>
                             <tr>
                                 <td width="40%">Name:</td>
-                                <td>{{ $user['full_name'] }} <span><a href={{'my-rides', ['token'=>$token]}}></a></span></td>
+                                <td>{{ $user['full_name'] }} </td> 
+                                {{-- <span><a href={{'my-rides', ['token'=>$token]}}></a></span> --}}
                             </tr>
                             <tr>
                                 <td width="40%">Email:</td>
