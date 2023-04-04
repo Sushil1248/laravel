@@ -85,37 +85,37 @@
                                         @endisset
                                         {{-- Vehicle Details --}}
 
-                                        <tr style="background: #3eaf86;">
+                                        {{-- <tr style="background: #3eaf86;">
                                             <td colspan="2" style="color:#FFF; font-weight:bold;">My Devices</td>
-                                        </tr>
+                                        </tr> --}}
 
-                                        <tr>
-                                            @forelse ($user->devices as $device)
-                                        <tr>
-                                            <td width="50%">
-                                                <ul>
-                                                    <li>Device Name: {{ ucfirst($device->device_name) }} <span class="dot"
-                                                            title="@if (isset($device->is_activate) && $device->is_activate) {{ 'Active' }}@else{{ "
-                                                                                                                                                                                                                                        Inactive" }} @endif"
-                                                            style="background-color: @if (isset($device->is_activate) && $device->is_activate) {{ 'green' }}@else {{ 'red' }} @endif"></span>
-                                                    </li>
-                                                    <li>Device Platform: @if (isset($device->device_platform))
-                                                            {{ ucfirst($device->device_platform) }}
-                                                        @else
-                                                            N/A
-                                                        @endif
-                                                    </li>
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td width="100%">
-                                                NA
-                                            </td>
-                                        </tr>
-                                        @endforelse
-                                        </tr>
+                                        {{-- <tr>
+                                                @forelse ($user->devices as $device)
+                                                <tr>
+                                                    <td width="50%">
+                                                        <ul>
+                                                            <li>Device Name: {{ ucfirst($device->device_name) }} <span class="dot"
+                                                                    title="@if (isset($device->is_activate) && $device->is_activate) {{ 'Active' }}@else{{ "
+                                                                                                                                                                                                                                                Inactive" }} @endif"
+                                                                    style="background-color: @if (isset($device->is_activate) && $device->is_activate) {{ 'green' }}@else {{ 'red' }} @endif"></span>
+                                                            </li>
+                                                            <li>Device Platform: @if (isset($device->device_platform))
+                                                                    {{ ucfirst($device->device_platform) }}
+                                                                @else
+                                                                    N/A
+                                                                @endif
+                                                            </li>
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                 @empty
+                                                <tr>
+                                                    <td width="100%">
+                                                        NA
+                                                    </td>
+                                                </tr>
+                                                @endforelse
+                                        </tr> --}}
                                         {{-- Devices Details Details --}}
 
                                         <tr style="background: #3eaf86;">
